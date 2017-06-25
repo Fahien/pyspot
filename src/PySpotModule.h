@@ -2,7 +2,6 @@
 #define PST_PYSPOTMODULE_H
 
 #include <stdio.h>
-#include <Python.h>
 #include "PySpotString.h"
 
 namespace pyspot
@@ -13,6 +12,8 @@ class PySpotModule : public PySpotObject
 public:
 	PySpotModule(const PySpotString & name);
 	~PySpotModule();
+
+	PySpotObject callFunction(const char * name);
 };
 
 }

@@ -7,6 +7,11 @@ PySpotObject::PySpotObject()
 {}
 
 
+PySpotObject::PySpotObject(PyObject * object)
+	: object_{ object }
+{}
+
+
 PySpotObject::~PySpotObject()
 {
 	if (object_)

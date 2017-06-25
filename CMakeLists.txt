@@ -17,12 +17,15 @@ find_package(PythonInterp 3)
 find_package(PythonLibs 3)
 
 set(SOURCES
+    src/PySpotException.h
     src/PySpot.h
     src/PySpot.cpp
     src/PySpotObject.h
     src/PySpotObject.cpp
     src/PySpotString.h
     src/PySpotString.cpp
+    src/PySpotFunction.h
+    src/PySpotFunction.cpp
     src/PySpotModule.h
     src/PySpotModule.cpp
 )
