@@ -1,7 +1,7 @@
 #ifndef PST_PYSPOT_H
 #define PST_PYSPOT_H
 
-#include "Python.h"
+#include "PySpotModule.h"
 
 namespace pyspot
 {
@@ -11,6 +11,8 @@ class PySpot
 public:
 	PySpot();
 	~PySpot();
+
+	PySpotModule importModule(const char * name);
 };
 
 }

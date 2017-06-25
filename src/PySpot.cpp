@@ -1,4 +1,6 @@
+#include <Python.h>
 #include "PySpot.h"
+#include "PySpotString.h"
 
 using namespace pyspot;
 
@@ -13,4 +15,10 @@ PySpot::PySpot()
 PySpot::~PySpot()
 {
 	Py_Finalize();
+}
+
+
+PySpotModule PySpot::importModule(const char * name)
+{
+	return PySpotModule{ PySpotString{ name } };
 }

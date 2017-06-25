@@ -18,7 +18,14 @@ find_package(PythonLibs 3)
 
 set(SOURCES
     src/PySpot.h
-    src/PySpot.cpp)
+    src/PySpot.cpp
+    src/PySpotObject.h
+    src/PySpotObject.cpp
+    src/PySpotString.h
+    src/PySpotString.cpp
+    src/PySpotModule.h
+    src/PySpotModule.cpp
+)
 source_group("Sources" FILES ${SOURCES})
 
 set(TESTS

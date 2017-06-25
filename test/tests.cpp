@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include "tests.h"
+#include "PySpot.h"
 
 
 bool test1()
@@ -12,5 +13,6 @@ bool test1()
 bool test2()
 {
 	pyspot::PySpot pyspot{};
-	return true;
+	pyspot::PySpotModule pymodule{ pyspot.importModule("os") };
+	return false;
 }
