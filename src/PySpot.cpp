@@ -9,12 +9,13 @@ PySpot::PySpot()
 {
 	Py_Initialize();
 	addToPath(L"/script");
-	PyRun_SimpleString("print('Python initialized')");
+	printf("Python initialized\n");
 }
 
 
 PySpot::~PySpot()
 {
+	printf("Destroying Pyspot\n");
 	Py_Finalize();
 }
 

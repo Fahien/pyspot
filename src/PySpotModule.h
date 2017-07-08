@@ -1,8 +1,8 @@
 #ifndef PST_PYSPOTMODULE_H
 #define PST_PYSPOTMODULE_H
 
-#include <stdio.h>
 #include "PySpotString.h"
+
 
 namespace pyspot
 {
