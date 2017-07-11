@@ -6,10 +6,6 @@ set(PST_VERSION_MAJOR 0)
 set(PST_VERSION_MINOR 1)
 set(PST_TITLE "PySpoT")
 
-# Module path
-set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${PROJECT_SOURCE_DIR}/cmake")
-message("Searching modules in ${CMAKE_MODULE_PATH}")
-
 # Source dir
 set(PST_SOURCE_DIR  "${PROJECT_SOURCE_DIR}/src")
 set(PST_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/include")
@@ -18,12 +14,14 @@ set(PST_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/include")
 configure_file("${PST_SOURCE_DIR}/Config.h.in"
                "${PST_INCLUDE_DIR}/Config.h")
 
-include_directories("${PST_SOURCE_DIR}"
-                    "${PST_INCLUDE_DIR}")
-
 find_package(PythonInterp 3)
 find_package(PythonLibs 3)
 
+include_directories("${PST_SOURCE_DIR}"
+                    "${PST_INCLUDE_DIR}"
+                    "${PYTHON_INCLUDE_DIR}")
+
+# Sources
 set(SOURCES
     ${PST_SOURCE_DIR}/PySpotException.h
     ${PST_SOURCE_DIR}/PySpot.h
@@ -39,5 +37,10 @@ set(SOURCES
 )
 source_group("Sources" FILES ${SOURCES})
 
-# Tests
-include(test)
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_CXX_STANDARD 11)
+
+# Library
+add_library(pyspot ${SOURCES})
+set_target_properties(pyspot PROPERTIES LINKER_LANGUAGE CXX)
+target_link_libraries(pyspot ${PYTHON_LIBRARIES})
