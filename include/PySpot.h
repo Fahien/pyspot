@@ -2,6 +2,7 @@
 #define PST_PYSPOT_H
 
 #include <string>
+#include <Python.h>
 #include <PySpotModule.h>
 
 
@@ -12,6 +13,7 @@ class PySpot
 {
 public:
 	PySpot();
+	PySpot(const char* import, PyObject* (*function)(void));
 	~PySpot();
 
 	PySpotModule importModule(const char* name);

@@ -1,4 +1,3 @@
-#include <Python.h>
 #include <PySpot.h>
 #include <PySpotModule.h>
 
@@ -7,6 +6,15 @@ using namespace pyspot;
 
 PySpot::PySpot()
 {
+	Py_Initialize();
+	addToPath(L"/script");
+	printf("Python initialized\n");
+}
+
+
+PySpot::PySpot(const char* import, PyObject* (*function)(void))
+{
+	PyImport_AppendInittab(import, function);
 	Py_Initialize();
 	addToPath(L"/script");
 	printf("Python initialized\n");
