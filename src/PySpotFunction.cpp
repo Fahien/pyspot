@@ -1,28 +1,28 @@
 #include <stdio.h>
-#include "PySpotFunction.h"
-#include "PySpotException.h"
+#include <PySpotFunction.h>
+#include <PySpotException.h>
 
 using namespace pyspot;
 
 
-PySpotFunction::PySpotFunction(const PySpotModule & module, const char * name)
+PySpotFunction::PySpotFunction(const PySpotModule& module, const char* name)
 {
-	object_ = PyObject_GetAttrString(module.getObject(), name);
-	if (!object_ || !PyCallable_Check(object_))
+	mObject = PyObject_GetAttrString(module.getObject(), name);
+	if (!mObject || !PyCallable_Check(mObject))
 	{
 		throw PySpotException{ "Not a function" };
 	}
-	printf("PySpotFunction %p\n", object_);
+	printf("PySpotFunction %p\n", mObject);
 }
 
 
 PySpotFunction::~PySpotFunction()
 {
-	printf("Destroying PySpotFunction %p\n", object_);
+	printf("Destroying PySpotFunction %p\n", mObject);
 }
 
 
-PySpotObject PySpotFunction::call(const void * args)
+PySpotObject PySpotFunction::call(const void* args)
 {
-	return PySpotObject{ PyObject_CallObject(object_, nullptr) };
+	return PySpotObject{ PyObject_CallObject(mObject, nullptr) };
 }

@@ -1,6 +1,6 @@
 #include <Python.h>
-#include "PySpot.h"
-#include "PySpotModule.h"
+#include <PySpot.h>
+#include <PySpotModule.h>
 
 using namespace pyspot;
 
@@ -20,13 +20,13 @@ PySpot::~PySpot()
 }
 
 
-PySpotModule PySpot::importModule(const char * name)
+PySpotModule PySpot::importModule(const char* name)
 {
 	return PySpotModule{ PySpotString{ name } };
 }
 
 
-void PySpot::addToPath(const wchar_t * folder)
+void PySpot::addToPath(const wchar_t* folder)
 {
 	PySpotModule os { importModule("os") };
 	PySpotObject cwd{ os.callFunction("getcwd") };

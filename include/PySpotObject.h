@@ -11,17 +11,18 @@ class PySpotObject
 {
 public:
 	PySpotObject();
-	PySpotObject(PyObject * object_);
+	PySpotObject(PyObject* object);
 	~PySpotObject();
 
-	PySpotObject(const PySpotObject & other);
-	PySpotObject & operator=(const PySpotObject & other);
+	PySpotObject(const PySpotObject& other);
+	PySpotObject& operator=(const PySpotObject& other);
 
-	inline PyObject * getObject() const { return object_; }
-	inline std::wstring toString() const { return PyUnicode_AS_UNICODE(object_); }
+	inline PyObject* getObject() const { return mObject; }
+
+	inline std::wstring toString() const { return PyUnicode_AS_UNICODE(mObject); }
 
 protected:
-	PyObject * object_;
+	PyObject* mObject;
 };
 
 }

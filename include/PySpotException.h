@@ -9,8 +9,8 @@ namespace pyspot
 class PySpotException : public std::runtime_error
 {
 public:
-	PySpotException(const char * msg)
-		: std::runtime_error{ msg }
+	PySpotException(const char* msg)
+	:	std::runtime_error{ msg }
 	{}
 };
 

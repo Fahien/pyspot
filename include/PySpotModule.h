@@ -1,7 +1,7 @@
 #ifndef PST_PYSPOTMODULE_H
 #define PST_PYSPOTMODULE_H
 
-#include "PySpotString.h"
+#include <PySpotString.h>
 
 
 namespace pyspot
@@ -10,10 +10,10 @@ namespace pyspot
 class PySpotModule : public PySpotObject
 {
 public:
-	PySpotModule(const PySpotString & name);
+	PySpotModule(const PySpotString& name);
 	~PySpotModule();
 
-	PySpotObject callFunction(const char * name);
+	PySpotObject callFunction(const char* name);
 };
 
 }

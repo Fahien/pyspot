@@ -1,27 +1,27 @@
-#include "PySpotModule.h"
-#include "PySpotFunction.h"
+#include <PySpotModule.h>
+#include <PySpotFunction.h>
 
 using namespace pyspot;
 
 
-PySpotModule::PySpotModule(const PySpotString & name)
+PySpotModule::PySpotModule(const PySpotString& name)
 {
-	object_ = PyImport_Import(name.getObject());
-	if (!object_)
+	mObject = PyImport_Import(name.getObject());
+	if (!mObject)
 	{
 		PyErr_Print();
 	}
-	printf("Imported PySpotModule %p\n", object_);
+	printf("Imported PySpotModule %p\n", mObject);
 }
 
 
 PySpotModule::~PySpotModule()
 {
-	printf("Destroying PySpotModule %p\n", object_);
+	printf("Destroying PySpotModule %p\n", mObject);
 }
 
 
-PySpotObject PySpotModule::callFunction(const char * name)
+PySpotObject PySpotModule::callFunction(const char* name)
 {
 	PySpotFunction function{ *this, name };
 	return function.call(nullptr);

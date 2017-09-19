@@ -2,7 +2,8 @@
 #define PST_PYSPOT_H
 
 #include <string>
-#include "PySpotModule.h"
+#include <PySpotModule.h>
+
 
 namespace pyspot
 {
@@ -13,12 +14,12 @@ public:
 	PySpot();
 	~PySpot();
 
-	PySpotModule importModule(const char * name);
+	PySpotModule importModule(const char* name);
 
 private:
-	void addToPath(const wchar_t * folder);
+	void addToPath(const wchar_t* folder);
 
-	std::wstring path_;
+	std::wstring mPath;
 };
 
 }

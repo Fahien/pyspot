@@ -1,18 +1,18 @@
 #include <stdio.h>
 #include <Python.h>
-#include "PySpotString.h"
+#include <PySpotString.h>
 
 using namespace pyspot;
 
 
-PySpotString::PySpotString(const char * str)
+PySpotString::PySpotString(const char* str)
 {
-	object_ = PyUnicode_FromString(str);
-	printf("Created PySpotString %p\n", object_);
+	mObject = PyUnicode_FromString(str);
+	printf("Created PySpotString %p\n", mObject);
 }
 
 
 PySpotString::~PySpotString()
 {
-	printf("Destroying PySpotString %p\n", object_);
+	printf("Destroying PySpotString %p\n", mObject);
 }
