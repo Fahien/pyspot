@@ -11,8 +11,8 @@ set(PST_SOURCE_DIR  ${PROJECT_SOURCE_DIR}/src)
 set(PST_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
 
 # Configure a header file to pass some of the CMake settings to the source code
-configure_file(${PST_SOURCE_DIR}/Config.h.in
-               ${PST_INCLUDE_DIR}/Config.h)
+configure_file(${PST_SOURCE_DIR}/PySpotConfig.h.in
+               ${PST_INCLUDE_DIR}/PySpotConfig.h)
 
 find_package(PythonInterp 3)
 find_package(PythonLibs 3)
