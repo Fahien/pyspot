@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <cstdio>
 #include <PySpotFunction.h>
 #include <PySpotException.h>
 
@@ -7,7 +7,7 @@ using namespace pyspot;
 
 PySpotFunction::PySpotFunction(const PySpotModule& module, const char* name)
 {
-	mObject = PyObject_GetAttrString(module.getObject(), name);
+	mObject = PyObject_GetAttrString(module.GetObject(), name);
 	if (!mObject || !PyCallable_Check(mObject))
 	{
 		throw PySpotException{ "Not a function" };
@@ -22,7 +22,7 @@ PySpotFunction::~PySpotFunction()
 }
 
 
-PySpotObject PySpotFunction::call(const void* args)
+PySpotObject PySpotFunction::Call(PyObject* args)
 {
-	return PySpotObject{ PyObject_CallObject(mObject, nullptr) };
+	return PySpotObject{ PyObject_CallObject(mObject, args) };
 }

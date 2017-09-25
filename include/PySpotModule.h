@@ -13,7 +13,8 @@ public:
 	PySpotModule(const PySpotString& name);
 	~PySpotModule();
 
-	PySpotObject callFunction(const char* name);
+	PySpotObject CallFunction(const char* name);
+	PySpotObject CallFunction(const char* name, PyObject* args);
 };
 
 }

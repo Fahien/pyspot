@@ -6,7 +6,7 @@ using namespace pyspot;
 
 PySpotModule::PySpotModule(const PySpotString& name)
 {
-	mObject = PyImport_Import(name.getObject());
+	mObject = PyImport_Import(name.GetObject());
 	if (!mObject)
 	{
 		PyErr_Print();
@@ -21,8 +21,14 @@ PySpotModule::~PySpotModule()
 }
 
 
-PySpotObject PySpotModule::callFunction(const char* name)
+PySpotObject PySpotModule::CallFunction(const char* name)
+{
+	return CallFunction(name, nullptr);
+}
+
+
+PySpotObject PySpotModule::CallFunction(const char* name, PyObject* args)
 {
 	PySpotFunction function{ *this, name };
-	return function.call(nullptr);
+	return function.Call(args);
 }

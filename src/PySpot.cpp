@@ -28,7 +28,7 @@ PySpot::~PySpot()
 }
 
 
-PySpotModule PySpot::importModule(const char* name)
+PySpotModule PySpot::ImportModule(const char* name)
 {
 	return PySpotModule{ PySpotString{ name } };
 }
@@ -36,10 +36,10 @@ PySpotModule PySpot::importModule(const char* name)
 
 void PySpot::addToPath(const wchar_t* folder)
 {
-	PySpotModule os { importModule("os") };
-	PySpotObject cwd{ os.callFunction("getcwd") };
-	printf("Result = %ls\n", cwd.toString().c_str());
-	std::wstring path{ Py_GetPath() + (L";" + cwd.toString()) + folder };
+	PySpotModule os { ImportModule("os") };
+	PySpotObject cwd{ os.CallFunction("getcwd") };
+	printf("Result = %ls\n", cwd.ToString().c_str());
+	std::wstring path{ Py_GetPath() + (L";" + cwd.ToString()) + folder };
 	printf("Python search path is %ls\n", path.c_str());
 	PySys_SetPath(path.c_str());
 }

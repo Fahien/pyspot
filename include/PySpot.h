@@ -16,7 +16,7 @@ public:
 	PySpot(const char* import, PyObject* (*function)(void));
 	~PySpot();
 
-	PySpotModule importModule(const char* name);
+	PySpotModule ImportModule(const char* name);
 
 private:
 	void addToPath(const wchar_t* folder);
