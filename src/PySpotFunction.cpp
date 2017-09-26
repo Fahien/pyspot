@@ -1,28 +1,36 @@
 #include <cstdio>
-#include <PySpotFunction.h>
-#include <PySpotException.h>
+#include "PySpotFunction.h"
+#include "PySpotException.h"
+#include "PySpotModule.h"
+#include "PySpotTuple.h"
 
-using namespace pyspot;
+namespace pst = pyspot;
 
 
-PySpotFunction::PySpotFunction(const PySpotModule& module, const char* name)
+pst::PySpotFunction::PySpotFunction(const pst::PySpotModule& module, const char* name)
 {
 	mObject = PyObject_GetAttrString(module.GetObject(), name);
 	if (!mObject || !PyCallable_Check(mObject))
 	{
-		throw PySpotException{ "Not a function" };
+		throw pst::PySpotException{ "Not a function" };
 	}
 	printf("PySpotFunction %p\n", mObject);
 }
 
 
-PySpotFunction::~PySpotFunction()
+pst::PySpotFunction::~PySpotFunction()
 {
 	printf("Destroying PySpotFunction %p\n", mObject);
 }
 
 
-PySpotObject PySpotFunction::Call(PyObject* args)
+pst::PySpotObject pst::PySpotFunction::Call()
 {
-	return PySpotObject{ PyObject_CallObject(mObject, args) };
+	return pst::PySpotObject{ PyObject_CallObject(mObject, nullptr) };
+}
+
+
+pst::PySpotObject pst::PySpotFunction::Call(pst::PySpotTuple& args)
+{
+	return pst::PySpotObject{ PyObject_CallObject(mObject, args.GetObject()) };
 }

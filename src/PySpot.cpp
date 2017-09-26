@@ -1,10 +1,11 @@
-#include <PySpot.h>
-#include <PySpotModule.h>
+#include "PySpot.h"
+#include "PySpotModule.h"
+#include "PySpotString.h"
 
-using namespace pyspot;
+namespace pst = pyspot;
 
 
-PySpot::PySpot()
+pst::PySpot::PySpot()
 {
 	Py_Initialize();
 	addToPath(L"/script");
@@ -12,7 +13,7 @@ PySpot::PySpot()
 }
 
 
-PySpot::PySpot(const char* import, PyObject* (*function)(void))
+pst::PySpot::PySpot(const char* import, PyObject* (*function)(void))
 {
 	PyImport_AppendInittab(import, function);
 	Py_Initialize();
@@ -21,23 +22,23 @@ PySpot::PySpot(const char* import, PyObject* (*function)(void))
 }
 
 
-PySpot::~PySpot()
+pst::PySpot::~PySpot()
 {
 	printf("Destroying Pyspot\n");
 	Py_Finalize();
 }
 
 
-PySpotModule PySpot::ImportModule(const char* name)
+pst::PySpotModule pst::PySpot::ImportModule(const char* name)
 {
-	return PySpotModule{ PySpotString{ name } };
+	return pst::PySpotModule{ pst::PySpotString{ name } };
 }
 
 
-void PySpot::addToPath(const wchar_t* folder)
+void pst::PySpot::addToPath(const wchar_t* folder)
 {
-	PySpotModule os { ImportModule("os") };
-	PySpotObject cwd{ os.CallFunction("getcwd") };
+	pst::PySpotModule os { ImportModule("os") };
+	pst::PySpotObject cwd{ os.CallFunction("getcwd") };
 	printf("Result = %ls\n", cwd.ToString().c_str());
 	std::wstring path{ Py_GetPath() + (L";" + cwd.ToString()) + folder };
 	printf("Python search path is %ls\n", path.c_str());

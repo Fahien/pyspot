@@ -28,6 +28,7 @@ set(SOURCES
     ${PST_SOURCE_DIR}/PySpotString.cpp
     ${PST_SOURCE_DIR}/PySpotFunction.cpp
     ${PST_SOURCE_DIR}/PySpotModule.cpp
+    ${PST_SOURCE_DIR}/PySpotTuple.cpp
 )
 source_group(Sources FILES ${SOURCES})
 

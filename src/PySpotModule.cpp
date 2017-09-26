@@ -1,10 +1,12 @@
-#include <PySpotModule.h>
-#include <PySpotFunction.h>
+#include "PySpotModule.h"
+#include "PySpotFunction.h"
+#include "PySpotString.h"
+#include "PySpotTuple.h"
 
-using namespace pyspot;
+namespace pst = pyspot;
 
 
-PySpotModule::PySpotModule(const PySpotString& name)
+pst::PySpotModule::PySpotModule(const pst::PySpotString& name)
 {
 	mObject = PyImport_Import(name.GetObject());
 	if (!mObject)
@@ -15,20 +17,21 @@ PySpotModule::PySpotModule(const PySpotString& name)
 }
 
 
-PySpotModule::~PySpotModule()
+pst::PySpotModule::~PySpotModule()
 {
 	printf("Destroying PySpotModule %p\n", mObject);
 }
 
 
-PySpotObject PySpotModule::CallFunction(const char* name)
+pst::PySpotObject pst::PySpotModule::CallFunction(const char* name)
 {
-	return CallFunction(name, nullptr);
+	pst::PySpotFunction function{ *this, name };
+	return function.Call();
 }
 
 
-PySpotObject PySpotModule::CallFunction(const char* name, PyObject* args)
+pst::PySpotObject pst::PySpotModule::CallFunction(const char* name, pst::PySpotTuple& args)
 {
-	PySpotFunction function{ *this, name };
+	pst::PySpotFunction function{ *this, name };
 	return function.Call(args);
 }

@@ -1,11 +1,16 @@
 #ifndef PST_PYSPOTMODULE_H
 #define PST_PYSPOTMODULE_H
 
-#include <PySpotString.h>
+#include "PySpotObject.h"
 
 
 namespace pyspot
 {
+
+
+class PySpotString;
+class PySpotTuple;
+
 
 class PySpotModule : public PySpotObject
 {
@@ -14,9 +19,11 @@ public:
 	~PySpotModule();
 
 	PySpotObject CallFunction(const char* name);
-	PySpotObject CallFunction(const char* name, PyObject* args);
+	PySpotObject CallFunction(const char* name, PySpotTuple& args);
 };
 
+
 }
+
 
 #endif // PST_PYSPOTMODULE_H
