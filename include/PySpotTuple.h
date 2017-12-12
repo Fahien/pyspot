@@ -15,7 +15,10 @@ public:
 
 	inline size_t GetSize() const { return mSize; }
 
+	void SetItem(const size_t i, int item);
+	void SetItem(const size_t i, float item);
 	void SetItem(const size_t i, PySpotObject& item);
+	void SetItem(const size_t i, PyObject* item);
 
 private:
 	size_t mSize;
