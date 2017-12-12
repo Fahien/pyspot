@@ -9,6 +9,7 @@ namespace pyspot
 class PySpotString : public PySpotObject
 {
 public:
+	PySpotString(PyObject* object);
 	PySpotString(const char* str);
 	~PySpotString();
 };

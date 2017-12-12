@@ -17,7 +17,7 @@ pst::PySpot::PySpot(const char* import, PyObject* (*function)(void))
 {
 	PyImport_AppendInittab(import, function);
 	Py_Initialize();
-	addToPath(L"/script");
+	addToPath(L"/test/script");
 	printf("Python initialized\n");
 }
 

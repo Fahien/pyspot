@@ -21,9 +21,6 @@ public:
 
 	inline std::wstring ToString() const { return PyUnicode_AS_UNICODE(mObject); }
 
-	inline void Add() {
-	}
-
 protected:
 	PyObject* mObject;
 };
