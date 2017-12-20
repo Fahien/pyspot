@@ -17,9 +17,10 @@ public:
 	PySpotObject(const PySpotObject& other);
 	PySpotObject& operator=(const PySpotObject& other);
 
-	inline PyObject* GetObject() const { return mObject; }
+	PyObject* GetObject() const { return mObject; }
 
-	inline std::wstring ToString() const { return PyUnicode_AS_UNICODE(mObject); }
+	const wchar_t* ToCString() const { return PyUnicode_AS_UNICODE(mObject); }
+	std::wstring   ToString()  const { return ToCString(); }
 
 protected:
 	PyObject* mObject;

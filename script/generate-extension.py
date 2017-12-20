@@ -50,10 +50,10 @@ def create_source(name, components):
 
 	# Components
 	for component in components:
-		component = component[0].lower() + component[1:]
-		print('\tif (PyType_Ready(&%s) < 0)\n\t{\n\t\treturn nullptr;\n\t}' % component)
-		print('\tPy_INCREF(&%s);' % component)
-		print('\tPyModule_AddObject(module, "{0}", reinterpret_cast<PyObject*>(&{1}));\n'.format(component.capitalize(), component))
+		component_var = component[0].lower() + component[1:]
+		print('\tif (PyType_Ready(&%s) < 0)\n\t{\n\t\treturn nullptr;\n\t}' % component_var)
+		print('\tPy_INCREF(&%s);' % component_var)
+		print('\tPyModule_AddObject(module, "{0}", reinterpret_cast<PyObject*>(&{1}));\n'.format(component, component_var))
 
 	print('\treturn module;\n};')
 

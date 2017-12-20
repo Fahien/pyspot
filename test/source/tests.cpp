@@ -110,15 +110,14 @@ bool testStringComponent()
 	pst::PySpotString name{ "TestName" };
 	PySpotStringComponent container{ name };
 
-	printf("Name: %ls\n", name.ToString().c_str());
+	printf("Name: %ls\n", name.ToCString());
 
 	printf("Test3: test_stringcomponent\n");
-	pst::PySpotTuple args{ 1 };
-	args.SetItem(0, container);
+	pst::PySpotTuple args{ &container };
 	try
 	{
 		pymodule.CallFunction("test_stringcomponent", args);
-		printf("Result: %ls\n", container.GetName().ToString().c_str());
+		printf("Result: %ls\n", container.GetName().ToCString());
 	}
 	catch (const pst::PySpotException & ex)
 	{

@@ -11,7 +11,18 @@ pst::PySpotTuple::PySpotTuple(size_t size)
 {}
 
 
-void pst::PySpotTuple::SetItem(const size_t i, pst::PySpotObject& item)
+pst::PySpotTuple::PySpotTuple(std::initializer_list<PySpotObject*> list)
+:	pst::PySpotTuple{ list.size() }
+{
+	size_t i{ 0 };
+	for (const PySpotObject* o : list)
+	{
+		SetItem(i++, *o);
+	}
+}
+
+
+void pst::PySpotTuple::SetItem(const size_t i, const pst::PySpotObject& item)
 {
 	assert(i < mSize);
 
