@@ -7,18 +7,25 @@ namespace pst = pyspot;
 
 pst::PySpot::PySpot()
 {
-	Py_Initialize();
-	addToPath(L"/script");
-	printf("Python initialized\n");
+	initialize(L"/script");
+}
+
+
+pst::PySpot::PySpot(const wchar_t* dir)
+{
+	initialize(dir);
 }
 
 
 pst::PySpot::PySpot(const char* import, PyObject* (*function)(void))
+:	PySpot{ import, function, L"/script" }
+{}
+
+
+pst::PySpot::PySpot(const char* import, PyObject* (*function)(void), const wchar_t* dir)
 {
 	PyImport_AppendInittab(import, function);
-	Py_Initialize();
-	addToPath(L"/test/script");
-	printf("Python initialized\n");
+	initialize(dir);
 }
 
 
@@ -26,6 +33,14 @@ pst::PySpot::~PySpot()
 {
 	printf("Destroying Pyspot\n");
 	Py_Finalize();
+}
+
+
+void pst::PySpot::initialize(const wchar_t* dir)
+{
+	Py_Initialize();
+	addToPath(dir);
+	printf("Python initialized\n");
 }
 
 

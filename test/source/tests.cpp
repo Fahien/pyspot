@@ -104,7 +104,7 @@ bool testSingleComponent()
 
 bool testStringComponent()
 {
-	pst::PySpot pyspot{ "pyspot", PyInit_PySpot };
+	pst::PySpot pyspot{ "pyspot", PyInit_PySpot, L"/test/script" };
 	pst::PySpotModule pymodule{ pyspot.ImportModule("script") };
 
 	pst::PySpotString name{ "TestName" };
