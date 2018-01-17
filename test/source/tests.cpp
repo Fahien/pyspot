@@ -72,32 +72,13 @@ bool testArgs()
 
 bool testSingleComponent()
 {
-	pst::PySpot pyspot{ "pyspot", PyInit_PySpot };
+	pst::PySpot pyspot{ "pyspot", PyInit_PySpot, L"/test/script" };
 	pst::PySpotModule pymodule{ pyspot.ImportModule("script") };
 
-	PyTypeObject* type = &singleComponent;
-
-	if (PyType_Ready(type) < 0)
-	{
-		return false;
-	}
-
-	pst::PySpotObject component{ SingleComponent_New(&singleComponent, nullptr, nullptr) };
-
-	pst::PySpotTuple arguments{ 1 };
-
-	pst::PySpotObject num{ Py_BuildValue("f", 4.0f) };
-	arguments.SetItem(0, num);
-
-	SingleComponent_Init(reinterpret_cast<SingleComponent*>(component.GetObject()), arguments.GetObject(), nullptr);
-
-	printf("Test3: test_singlecomponent\n");
-	pst::PySpotTuple args{ 1 };
-	args.SetItem(0, component);
+	PySpotSingleComponent singleComponent{ 4.0f };
+	pst::PySpotTuple args{ &singleComponent };
 	pymodule.CallFunction("test_singlecomponent", args);
-
-	SingleComponent* comp{ reinterpret_cast<SingleComponent*>(component.GetObject()) };
-	printf("Result: %f\n", comp->price);
+	printf("Result: %f\n", singleComponent.GetPrice());
 	return true;
 }
 
@@ -130,37 +111,12 @@ bool testStringComponent()
 
 bool testTestComponent()
 {
-	pst::PySpot pyspot{ "pyspot", PyInit_PySpot };
+	pst::PySpot pyspot{ "pyspot", PyInit_PySpot, L"/test/script" };
 	pst::PySpotModule pymodule{ pyspot.ImportModule("script") };
 
-	PyTypeObject* type = &testComponent;
-
-	if (PyType_Ready(type) < 0)
-	{
-		return false;
-	}
-
-	pst::PySpotObject component{ TestComponent_New(&testComponent, nullptr, nullptr) };
-
-	pst::PySpotTuple arguments{ 2 };
-
-	pst::PySpotObject value{ Py_BuildValue("(i)", 2) };
-	arguments.SetItem(0, value);
-	pst::PySpotObject price{ Py_BuildValue("(f)", 4.0f) };
-	arguments.SetItem(1, price);
-
-	TestComponent_Init(
-		reinterpret_cast<TestComponent*>(component.GetObject()),
-		arguments.GetObject(),
-		nullptr);
-
-	pst::PySpotTuple args{ 1 };
-	args.SetItem(0, component);
-
-	printf("Test3: test_component\n");
+	PySpotTestComponent testComponent{ 2, 4.0f };
+	pst::PySpotTuple args{ &testComponent };
 	pymodule.CallFunction("test_component", args);
-
-	TestComponent* comp{ reinterpret_cast<TestComponent*>(component.GetObject()) };
-	printf("Result: %d\n", comp->value);
+	printf("Result: %d\n", testComponent.GetValue());
 	return true;
 }
