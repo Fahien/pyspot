@@ -8,7 +8,8 @@ int main(void)
 	bool success{
 		testSingleComponent() &&
 		testTestComponent()   &&
-		testStringComponent()
+		testStringComponent() &&
+		testTransformComponent()
 	};
 	
 	return success ? EXIT_SUCCESS : EXIT_FAILURE;

@@ -8,6 +8,7 @@ bool testArgs();
 bool testSingleComponent();
 bool testStringComponent();
 bool testTestComponent();
+bool testTransformComponent();
 
 
 #endif // PST_TEST

@@ -19,14 +19,14 @@ def c_for_type(type):
 def pyspot_for_type(type):
 	if is_builtin_type(type): return type
 	if type == 'string'     : return 'pst::PySpotString'
-	else                    : return 'pst::PySpotObject'
+	else                    : return 'PySpot%s' % type
 
 
 def initializer_for_type(type):
 	if type == 'int'   : return '0'
 	if type == 'float' : return '0.0f'
 	if type == 'string': return 'PyUnicode_FromString("")'
-	else               : return '%s type INVALID' % type
+	else               : return 'PySpot%s{}.GetIncref()' % type
 
 
 def parser_for_type(type):
@@ -299,13 +299,17 @@ def create_wrapper(name, members):
 	print('};\n')
 
 
-def create_struct(name, members):
+def create_struct(includes, name, members):
 	"""Creates the struct and all the Python functions"""
 
 	# Name of the component
 	print('#ifndef PST_%s_H' % name.upper())
 	print('#define PST_%s_H\n' % name.upper())
 	print('#include <cstring>')
+
+	for include in includes:
+		print('#include "%s.h"' % include)
+
 	print('#include "PySpot.h"')
 	print('#include <structmember.h>')
 	print('#include "PySpotString.h"')
@@ -354,8 +358,8 @@ def main():
 		exit('Error: %s not found' % component)
 
 	# Write the source code on the standard output
-	name, members = data['name'], data['members']
-	create_struct(name, members)
+	includes, name, members = data['includes'], data['name'], data['members']
+	create_struct(includes, name, members)
 
 
 main()

@@ -62,3 +62,21 @@ def test_component(b):
 	except:
 		print('Exception captured')
 
+
+def test_transform(transform):
+	print('PySpot module: ', end='')
+	print(dir(pyspot))
+	
+	try:
+		print('Creating StringComponent')
+		a = pyspot.TransformComponent()
+		print(dir(a))
+		print("a.position: ", a.position)
+		print("a.scale: ",    a.scale)
+		print("a.rotation: ", a.rotation)
+		transform.position.x = 1.0
+
+	except Exception as ex:
+		print('Exception captured: ', str(ex))
+	except:
+		print('Exception captured')

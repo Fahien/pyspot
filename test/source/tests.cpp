@@ -7,6 +7,7 @@
 #include "SingleComponent.h"
 #include "StringComponent.h"
 #include "TestComponent.h"
+#include "TransformComponent.h"
 
 
 namespace pst = pyspot;
@@ -118,5 +119,32 @@ bool testTestComponent()
 	pst::PySpotTuple args{ &testComponent };
 	pymodule.CallFunction("test_component", args);
 	printf("Result: %d\n", testComponent.GetValue());
+	return true;
+}
+
+
+bool testTransformComponent()
+{
+	pst::PySpot pyspot{ "pyspot", PyInit_PySpot, L"/test/script" };
+	pst::PySpotModule pymodule{ pyspot.ImportModule("script") };
+
+	PySpotTransformComponent transform{};
+	pst::PySpotTuple args{ &transform };
+	pymodule.CallFunction("test_transform", args);
+	printf("Position: [%f, %f, %f]\n",
+	       transform.GetPosition().GetX(),
+	       transform.GetPosition().GetY(),
+	       transform.GetPosition().GetZ()
+	);
+	printf("Scale: [%f, %f, %f]\n",
+	       transform.GetScale().GetX(),
+	       transform.GetScale().GetY(),
+	       transform.GetScale().GetZ()
+	);
+	printf("Rotation: [%f, %f, %f]\n",
+	       transform.GetRotation().GetX(),
+	       transform.GetRotation().GetY(),
+	       transform.GetRotation().GetZ()
+	);
 	return true;
 }

@@ -18,6 +18,7 @@ public:
 	PySpotObject& operator=(const PySpotObject& other);
 
 	PyObject* GetObject() const { return mObject; }
+	PyObject* GetIncref() const { Py_INCREF(mObject); return mObject; }
 
 	const wchar_t* ToCString() const { return PyUnicode_AS_UNICODE(mObject); }
 	std::wstring   ToString()  const { return ToCString(); }
