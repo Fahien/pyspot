@@ -265,7 +265,8 @@ def create_object(name):
 def create_wrapper(name, members):
 	"""Create a wrapper for the component"""
 
-	print('\nclass PySpot%s : public pst::PySpotObject\n{\npublic:\n' % name)
+	print('\nclass PySpot%s : public pst::PySpotObject\n{\npublic:' % name)
+	print('\tPySpot%s(PyObject* object)\n\t:\tpst::PySpotObject{ object }\n\t{}\n' % name)
 	print('\tPySpot{0}()'.format(name))
 	print('\t:	pst::PySpotObject\n\t\t{')
 	print('\t\t\t(PyType_Ready(&{1}), {0}_New(&{1}, nullptr, nullptr))\n\t\t}}\n\t{{}}\n'.format(name, name[0].lower() + name[1:]))
