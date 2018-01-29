@@ -3,6 +3,7 @@
 #include "PySpotString.h"
 #include "PySpotTuple.h"
 
+
 namespace pst = pyspot;
 
 
@@ -23,15 +24,27 @@ pst::PySpotModule::~PySpotModule()
 }
 
 
-pst::PySpotObject pst::PySpotModule::CallFunction(const char* name)
+pst::PySpotObject pst::PySpotModule::CallFunction(const std::string& name)
 {
-	pst::PySpotFunction function{ *this, name };
-	return function.Call();
+	auto pair = mFunctions.find(name);
+	if (pair == mFunctions.end())
+	{
+		mFunctions[name] = pst::PySpotFunction{ *this, name };
+		pair = mFunctions.find(name);
+	}
+
+	return pair->second.Call();
 }
 
 
-pst::PySpotObject pst::PySpotModule::CallFunction(const char* name, pst::PySpotTuple& args)
+pst::PySpotObject pst::PySpotModule::CallFunction(const std::string& name, const pst::PySpotTuple& args)
 {
-	pst::PySpotFunction function{ *this, name };
-	return function.Call(args);
+	auto pair = mFunctions.find(name);
+	if (pair == mFunctions.end())
+	{
+		mFunctions[name] = pst::PySpotFunction{ *this, name };
+		pair = mFunctions.find(name);
+	}
+
+	return pair->second.Call(args);
 }

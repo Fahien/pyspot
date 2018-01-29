@@ -14,11 +14,12 @@ class PySpotTuple;
 class PySpotFunction : public PySpotObject
 {
 public:
-	PySpotFunction(const PySpotModule& module, const char* name);
+	PySpotFunction();
+	PySpotFunction(const PySpotModule& module, const std::string& name);
 	~PySpotFunction();
 
-	PySpotObject Call();
-	PySpotObject Call(PySpotTuple& args);
+	PySpotObject Call() const;
+	PySpotObject Call(const PySpotTuple& args) const;
 };
 
 
