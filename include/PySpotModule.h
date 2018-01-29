@@ -2,7 +2,10 @@
 #define PST_PYSPOTMODULE_H
 
 #include "PySpotObject.h"
+#include "PySpotFunction.h"
 
+#include <map>
+#include <string>
 
 namespace pyspot
 {
@@ -18,8 +21,11 @@ public:
 	PySpotModule(const PySpotString& name);
 	~PySpotModule();
 
-	PySpotObject CallFunction(const char* name);
-	PySpotObject CallFunction(const char* name, PySpotTuple& args);
+	PySpotObject CallFunction(const std::string& name);
+	PySpotObject CallFunction(const std::string& name, const PySpotTuple& args);
+
+private:
+	std::map<const std::string, PySpotFunction> mFunctions;
 };
 
 

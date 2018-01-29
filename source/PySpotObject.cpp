@@ -31,7 +31,18 @@ PySpotObject::PySpotObject(const PySpotObject& other)
 
 PySpotObject& PySpotObject::operator=(const PySpotObject& other)
 {
-	mObject = other.mObject;
-	printf("Assigned PyObject %p %p\n", mObject, other.mObject);
+	if (this != &other)
+	{
+		if (mObject != other.mObject)
+		{
+			Py_DECREF(mObject);
+
+			mObject = other.mObject;
+			printf("Assigned PyObject %p %p\n", mObject, other.mObject);
+		}
+
+		Py_INCREF(mObject);
+	}
+
 	return *this;
 }
