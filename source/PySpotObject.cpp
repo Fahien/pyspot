@@ -4,6 +4,7 @@ using namespace pyspot;
 
 
 PySpotObject::PySpotObject()
+:	mObject{ nullptr }
 {}
 
 
@@ -35,13 +36,13 @@ PySpotObject& PySpotObject::operator=(const PySpotObject& other)
 	{
 		if (mObject != other.mObject)
 		{
-			Py_DECREF(mObject);
+			Py_XDECREF(mObject);
 
 			mObject = other.mObject;
 			printf("Assigned PyObject %p %p\n", mObject, other.mObject);
 		}
 
-		Py_INCREF(mObject);
+		Py_XINCREF(mObject);
 	}
 
 	return *this;
