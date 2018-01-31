@@ -1,5 +1,5 @@
-#ifndef PST_PYSPOTFUNCTION_H
-#define PST_PYSPOTFUNCTION_H
+#ifndef PST_PYSPOTFUNCTION_H_
+#define PST_PYSPOTFUNCTION_H_
 
 #include "PySpotObject.h"
 
@@ -26,4 +26,4 @@ public:
 }
 
 
-#endif // PST_PYSPOTFUNCTION_H
+#endif // PST_PYSPOTFUNCTION_H_

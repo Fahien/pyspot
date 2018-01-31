@@ -1,5 +1,5 @@
-#ifndef PST_PYSPOTEXCEPTION_H
-#define PST_PYSPOTEXCEPTION_H
+#ifndef PST_PYSPOTEXCEPTION_H_
+#define PST_PYSPOTEXCEPTION_H_
 
 #include <stdexcept>
 
@@ -16,4 +16,4 @@ public:
 
 }
 
-#endif // PST_PYSPOTEXCEPTION_H
+#endif // PST_PYSPOTEXCEPTION_H_

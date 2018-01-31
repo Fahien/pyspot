@@ -1,7 +1,7 @@
-#ifndef PST_PYSPOTSTRING_H
-#define PST_PYSPOTSTRING_H
+#ifndef PST_PYSPOTSTRING_H_
+#define PST_PYSPOTSTRING_H_
 
-#include <PySpotObject.h>
+#include "PySpotObject.h"
 
 namespace pyspot
 {
@@ -16,4 +16,4 @@ public:
 
 }
 
-#endif // PST_PYSPOTSTRING_H
+#endif // PST_PYSPOTSTRING_H_

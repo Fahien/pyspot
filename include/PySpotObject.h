@@ -1,5 +1,5 @@
-#ifndef PST_PYSPOTOBJECT_H
-#define PST_PYSPOTOBJECT_H
+#ifndef PST_PYSPOTOBJECT_H_
+#define PST_PYSPOTOBJECT_H_
 
 #include <Python.h>
 #include <string>
@@ -29,4 +29,4 @@ protected:
 
 }
 
-#endif // PST_PYSPOTOBJECT_H
+#endif // PST_PYSPOTOBJECT_H_

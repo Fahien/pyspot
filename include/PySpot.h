@@ -1,9 +1,10 @@
-#ifndef PST_PYSPOT_H
-#define PST_PYSPOT_H
+#ifndef PST_PYSPOT_H_
+#define PST_PYSPOT_H_
 
 #include <string>
+#include "PySpotModule.h"
+
 #include <Python.h>
-#include <PySpotModule.h>
 
 
 namespace pyspot
@@ -30,4 +31,4 @@ private:
 
 }
 
-#endif // PST_PYSPOT_H
+#endif // PST_PYSPOT_H_

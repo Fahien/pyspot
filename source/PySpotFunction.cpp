@@ -19,14 +19,11 @@ pst::PySpotFunction::PySpotFunction(const pst::PySpotModule& module, const std::
 	{
 		throw pst::PySpotException{ "Not a function" };
 	}
-	printf("PySpotFunction %p\n", mObject);
 }
 
 
 pst::PySpotFunction::~PySpotFunction()
-{
-	printf("Destroying PySpotFunction %p\n", mObject);
-}
+{}
 
 
 pst::PySpotObject pst::PySpotFunction::Call() const

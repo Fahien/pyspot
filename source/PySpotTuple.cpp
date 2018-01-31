@@ -1,6 +1,6 @@
-#include <cassert>
 #include "PySpotTuple.h"
 
+#include <cassert>
 
 namespace pst = pyspot;
 

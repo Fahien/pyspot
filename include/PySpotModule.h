@@ -1,5 +1,5 @@
-#ifndef PST_PYSPOTMODULE_H
-#define PST_PYSPOTMODULE_H
+#ifndef PST_PYSPOTMODULE_H_
+#define PST_PYSPOTMODULE_H_
 
 #include "PySpotObject.h"
 #include "PySpotFunction.h"
@@ -32,4 +32,4 @@ private:
 }
 
 
-#endif // PST_PYSPOTMODULE_H
+#endif // PST_PYSPOTMODULE_H_

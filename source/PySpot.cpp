@@ -31,7 +31,6 @@ pst::PySpot::PySpot(const char* import, PyObject* (*function)(void), const wchar
 
 pst::PySpot::~PySpot()
 {
-	printf("Destroying Pyspot\n");
 	Py_Finalize();
 }
 
@@ -40,7 +39,6 @@ void pst::PySpot::initialize(const wchar_t* dir)
 {
 	Py_Initialize();
 	addToPath(dir);
-	printf("Python initialized\n");
 }
 
 
@@ -54,8 +52,6 @@ void pst::PySpot::addToPath(const wchar_t* folder)
 {
 	pst::PySpotModule os { ImportModule("os") };
 	pst::PySpotObject cwd{ os.CallFunction("getcwd") };
-	printf("Result = %ls\n", cwd.ToString().c_str());
 	std::wstring path{ Py_GetPath() + (L";" + cwd.ToString()) + folder };
-	printf("Python search path is %ls\n", path.c_str());
 	PySys_SetPath(path.c_str());
 }

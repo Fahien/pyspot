@@ -1,5 +1,5 @@
-#ifndef PST_PYSPOTTUPLE_H
-#define PST_PYSPOTTUPLE_H
+#ifndef PST_PYSPOTTUPLE_H_
+#define PST_PYSPOTTUPLE_H_
 
 #include "PySpotObject.h"
 
@@ -31,4 +31,4 @@ private:
 }
 
 
-#endif // PST_PYSPOTTUPLE_H
+#endif // PST_PYSPOTTUPLE_H_

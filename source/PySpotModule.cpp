@@ -3,7 +3,6 @@
 #include "PySpotString.h"
 #include "PySpotTuple.h"
 
-
 namespace pst = pyspot;
 
 
@@ -14,14 +13,11 @@ pst::PySpotModule::PySpotModule(const pst::PySpotString& name)
 	{
 		PyErr_Print();
 	}
-	printf("Imported PySpotModule %p\n", mObject);
 }
 
 
 pst::PySpotModule::~PySpotModule()
-{
-	printf("Destroying PySpotModule %p\n", mObject);
-}
+{}
 
 
 pst::PySpotObject pst::PySpotModule::CallFunction(const std::string& name)
