@@ -38,6 +38,12 @@ void pst::PySpotTuple::SetItem(const size_t i, int item)
 }
 
 
+void pst::PySpotTuple::SetItem(const size_t i, unsigned item)
+{
+	SetItem(i, Py_BuildValue("I", item));
+}
+
+
 void pst::PySpotTuple::SetItem(const size_t i, float item)
 {
 	SetItem(i, Py_BuildValue("f", item));
