@@ -6,9 +6,10 @@ import json
 
 
 def is_builtin_type(type):
-	if (type == 'int' or
-	   type == 'float')  : return True
-	else                 : return False
+	if (type == 'int'      or
+	    type == 'unsigned' or
+	    type == 'float')  : return True
+	else                  : return False
 
 
 def c_for_type(type):
@@ -23,21 +24,24 @@ def pyspot_for_type(type):
 
 
 def initializer_for_type(type):
-	if type == 'int'   : return '0'
-	if type == 'float' : return '0.0f'
-	if type == 'string': return 'PyUnicode_FromString("")'
-	else               : return 'PySpot%s{}.GetIncref()' % type
+	if type == 'int'     : return '0'
+	if type == 'unsigned': return '0'
+	if type == 'float'   : return '0.0f'
+	if type == 'string'  : return 'PyUnicode_FromString("")'
+	else                 : return 'PySpot%s{}.GetIncref()' % type
 
 
 def parser_for_type(type):
-	if type == 'int'   : return 'i'
-	if type == 'float' : return 'f'
-	else               : return 'O'
+	if type == 'int'     : return 'i'
+	if type == 'unsigned': return 'I'
+	if type == 'float'   : return 'f'
+	else                 : return 'O'
 
 
 def pytype_for_type(type):
 	if type == 'short'         : return 'T_SHORT'
 	if type == 'int'           : return 'T_INT'
+	if type == 'unsigned'      : return 'T_UINT'
 	if type == 'long'          : return 'T_LONG'
 	if type == 'float'         : return 'T_FLOAT'
 	if type == 'double'        : return 'T_DOUBLE'
