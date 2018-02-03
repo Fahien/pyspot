@@ -14,8 +14,11 @@ public:
 	PySpotObject(PyObject* object);
 	~PySpotObject();
 
-	PySpotObject(const PySpotObject& other);
-	PySpotObject& operator=(const PySpotObject& other);
+	PySpotObject(const PySpotObject&  other);
+	PySpotObject(const PySpotObject&& other);
+
+	PySpotObject& operator=(const PySpotObject&  other);
+	PySpotObject& operator=(PySpotObject&& other);
 
 	PyObject* GetObject() const { return mObject; }
 	PyObject* GetIncref() const { Py_INCREF(mObject); return mObject; }
