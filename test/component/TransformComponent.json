@@ -8,7 +8,8 @@
 		},
 		{
 			"name": "scale",
-			"type": "Vec3"
+			"type": "Vec3",
+			"default": "1.0f, 1.0f, 1.0f"
 		},
 		{
 			"name": "rotation",

@@ -23,12 +23,12 @@ def pyspot_for_type(type):
 	else                    : return 'PySpot%s' % type
 
 
-def initializer_for_type(type):
-	if type == 'int'     : return '0'
-	if type == 'unsigned': return '0'
-	if type == 'float'   : return '0.0f'
-	if type == 'string'  : return 'PyUnicode_FromString("")'
-	else                 : return 'PySpot%s{}.GetIncref()' % type
+def initializer_for_type(type, default=None):
+	if type == 'int'     : return default if default else '0'
+	if type == 'unsigned': return default if default else '0'
+	if type == 'float'   : return default if default else '0.0f'
+	if type == 'string'  : return 'PyUnicode_FromString("%s")' % (default if default else "")
+	else                 : return 'PySpot%s{%s}.GetIncref()'   % (type, default if default else "")
 
 
 def parser_for_type(type):
@@ -63,7 +63,8 @@ def create_constructor(name, members):
 	print('\t%s* self{ reinterpret_cast<%s*>(type->tp_alloc(type, 0)) };\n' % (name, name))
 	print("\tif (self != nullptr)\n\t{")
 	for member in members:
-		print("\t\tself->%s = %s;" % (member['name'], initializer_for_type(member['type'])))
+		default = member['default'] if 'default' in member else None
+		print("\t\tself->%s = %s;" % (member['name'], initializer_for_type(member['type'], default)))
 		# Check non builtin types
 		if not is_builtin_type(member['type']):
 			print('\t\tif (self->%s == nullptr)\n\t\t{' % member['name'])
