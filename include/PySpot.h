@@ -15,11 +15,14 @@ class PySpot
 public:
 	PySpot();
 	PySpot(const wchar_t* dir);
+	PySpot(const std::wstring& dir);
 	PySpot(const char* import, PyObject* (*function)(void));
 	PySpot(const char* import, PyObject* (*function)(void), const wchar_t* dir);
+	PySpot(const char* import, PyObject* (*function)(void), const std::wstring& dir);
 	~PySpot();
 
 	PySpotModule ImportModule(const char* name);
+	PySpotModule ImportModule(const std::string& name);
 
 private:
 	void addToPath (const wchar_t* dir);

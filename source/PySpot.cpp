@@ -17,6 +17,11 @@ pst::PySpot::PySpot(const wchar_t* dir)
 }
 
 
+pst::PySpot::PySpot(const std::wstring& dir)
+:	PySpot{ dir.c_str() }
+{}
+
+
 pst::PySpot::PySpot(const char* import, PyObject* (*function)(void))
 :	PySpot{ import, function, L"/script" }
 {}
@@ -29,6 +34,11 @@ pst::PySpot::PySpot(const char* import, PyObject* (*function)(void), const wchar
 }
 
 
+pst::PySpot::PySpot(const char* import, PyObject* (*function)(void), const std::wstring& dir)
+:	PySpot{ import, function, dir.c_str() }
+{}
+
+
 pst::PySpot::~PySpot()
 {
 	Py_Finalize();
@@ -39,6 +49,12 @@ void pst::PySpot::initialize(const wchar_t* dir)
 {
 	Py_Initialize();
 	addToPath(dir);
+}
+
+
+pst::PySpotModule pst::PySpot::ImportModule(const std::string& name)
+{
+	return ImportModule(name.c_str());
 }
 
 
