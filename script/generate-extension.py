@@ -30,7 +30,7 @@ def create_source(name, components):
 	print('\tPyModuleDef_HEAD_INIT,')
 	print('\t"pyspot",')
 	print('\tnullptr,')
-	print('\tsizeof ModuleState,')
+	print('\tsizeof(ModuleState),')
 	print('\tnullptr,')
 	print('\tnullptr,')
 	print('\tnullptr,')
