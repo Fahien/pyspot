@@ -1,5 +1,5 @@
-#ifndef PST_PYSPOTOBJECT_H_
-#define PST_PYSPOTOBJECT_H_
+#ifndef PST_OBJECT_H_
+#define PST_OBJECT_H_
 
 #include <Python.h>
 #include <string>
@@ -7,18 +7,18 @@
 namespace pyspot
 {
 
-class PySpotObject
+class Object
 {
 public:
-	PySpotObject();
-	PySpotObject(PyObject* object);
-	~PySpotObject();
+	Object();
+	Object(PyObject* object);
+	~Object();
 
-	PySpotObject(const PySpotObject&  other);
-	PySpotObject(const PySpotObject&& other);
+	Object(const Object&  other);
+	Object(const Object&& other);
 
-	PySpotObject& operator=(const PySpotObject&  other);
-	PySpotObject& operator=(PySpotObject&& other);
+	Object& operator=(const Object& other);
+	Object& operator=(Object&& other);
 
 	PyObject* GetObject() const { return mObject; }
 	PyObject* GetIncref() const { Py_INCREF(mObject); return mObject; }
@@ -32,4 +32,4 @@ protected:
 
 }
 
-#endif // PST_PYSPOTOBJECT_H_
+#endif // PST_OBJECT_H_

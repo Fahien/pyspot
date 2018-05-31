@@ -1,6 +1,6 @@
 {
 	"includes": [],
-	"name": "StringComponent",
+	"name": "String",
 	"members": [
 		{
 			"name": "name",

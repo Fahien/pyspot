@@ -6,10 +6,10 @@
 int main(void)
 {
 	bool success{
-		testSingleComponent() &&
-		testTestComponent()   &&
-		testStringComponent() &&
-		testTransformComponent()
+		testSingle() &&
+		testTest()   &&
+		testString() &&
+		testTransform()
 	};
 	
 	return success ? EXIT_SUCCESS : EXIT_FAILURE;

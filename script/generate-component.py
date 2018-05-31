@@ -19,8 +19,8 @@ def c_for_type(type):
 
 def pyspot_for_type(type):
 	if is_builtin_type(type): return type
-	if type == 'string'     : return 'pst::PySpotString'
-	else                    : return 'PySpot%s' % type
+	if type == 'string'     : return 'pst::String'
+	else                    : return 'pst::component::%s' % type
 
 
 def initializer_for_type(type, default=None):
@@ -28,7 +28,7 @@ def initializer_for_type(type, default=None):
 	if type == 'unsigned': return default if default else '0'
 	if type == 'float'   : return default if default else '0.0f'
 	if type == 'string'  : return 'PyUnicode_FromString("%s")' % (default if default else "")
-	else                 : return 'PySpot%s{%s}.GetIncref()'   % (type, default if default else "")
+	else                 : return 'pst::component::%s{%s}.GetIncref()'   % (type, default if default else "")
 
 
 def parser_for_type(type):
@@ -60,7 +60,7 @@ def create_constructor(name, members):
 	"""Creates the constructor"""
 
 	print("\nstatic PyObject* %s_New(PyTypeObject* type, PyObject* args, PyObject* kwds)\n{" % name)
-	print('\t%s* self{ reinterpret_cast<%s*>(type->tp_alloc(type, 0)) };\n' % (name, name))
+	print('\n%s* self{ reinterpret_cast<%s*>(type->tp_alloc(type, 0)) };\n' % (name, name))
 	print("\tif (self != nullptr)\n\t{")
 	for member in members:
 		default = member['default'] if 'default' in member else None
@@ -189,9 +189,9 @@ def create_accessors(name, members):
 def create_object(name):
 	"""Create the PyTypeObject"""
 
-	print('\nstatic PyTypeObject %s = {' % (name[:1].lower() + name[1:]))
+	print('\nstatic PyTypeObject %s = {' % (name.lower()))
 	# Name
-	print('\tPyVarObject_HEAD_INIT(NULL, 0) "pyspot.%s",' % name)
+	print('\tPyVarObject_HEAD_INIT(NULL, 0) "pyspot.%s",' % name[6:])
 	# Basic size
 	print('\tsizeof(%s),' % name)
 	# Item size
@@ -270,29 +270,30 @@ def create_object(name):
 def create_wrapper(name, members):
 	"""Create a wrapper for the component"""
 
-	print('\nclass PySpot%s : public pst::PySpotObject\n{\npublic:' % name)
-	print('\tPySpot%s(PyObject* object)\n\t:\tpst::PySpotObject{ object }\n\t{}\n' % name)
-	print('\tPySpot{0}()'.format(name))
-	print('\t:	pst::PySpotObject\n\t\t{')
-	print('\t\t\t(PyType_Ready(&{1}), {0}_New(&{1}, nullptr, nullptr))\n\t\t}}\n\t{{}}\n'.format(name, name[0].lower() + name[1:]))
+	print('\nnamespace pyspot\n{\n\nnamespace component\n{\n')
+	print('\nclass %s : public pst::Object\n{\npublic:' % name)
+	print('\t%s(PyObject* object)\n\t:\tpst::Object{ object }\n\t{}\n' % name)
+	print('\t{0}()'.format(name))
+	print('\t:	pst::Object\n\t\t{')
+	print('\t\t\t(PyType_Ready(&pyspot{1}), PySpot{0}_New(&pyspot{1}, nullptr, nullptr))\n\t\t}}\n\t{{}}\n'.format(name, name[0].lower() + name[1:]))
 	arguments = ''
 	for member in members:
 		if is_builtin_type(member['type']):
 			type = c_for_type(member['type'])
 		else:
-			type = 'pst::PySpotObject& %s'
+			type = 'pst::Object& %s'
 		arguments += '%s, ' % type % member['name']
 	arguments = arguments[:-2]
-	print('\tPySpot{0}({1})'.format(name, arguments))
-	print('\t:	pst::PySpotObject\n\t\t{')
-	print('\t\t\t(PyType_Ready(&{1}), {0}_New(&{1}, nullptr, nullptr))\n\t\t}}\n\t{{'.format(name, name[0].lower() + name[1:]))
-	print('\t\tpst::PySpotTuple arguments{ %s };' % len(members))
+	print('\t{0}({1})'.format(name, arguments))
+	print('\t:	pst::Object\n\t\t{')
+	print('\t\t\t(PyType_Ready(&pyspot{1}), PySpot{0}_New(&pyspot{1}, nullptr, nullptr))\n\t\t}}\n\t{{'.format(name, name[0].lower() + name[1:]))
+	print('\t\tpst::Tuple arguments{ %s };' % len(members))
 	for i in range(0, len(members)):
 		print('\t\targuments.SetItem(%s, %s);' % (i, members[i]['name']))
-	print('\t\t%s_Init(GetComponent(), arguments.GetObject(), nullptr);' % name)
+	print('\t\tPySpot%s_Init(GetComponent(), arguments.GetObject(), nullptr);' % name)
 	print('\t}\n')
-	print('\t~PySpot%s(){}\n' % name)
-	print('\t{0}* GetComponent()\n\t{{\n\t\treturn reinterpret_cast<{0}*>(GetObject());\n\t}}'.format(name))
+	print('\t~%s(){}\n' % name)
+	print('\tPySpot{0}* GetComponent()\n\t{{\n\t\treturn reinterpret_cast<PySpot{0}*>(GetObject());\n\t}}'.format(name))
 
 	for member in members:
 		type = pyspot_for_type(member['type'])
@@ -300,14 +301,16 @@ def create_wrapper(name, members):
 		if is_builtin_type(member['type']):
 			print('\t\treturn GetComponent()->%s;\n\t}\n' % member['name'])
 		else:
-			print('\t\treturn %s{ %s_Get%s(GetComponent(), nullptr) };\n\t}\n' % (type, name, member['name'].capitalize()))
+			print('\t\treturn %s{ PySpot%s_Get%s(GetComponent(), nullptr) };\n\t}\n' % (type, name, member['name'].capitalize()))
 
 	print('};\n')
+	print('}\n\n}\n')
 
 
-def create_struct(includes, name, members):
+def create_struct(includes, wrapper_name, members):
 	"""Creates the struct and all the Python functions"""
 
+	name = "PySpot" + wrapper_name
 	# Name of the component
 	print('#ifndef PST_%s_H' % name.upper())
 	print('#define PST_%s_H\n' % name.upper())
@@ -316,10 +319,10 @@ def create_struct(includes, name, members):
 	for include in includes:
 		print('#include "%s.h"' % include)
 
-	print('#include "PySpot.h"')
+	print('#include "pyspot/Interpreter.h"')
 	print('#include <structmember.h>')
-	print('#include "PySpotString.h"')
-	print('#include "PySpotTuple.h"\n')
+	print('#include "pyspot/String.h"')
+	print('#include "pyspot/Tuple.h"\n')
 	print('namespace pst = pyspot;\n')
 	print('struct %s\n{' % name)
 	print('\tPyObject_HEAD')
@@ -341,7 +344,7 @@ def create_struct(includes, name, members):
 	create_members(name, members)
 	create_accessors(name, members)
 	create_object(name)
-	create_wrapper(name, members)
+	create_wrapper(wrapper_name, members)
 
 	print('\n#endif // PST_%s_H' % name.upper())
 

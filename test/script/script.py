@@ -2,13 +2,13 @@
 import pyspot
 
 
-def test_singlecomponent(c):
+def test_single(c):
 	print('PySpot module: ', end='')
 	print(dir(pyspot))
 
 	try:
-		print('Creating SingleComponent')
-		a = pyspot.SingleComponent(1.0)
+		print('Creating Single')
+		a = pyspot.Single(1.0)
 		print(dir(a))
 		print("a.price: ", a.price)
 		print("c.price: ", c.price)
@@ -20,13 +20,13 @@ def test_singlecomponent(c):
 		print('Exception captured')
 
 
-def test_stringcomponent(c):
+def test_string(c):
 	print('PySpot module: ', end='')
 	print(dir(pyspot))
 
 	try:
-		print('Creating StringComponent')
-		a = pyspot.StringComponent("PythonName")
+		print('Creating String')
+		a = pyspot.String("PythonName")
 		print(dir(a))
 		print("a.name: ", a.name)
 		print("c.name: ", c.name)
@@ -47,11 +47,11 @@ def test_component(b):
 		pyspot.invoke()
 		print('PySpot invoked')
 
-		print('Creating TestComponent')
-		component = pyspot.TestComponent(1, 2.0)
-		print(dir(component))
-		print("component.value", component.value)
-		print("component.price", component.price)
+		print('Creating Test')
+		component = pyspot.Test(1, 2.0)
+		print(dir())
+		print("c.value", component.value)
+		print("c.price", component.price)
 		b.value = 2
 		b.price = 4.0
 		print("b.value = ", b.value)
@@ -68,8 +68,8 @@ def test_transform(transform):
 	print(dir(pyspot))
 	
 	try:
-		print('Creating StringComponent')
-		a = pyspot.TransformComponent()
+		print('Creating String')
+		a = pyspot.Transform()
 		print(dir(a))
 		print("a.position: ", a.position)
 		print("a.scale: ",    a.scale)

@@ -1,37 +1,37 @@
-#include "PySpotObject.h"
+#include "pyspot/Object.h"
 
 using namespace pyspot;
 
 
-PySpotObject::PySpotObject()
+Object::Object()
 :	mObject{ nullptr }
 {}
 
 
-PySpotObject::PySpotObject(PyObject* object)
+Object::Object(PyObject* object)
 :	mObject{ object }
 {}
 
 
-PySpotObject::~PySpotObject()
+Object::~Object()
 {
 	Py_XDECREF(mObject);
 }
 
 
-PySpotObject::PySpotObject(const PySpotObject& other)
+Object::Object(const Object& other)
 :	mObject{ other.mObject }
 {
 	Py_XINCREF(mObject);
 }
 
 
-PySpotObject::PySpotObject(const PySpotObject&& other)
+Object::Object(const Object&& other)
 : mObject{ other.mObject }
 {}
 
 
-PySpotObject& PySpotObject::operator=(const PySpotObject& other)
+Object& Object::operator=(const Object& other)
 {
 	if (this != &other)
 	{
@@ -49,7 +49,7 @@ PySpotObject& PySpotObject::operator=(const PySpotObject& other)
 }
 
 
-PySpotObject& PySpotObject::operator=(PySpotObject&& other)
+Object& Object::operator=(Object&& other)
 {
 	if (this != &other)
 	{

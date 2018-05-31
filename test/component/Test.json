@@ -1,6 +1,6 @@
 {
 	"includes": [],
-	"name": "TestComponent",
+	"name": "Test",
 	"members": [
 		{
 			"name": "value",

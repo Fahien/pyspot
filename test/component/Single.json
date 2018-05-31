@@ -1,6 +1,6 @@
 {
 	"includes": [],
-	"name": "SingleComponent",
+	"name": "Single",
 	"members": [
 		{
 			"name": "price",

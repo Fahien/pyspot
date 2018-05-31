@@ -11,7 +11,7 @@ def create_header(name):
 
 	print('#ifndef PST_{0}_H\n#define PST_{0}_H\n'.format(name.upper()))
 
-	print('#include "PySpot.h"\n')
+	print('#include "pyspot/Interpreter.h"\n')
 	print('PyMODINIT_FUNC %s();\n' % PYINIT_FUNC_NAME)
 	print('#endif // PST_%s_H' % name.upper())
 
@@ -19,10 +19,10 @@ def create_header(name):
 def create_source(name, components):
 	"""Creates the Extension source"""
 
-	# Name of the component
-	print('#include "%s.h"' % name)
+	print('#include "pyspot/extension/%s.h"' % name)
+	# Name of the components
 	for component in components:
-		print('#include "%s.h"' % component)
+		print('#include "pyspot/component/%s.h"' % component)
 	print('\n#define GETSTATE(m) (reinterpret_cast<ModuleState*>(PyModule_GetState(m)))\n')
 	print('static PyObject* pstError;\n')
 	print('struct ModuleState\n{\n\tPyObject* error;\n};\n')
@@ -50,10 +50,10 @@ def create_source(name, components):
 
 	# Components
 	for component in components:
-		component_var = component[0].lower() + component[1:]
-		print('\tif (PyType_Ready(&%s) < 0)\n\t{\n\t\treturn nullptr;\n\t}' % component_var)
-		print('\tPy_INCREF(&%s);' % component_var)
-		print('\tPyModule_AddObject(module, "{0}", reinterpret_cast<PyObject*>(&{1}));\n'.format(component, component_var))
+		component_var = component.lower()
+		print('\tif (PyType_Ready(&pyspot%s) < 0)\n\t{\n\t\treturn nullptr;\n\t}' % component_var)
+		print('\tPy_INCREF(&pyspot%s);' % component_var)
+		print('\tPyModule_AddObject(module, "{0}", reinterpret_cast<PyObject*>(&pyspot{1}));\n'.format(component, component_var))
 
 	print('\treturn module;\n};')
 
@@ -64,7 +64,7 @@ def main():
 	if len(sys.argv) < 2:
 		exit('Usage:\n\t{0} <list of components>\n\t{0} -h' % sys.argv[0])
 
-	name = 'PySpotExtension'
+	name = 'Extension'
 
 	# Get the header switch
 	if sys.argv[1] == '-h':
