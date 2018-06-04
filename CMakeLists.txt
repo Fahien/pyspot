@@ -44,8 +44,8 @@ set_target_properties(pyspot PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(pyspot ${PYTHON_LIBRARIES})
 
 
-# Get all the json in test/component and generate headers
-file(GLOB COMPONENTS test/component/*json)
+# Get all the json in test/extension/component and generate headers
+file(GLOB COMPONENTS test/extension/pyspot/component/*json)
 foreach(COMPONENT ${COMPONENTS})
 	get_filename_component(NAME ${COMPONENT} NAME_WE)
 	list(APPEND COMPONENT_NAMES ${NAME})
@@ -59,12 +59,15 @@ foreach(COMPONENT ${COMPONENTS})
 endforeach()
 
 # Generate the PySpotExtension header
-set(EXTENSION_HEADER ${PROJECT_BINARY_DIR}/test/include/pyspot/extension/Extension.h)
-set(EXTENSION_SOURCE ${PROJECT_BINARY_DIR}/test/src/pyspot/extension/Extension.cpp)
+set(EXTENSION_NAME "Pyspot")
+set(EXTENSION_JSON "${PROJECT_SOURCE_DIR}/test/extension/pyspot/${EXTENSION_NAME}.json")
+set(EXTENSION_HEADER ${PROJECT_BINARY_DIR}/test/include/pyspot/extension/${EXTENSION_NAME}.h)
+set(EXTENSION_SOURCE ${PROJECT_BINARY_DIR}/test/src/pyspot/extension/${EXTENSION_NAME}.cpp)
 add_custom_command(
 	OUTPUT ${EXTENSION_HEADER} ${EXTENSION_SOURCE}
-	COMMAND ${PYTHON_EXECUTABLE} ${PROJECT_SOURCE_DIR}/script/generate-extension.py -h > ${EXTENSION_HEADER}
-	COMMAND ${PYTHON_EXECUTABLE} ${PROJECT_SOURCE_DIR}/script/generate-extension.py ${COMPONENT_NAMES} > ${EXTENSION_SOURCE}
+	COMMAND ${PYTHON_EXECUTABLE} generate-extension.py ${EXTENSION_JSON} -h > ${EXTENSION_HEADER}
+	COMMAND ${PYTHON_EXECUTABLE} generate-extension.py ${EXTENSION_JSON} > ${EXTENSION_SOURCE}
+	WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/script
 	COMMENT "Generating ${EXTENSION}"
 	VERBATIM)
 
@@ -83,6 +86,7 @@ source_group("Tests" FILES ${TESTS})
 add_executable(pyspot-test ${TEST_SOURCES} ${TESTS})
 set_target_properties(pyspot-test PROPERTIES LINKER_LANGUAGE CXX)
 target_include_directories(pyspot-test PUBLIC
+	${PROJECT_SOURCE_DIR}/test/include
 	${PROJECT_BINARY_DIR}/test/include)
 target_link_libraries(pyspot-test pyspot)
 file(COPY ${PROJECT_SOURCE_DIR}/test/script DESTINATION ${PROJECT_BINARY_DIR}/test)

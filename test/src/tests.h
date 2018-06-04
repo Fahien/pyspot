@@ -1,8 +1,8 @@
-#ifndef PST_TEST
-#define PST_TEST
+#ifndef PST_TEST_H_
+#define PST_TEST_H_
 
 
-bool test1();
+bool testHello();
 bool test2();
 bool testArgs();
 bool testSingle();
@@ -11,4 +11,4 @@ bool testTest();
 bool testTransform();
 
 
-#endif // PST_TEST
+#endif // PST_TEST_H_

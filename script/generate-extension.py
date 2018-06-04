@@ -2,77 +2,92 @@
 
 import sys
 import json
+from string import Template
 
 PYINIT_FUNC_NAME = 'PyInit_PySpot'
 
+DICTIONARY = {
+	'PYINIT_FUNC_NAME': PYINIT_FUNC_NAME
+}
 
-def create_header(name):
-	"""Creates the Extension header"""
+def prepare_header(name):
+	"""Prepares dictionary template for the header"""
+	
+	DICTIONARY['extension'] = name.lower()
+	DICTIONARY['Extension'] = name.capitalize()
+	DICTIONARY['EXTENSION'] = name.upper()
 
-	print('#ifndef PST_{0}_H\n#define PST_{0}_H\n'.format(name.upper()))
+def prepare_source(name, methods, components):
+	"""Prepares dictionary template for the source"""
 
-	print('#include "pyspot/Interpreter.h"\n')
-	print('PyMODINIT_FUNC %s();\n' % PYINIT_FUNC_NAME)
-	print('#endif // PST_%s_H' % name.upper())
+	# Useful stuff
+	prepare_header(name)
 
+	# Methods
+	list_methods = ""
+	for method in methods:
+		list_methods += '\t{{ "{0}", {0}, METH_VARARGS, "{1}" }},\n'.format(method['name'], method['description'])
+	list_methods += '\t{ nullptr, nullptr, 0, nullptr } // Sentinel'
+	DICTIONARY['list_methods'] = list_methods
 
-def create_source(name, components):
-	"""Creates the Extension source"""
-
-	print('#include "pyspot/extension/%s.h"' % name)
-	# Name of the components
+	# Include components
+	include_components = ""
 	for component in components:
-		print('#include "pyspot/component/%s.h"' % component)
-	print('\n#define GETSTATE(m) (reinterpret_cast<ModuleState*>(PyModule_GetState(m)))\n')
-	print('static PyObject* pstError;\n')
-	print('struct ModuleState\n{\n\tPyObject* error;\n};\n')
-	print('static struct PyModuleDef moduleDef\n{')
-	print('\tPyModuleDef_HEAD_INIT,')
-	print('\t"pyspot",')
-	print('\tnullptr,')
-	print('\tsizeof(ModuleState),')
-	print('\tnullptr,')
-	print('\tnullptr,')
-	print('\tnullptr,')
-	print('\tnullptr,')
-	print('\tnullptr,')
-	print('};\n')
+		include_components += '#include "pyspot/component/%s.h"\n' % component
+	DICTIONARY['include_components'] = include_components
 
-	print('\nPyMODINIT_FUNC %s()\n{' % PYINIT_FUNC_NAME)
-	print('\t// Create the module')
-	print('\tPyObject* module{ PyModule_Create(&moduleDef) };')
-	print('\tif (module == nullptr)\n\t{\n\t\treturn nullptr;\n\t}\n')
-
-	print('\t// Module exception')
-	print('\tpstError = PyErr_NewException("pyspot.error", nullptr, nullptr);')
-	print('\tPy_INCREF(pstError);')
-	print('\tPyModule_AddObject(module, "error", pstError);\n')
-
-	# Components
+	# Add components
+	add_components = ""
 	for component in components:
 		component_var = component.lower()
-		print('\tif (PyType_Ready(&pyspot%s) < 0)\n\t{\n\t\treturn nullptr;\n\t}' % component_var)
-		print('\tPy_INCREF(&pyspot%s);' % component_var)
-		print('\tPyModule_AddObject(module, "{0}", reinterpret_cast<PyObject*>(&pyspot{1}));\n'.format(component, component_var))
+		add_components += '\tif (PyType_Ready(&pyspot%s) < 0)\n\t{\n\t\treturn nullptr;\n\t}\n' % component_var
+		add_components += '\tPy_INCREF(&pyspot%s);\n' % component_var
+		add_components += '\tPyModule_AddObject(module, "{0}", reinterpret_cast<PyObject*>(&pyspot{1}));'.format(component, component_var)
+	DICTIONARY['add_components'] = add_components
 
-	print('\treturn module;\n};')
+def create_header():
+	"""Creates the Extension header"""
+
+	header_file = open('Extension.template.h')
+	header_temp = Template(header_file.read())
+	print(header_temp.substitute(DICTIONARY))
+
+
+def create_source():
+	"""Creates the Extension source"""
+
+	source_file = open('Extension.template.cpp')
+	source_temp = Template(source_file.read())
+	print(source_temp.substitute(DICTIONARY))
 
 
 def main():
 	"""Entry point"""
 
 	if len(sys.argv) < 2:
-		exit('Usage:\n\t{0} <list of components>\n\t{0} -h' % sys.argv[0])
+		exit('Usage: %s extension.json [-h]' % sys.argv[0])
 
-	name = 'Extension'
+	# Get the json path
+	extension = sys.argv[1]
 
-	# Get the header switch
-	if sys.argv[1] == '-h':
-		create_header(name)
+	# Read the json file
+	try:
+		with open(extension) as json_data:
+			data = json.load(json_data)
+	except FileNotFoundError:
+		exit('Error: %s not found' % extension)
+
+	name = data['name']
+
+	# Check the header switch
+	if len(sys.argv) == 3 and sys.argv[2] == '-h':
+		prepare_header(name)
+		create_header()
 	else:
-		# Get the command line argument
-		components = sys.argv[1:]
-		create_source(name, components)
+		methods    = data['methods']
+		components = data['components']
+		prepare_source(name, methods, components)
+		create_source()
 
 
 main()

@@ -6,6 +6,7 @@
 int main(void)
 {
 	bool success{
+		testHello()  &&
 		testSingle() &&
 		testTest()   &&
 		testString() &&

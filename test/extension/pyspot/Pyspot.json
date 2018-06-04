@@ -1,0 +1,17 @@
+{
+	"includes": [],
+	"name": "Pyspot",
+	"methods": [
+		{
+			"name": "invoke",
+			"description": "Test function"
+		}
+	],
+	"components": [
+		"Single",
+		"String",
+		"Test",
+		"Transform",
+		"Vec3"
+	]
+}
