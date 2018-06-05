@@ -1,4 +1,4 @@
-#include "pyspot/extension/${Extension}.h"
+#include "${extension}/extension/${Extension}.h"
 
 ${include_components}
 
@@ -9,7 +9,7 @@ struct ModuleState
 	PyObject* error;
 };
 
-#include "pyspot/extension/${Extension}.incl.cpp"
+#include "${extension}/extension/${Extension}.incl.cpp"
 
 static PyMethodDef pstMethods[] = {
 ${list_methods}
