@@ -267,10 +267,10 @@ def create_object(name):
 	print('};\n')
 
 
-def create_wrapper(name, members):
+def create_wrapper(extension_name, name, members):
 	"""Create a wrapper for the component"""
 
-	print('\nnamespace pyspot\n{\n\nnamespace component\n{\n')
+	print('\nnamespace %s\n{\n\nnamespace component\n{\n' % extension_name.lower())
 	print('\nclass %s : public pst::Object\n{\npublic:' % name)
 	print('\t%s(PyObject* object)\n\t:\tpst::Object{ object }\n\t{}\n' % name)
 	print('\t{0}()'.format(name))
@@ -307,13 +307,13 @@ def create_wrapper(name, members):
 	print('}\n\n}\n')
 
 
-def create_struct(includes, wrapper_name, members):
+def create_struct(extension_name, includes, wrapper_name, members):
 	"""Creates the struct and all the Python functions"""
 
 	name = "PySpot" + wrapper_name
 	# Name of the component
-	print('#ifndef PST_%s_H' % name.upper())
-	print('#define PST_%s_H\n' % name.upper())
+	print('#ifndef %s_%s_H'   % (extension_name.upper(), name.upper()))
+	print('#define %s_%s_H\n' % (extension_name.upper(), name.upper()))
 	print('#include <cstring>')
 
 	for include in includes:
@@ -344,31 +344,32 @@ def create_struct(includes, wrapper_name, members):
 	create_members(name, members)
 	create_accessors(name, members)
 	create_object(name)
-	create_wrapper(wrapper_name, members)
+	create_wrapper(extension_name, wrapper_name, members)
 
-	print('\n#endif // PST_%s_H' % name.upper())
+	print('\n#endif // %s_%s_H' % (extension_name.upper(), name.upper()))
 
 
 def main():
 	"""Entry point"""
 
-	if len(sys.argv) < 2:
-		exit('Usage: %s component.json' % sys.argv[0])
+	if len(sys.argv) < 3:
+		exit('Usage: %s <extension name> <component.json> [-h]' % sys.argv[0])
 
-	# Get the command line argument
-	component = sys.argv[1]
-
+	# Get the extension name
+	extension_name = sys.argv[1]
+	# Get the component path
+	component = sys.argv[2]
 
 	# Read the json file with
 	try:
 		with open(component) as json_data:
 			data = json.load(json_data)
 	except FileNotFoundError:
-		exit('Error: %s not found' % component)
+		exit('Cannot generate PySpot component: %s not found' % component)
 
 	# Write the source code on the standard output
 	includes, name, members = data['includes'], data['name'], data['members']
-	create_struct(includes, name, members)
+	create_struct(extension_name, includes, name, members)
 
 
 main()

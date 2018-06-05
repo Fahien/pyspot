@@ -44,19 +44,6 @@ set_target_properties(pyspot PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(pyspot ${PYTHON_LIBRARIES})
 
 
-# Get all the json in test/extension/component and generate headers
-file(GLOB COMPONENTS test/extension/pyspot/component/*json)
-foreach(COMPONENT ${COMPONENTS})
-	get_filename_component(NAME ${COMPONENT} NAME_WE)
-	list(APPEND COMPONENT_NAMES ${NAME})
-	set(COMPONENT_HEADER ${PROJECT_BINARY_DIR}/test/include/pyspot/component/${NAME}.h)
-	list(APPEND COMPONENT_HEADERS ${COMPONENT_HEADER})
-	add_custom_command(
-		OUTPUT ${COMPONENT_HEADER}
-		COMMAND ${PYTHON_EXECUTABLE} ${PROJECT_SOURCE_DIR}/script/generate-component.py ${COMPONENT} > ${COMPONENT_HEADER}
-		COMMENT "Generating ${COMPONENT_HEADER}"
-		VERBATIM)
-endforeach()
 
 # Generate the PySpotExtension header
 set(EXTENSION_NAME "Pyspot")
@@ -71,9 +58,23 @@ add_custom_command(
 	COMMENT "Generating ${EXTENSION}"
 	VERBATIM)
 
-# Test Sources
-set(TEST_SOURCE_DIR ${PROJECT_SOURCE_DIR}/test/src)
-set(TEST_SOURCES
+# Get all the json in test/extension/component and generate headers
+file(GLOB COMPONENTS test/extension/pyspot/component/*json)
+foreach(COMPONENT ${COMPONENTS})
+	get_filename_component(NAME ${COMPONENT} NAME_WE)
+	list(APPEND COMPONENT_NAMES ${NAME})
+	set(COMPONENT_HEADER ${PROJECT_BINARY_DIR}/test/include/pyspot/component/${NAME}.h)
+	list(APPEND COMPONENT_HEADERS ${COMPONENT_HEADER})
+	add_custom_command(
+		OUTPUT ${COMPONENT_HEADER}
+		COMMAND ${PYTHON_EXECUTABLE} ${PROJECT_SOURCE_DIR}/script/generate-component.py ${EXTENSION_NAME} ${COMPONENT} > ${COMPONENT_HEADER}
+		COMMENT "Generating ${COMPONENT_HEADER}"
+		VERBATIM)
+endforeach()
+	
+	# Test Sources
+	set(TEST_SOURCE_DIR ${PROJECT_SOURCE_DIR}/test/src)
+	set(TEST_SOURCES
 	${COMPONENT_HEADERS}
 	${EXTENSION_HEADER}
 	${EXTENSION_SOURCE}

@@ -75,7 +75,7 @@ def main():
 		with open(extension) as json_data:
 			data = json.load(json_data)
 	except FileNotFoundError:
-		exit('Error: %s not found' % extension)
+		exit('Cannot generate PySpot extension: %s not found' % extension)
 
 	name = data['name']
 
