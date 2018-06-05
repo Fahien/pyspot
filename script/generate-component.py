@@ -4,6 +4,8 @@ to generate the relative pyspot type"""
 import sys
 import json
 
+DICTIONARY = {}
+
 
 def is_builtin_type(type):
 	if (type == 'int'      or
@@ -20,7 +22,7 @@ def c_for_type(type):
 def pyspot_for_type(type):
 	if is_builtin_type(type): return type
 	if type == 'string'     : return 'pst::String'
-	else                    : return 'pst::component::%s' % type
+	else                    : return '%s::component::%s' % (DICTIONARY['extension'], type)
 
 
 def initializer_for_type(type, default=None):
@@ -28,7 +30,7 @@ def initializer_for_type(type, default=None):
 	if type == 'unsigned': return default if default else '0'
 	if type == 'float'   : return default if default else '0.0f'
 	if type == 'string'  : return 'PyUnicode_FromString("%s")' % (default if default else "")
-	else                 : return 'pst::component::%s{%s}.GetIncref()'   % (type, default if default else "")
+	else                 : return '%s::component::%s{%s}.GetIncref()'   % (DICTIONARY['extension'], type, default if default else "")
 
 
 def parser_for_type(type):
@@ -267,10 +269,10 @@ def create_object(name):
 	print('};\n')
 
 
-def create_wrapper(extension_name, name, members):
+def create_wrapper(name, members):
 	"""Create a wrapper for the component"""
 
-	print('\nnamespace %s\n{\n\nnamespace component\n{\n' % extension_name.lower())
+	print('\nnamespace %s\n{\n\nnamespace component\n{\n' % DICTIONARY['extension'])
 	print('\nclass %s : public pst::Object\n{\npublic:' % name)
 	print('\t%s(PyObject* object)\n\t:\tpst::Object{ object }\n\t{}\n' % name)
 	print('\t{0}()'.format(name))
@@ -307,13 +309,13 @@ def create_wrapper(extension_name, name, members):
 	print('}\n\n}\n')
 
 
-def create_struct(extension_name, includes, wrapper_name, members):
+def create_struct(includes, wrapper_name, members):
 	"""Creates the struct and all the Python functions"""
 
 	name = "PySpot" + wrapper_name
 	# Name of the component
-	print('#ifndef %s_%s_H'   % (extension_name.upper(), name.upper()))
-	print('#define %s_%s_H\n' % (extension_name.upper(), name.upper()))
+	print('#ifndef %s_%s_H'   % (DICTIONARY['EXTENSION'], name.upper()))
+	print('#define %s_%s_H\n' % (DICTIONARY['EXTENSION'], name.upper()))
 	print('#include <cstring>')
 
 	for include in includes:
@@ -344,9 +346,9 @@ def create_struct(extension_name, includes, wrapper_name, members):
 	create_members(name, members)
 	create_accessors(name, members)
 	create_object(name)
-	create_wrapper(extension_name, wrapper_name, members)
+	create_wrapper(wrapper_name, members)
 
-	print('\n#endif // %s_%s_H' % (extension_name.upper(), name.upper()))
+	print('\n#endif // %s_%s_H' % (DICTIONARY['EXTENSION'], name.upper()))
 
 
 def main():
@@ -357,6 +359,9 @@ def main():
 
 	# Get the extension name
 	extension_name = sys.argv[1]
+	DICTIONARY['extension'] = extension_name.lower()
+	DICTIONARY['EXTENSION'] = extension_name.upper()
+
 	# Get the component path
 	component = sys.argv[2]
 
@@ -369,7 +374,7 @@ def main():
 
 	# Write the source code on the standard output
 	includes, name, members = data['includes'], data['name'], data['members']
-	create_struct(extension_name, includes, name, members)
+	create_struct(includes, name, members)
 
 
 main()
