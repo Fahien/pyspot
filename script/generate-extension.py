@@ -33,7 +33,7 @@ def prepare_source(name, methods, components):
 	# Include components
 	include_components = ""
 	for component in components:
-		include_components += '#include "pyspot/component/%s.h"\n' % component
+		include_components += '#include "%s/component/%s.h"\n' % (DICTIONARY['extension'], component)
 	DICTIONARY['include_components'] = include_components
 
 	# Add components
