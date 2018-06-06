@@ -4,8 +4,6 @@ import sys
 import json
 from jinja2 import Template
 
-PYINIT_FUNC_NAME = 'PyInit_PySpot'
-
 
 def prepare_header(name):
 	"""Prepares dictionary template for the header"""

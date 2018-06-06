@@ -49,6 +49,7 @@ PyMODINIT_FUNC PyInit_{{ Extension }}()
 	PyModule_AddObject(module, "error", pstError);
 
 	{%- for component in components %}
+
 	if (PyType_Ready(&{{ extension }}{{ component }}) < 0)
 	{
 		return nullptr;
