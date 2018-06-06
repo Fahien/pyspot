@@ -191,9 +191,9 @@ def create_accessors(name, members):
 def create_object(name):
 	"""Create the PyTypeObject"""
 
-	print('\nstatic PyTypeObject %s = {' % (name.lower()))
+	print('\nstatic PyTypeObject %s = {' % (name[0].lower() + name[1:]))
 	# Name
-	print('\tPyVarObject_HEAD_INIT(NULL, 0) "pyspot.%s",' % name[6:])
+	print('\tPyVarObject_HEAD_INIT(NULL, 0) "%s.%s",' % (DICTIONARY['extension'], name[6:]))
 	# Basic size
 	print('\tsizeof(%s),' % name)
 	# Item size
@@ -277,7 +277,8 @@ def create_wrapper(name, members):
 	print('\t%s(PyObject* object)\n\t:\tpst::Object{ object }\n\t{}\n' % name)
 	print('\t{0}()'.format(name))
 	print('\t:	pst::Object\n\t\t{')
-	print('\t\t\t(PyType_Ready(&pyspot{1}), PySpot{0}_New(&pyspot{1}, nullptr, nullptr))\n\t\t}}\n\t{{}}\n'.format(name, name[0].lower() + name[1:]))
+	print('\t\t\t(PyType_Ready(&{0}{2}), {1}{2}_New(&{0}{2}, nullptr, nullptr))\n\t\t}}\n\t{{}}\n'.format(
+		DICTIONARY['extension'], DICTIONARY['Extension'], name))
 	arguments = ''
 	for member in members:
 		if is_builtin_type(member['type']):
@@ -288,14 +289,16 @@ def create_wrapper(name, members):
 	arguments = arguments[:-2]
 	print('\t{0}({1})'.format(name, arguments))
 	print('\t:	pst::Object\n\t\t{')
-	print('\t\t\t(PyType_Ready(&pyspot{1}), PySpot{0}_New(&pyspot{1}, nullptr, nullptr))\n\t\t}}\n\t{{'.format(name, name[0].lower() + name[1:]))
+	print('\t\t\t(PyType_Ready(&{0}{2}), {1}{2}_New(&{0}{2}, nullptr, nullptr))\n\t\t}}\n\t{{'.format(
+		DICTIONARY['extension'], DICTIONARY['Extension'], name))
 	print('\t\tpst::Tuple arguments{ %s };' % len(members))
 	for i in range(0, len(members)):
 		print('\t\targuments.SetItem(%s, %s);' % (i, members[i]['name']))
-	print('\t\tPySpot%s_Init(GetComponent(), arguments.GetObject(), nullptr);' % name)
+	print('\t\t%s%s_Init(GetComponent(), arguments.GetObject(), nullptr);' % (DICTIONARY['Extension'], name))
 	print('\t}\n')
 	print('\t~%s(){}\n' % name)
-	print('\tPySpot{0}* GetComponent()\n\t{{\n\t\treturn reinterpret_cast<PySpot{0}*>(GetObject());\n\t}}'.format(name))
+	print('\t{0}{1}* GetComponent()\n\t{{\n\t\treturn reinterpret_cast<{0}{1}*>(GetObject());\n\t}}'.format(
+		DICTIONARY['Extension'], name))
 
 	for member in members:
 		type = pyspot_for_type(member['type'])
@@ -303,7 +306,8 @@ def create_wrapper(name, members):
 		if is_builtin_type(member['type']):
 			print('\t\treturn GetComponent()->%s;\n\t}\n' % member['name'])
 		else:
-			print('\t\treturn %s{ PySpot%s_Get%s(GetComponent(), nullptr) };\n\t}\n' % (type, name, member['name'].capitalize()))
+			print('\t\treturn %s{ %s%s_Get%s(GetComponent(), nullptr) };\n\t}\n' % (
+				type, DICTIONARY['Extension'], name, member['name'].capitalize()))
 
 	print('};\n')
 	print('}\n\n}\n')
@@ -312,10 +316,10 @@ def create_wrapper(name, members):
 def create_struct(includes, wrapper_name, members):
 	"""Creates the struct and all the Python functions"""
 
-	name = "PySpot" + wrapper_name
+	name = DICTIONARY['Extension'] + wrapper_name
 	# Name of the component
-	print('#ifndef %s_%s_H'   % (DICTIONARY['EXTENSION'], name.upper()))
-	print('#define %s_%s_H\n' % (DICTIONARY['EXTENSION'], name.upper()))
+	print('#ifndef %s_%s_H'   % (DICTIONARY['EXTENSION'], wrapper_name.upper()))
+	print('#define %s_%s_H\n' % (DICTIONARY['EXTENSION'], wrapper_name.upper()))
 	print('#include <cstring>')
 
 	for include in includes:
@@ -326,7 +330,7 @@ def create_struct(includes, wrapper_name, members):
 	print('#include "pyspot/String.h"')
 	print('#include "pyspot/Tuple.h"\n')
 	print('namespace pst = pyspot;\n')
-	print('struct %s\n{' % name)
+	print('struct %s\n{' % (name))
 	print('\tPyObject_HEAD')
 
 	# Members name and type
@@ -348,7 +352,7 @@ def create_struct(includes, wrapper_name, members):
 	create_object(name)
 	create_wrapper(wrapper_name, members)
 
-	print('\n#endif // %s_%s_H' % (DICTIONARY['EXTENSION'], name.upper()))
+	print('\n#endif // %s_%s_H' % (DICTIONARY['EXTENSION'], wrapper_name.upper()))
 
 
 def main():
@@ -360,6 +364,7 @@ def main():
 	# Get the extension name
 	extension_name = sys.argv[1]
 	DICTIONARY['extension'] = extension_name.lower()
+	DICTIONARY['Extension'] = extension_name.lower().capitalize()
 	DICTIONARY['EXTENSION'] = extension_name.upper()
 
 	# Get the component path

@@ -1,14 +1,14 @@
 #!/usr/bin/python
-import pyspot
+import pytest
 
 
 def test_single(c):
-	print('PySpot module: ', end='')
-	print(dir(pyspot))
+	print('Pytest module: ', end='')
+	print(dir(pytest))
 
 	try:
 		print('Creating Single')
-		a = pyspot.Single(1.0)
+		a = pytest.Single(1.0)
 		print(dir(a))
 		print("a.price: ", a.price)
 		print("c.price: ", c.price)
@@ -21,12 +21,12 @@ def test_single(c):
 
 
 def test_string(c):
-	print('PySpot module: ', end='')
-	print(dir(pyspot))
+	print('Pytest module: ', end='')
+	print(dir(pytest))
 
 	try:
 		print('Creating String')
-		a = pyspot.String("PythonName")
+		a = pytest.String("PythonName")
 		print(dir(a))
 		print("a.name: ", a.name)
 		print("c.name: ", c.name)
@@ -39,16 +39,16 @@ def test_string(c):
 
 
 def test_component(b):
-	print('PySpot module: ', end='')
-	print(dir(pyspot))
+	print('Pytest module: ', end='')
+	print(dir(pytest))
 
-	print('Invoking PySpot')
+	print('Invoking Pytest')
 	try:
-		pyspot.invoke()
-		print('PySpot invoked')
+		pytest.invoke()
+		print('Pytest invoked')
 
 		print('Creating Test')
-		component = pyspot.Test(1, 2.0)
+		component = pytest.Test(1, 2.0)
 		print(dir())
 		print("c.value", component.value)
 		print("c.price", component.price)
@@ -64,12 +64,12 @@ def test_component(b):
 
 
 def test_transform(transform):
-	print('PySpot module: ', end='')
-	print(dir(pyspot))
+	print('Pytest module: ', end='')
+	print(dir(pytest))
 	
 	try:
 		print('Creating String')
-		a = pyspot.Transform()
+		a = pytest.Transform()
 		print(dir(a))
 		print("a.position: ", a.position)
 		print("a.scale: ",    a.scale)

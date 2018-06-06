@@ -1,69 +1,51 @@
-"""This script generates the PySpotExtension header"""
+"""This script generates a PySpot Extension"""
 
 import sys
 import json
-from string import Template
+from jinja2 import Template
 
 PYINIT_FUNC_NAME = 'PyInit_PySpot'
 
-DICTIONARY = {
-	'PYINIT_FUNC_NAME': PYINIT_FUNC_NAME
-}
 
 def prepare_header(name):
 	"""Prepares dictionary template for the header"""
-	
-	DICTIONARY['extension'] = name.lower()
-	DICTIONARY['Extension'] = name.capitalize()
-	DICTIONARY['EXTENSION'] = name.upper()
+	return {
+		'extension': name.lower(),
+		'Extension': name.lower().capitalize(),
+		'EXTENSION': name.upper()
+	}
+
 
 def prepare_source(name, methods, components):
 	"""Prepares dictionary template for the source"""
+	dictionary = prepare_header(name)
+	dictionary['methods']    = methods
+	dictionary['components'] = components
+	return dictionary
 
-	# Useful stuff
-	prepare_header(name)
 
-	# Methods
-	list_methods = ""
-	for method in methods:
-		list_methods += '\t{{ "{0}", {0}, METH_VARARGS, "{1}" }},\n'.format(method['name'], method['description'])
-	list_methods += '\t{ nullptr, nullptr, 0, nullptr } // Sentinel'
-	DICTIONARY['list_methods'] = list_methods
+def render_template(template_name, dictionary):
+	"""Renders a template using a dictionary"""
+	try:
+		with open(template_name) as template_file:
+			template = Template(template_file.read())
+	except FileNotFoundError:
+		exit('Cannot render template: %s not found' % template_name)
+	print(template.render(dictionary))
 
-	# Include components
-	include_components = ""
-	for component in components:
-		include_components += '#include "%s/component/%s.h"\n' % (DICTIONARY['extension'], component)
-	DICTIONARY['include_components'] = include_components
 
-	# Add components
-	add_components = ""
-	for component in components:
-		component_var = component.lower()
-		add_components += '\tif (PyType_Ready(&pyspot%s) < 0)\n\t{\n\t\treturn nullptr;\n\t}\n' % component_var
-		add_components += '\tPy_INCREF(&pyspot%s);\n' % component_var
-		add_components += '\tPyModule_AddObject(module, "{0}", reinterpret_cast<PyObject*>(&pyspot{1}));'.format(component, component_var)
-	DICTIONARY['add_components'] = add_components
-
-def create_header():
+def create_header(name):
 	"""Creates the Extension header"""
-
-	header_file = open('Extension.template.h')
-	header_temp = Template(header_file.read())
-	print(header_temp.substitute(DICTIONARY))
+	render_template('Extension.template.h', prepare_header(name))
 
 
-def create_source():
+def create_source(name, methods, components):
 	"""Creates the Extension source"""
-
-	source_file = open('Extension.template.cpp')
-	source_temp = Template(source_file.read())
-	print(source_temp.substitute(DICTIONARY))
+	render_template('Extension.template.cpp', prepare_source(name, methods, components))
 
 
 def main():
 	"""Entry point"""
-
 	if len(sys.argv) < 2:
 		exit('Usage: %s extension.json [-h]' % sys.argv[0])
 
@@ -81,13 +63,11 @@ def main():
 
 	# Check the header switch
 	if len(sys.argv) == 3 and sys.argv[2] == '-h':
-		prepare_header(name)
-		create_header()
+		create_header(name)
 	else:
 		methods    = data['methods']
 		components = data['components']
-		prepare_source(name, methods, components)
-		create_source()
+		create_source(name, methods, components)
 
 
 main()

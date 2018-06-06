@@ -1,12 +1,12 @@
 #!/usr/bin/python
-import pyspot
+import pytest
 
 def hello():
 	print('Hello from Python')
 
 	try:
-		pyspot.invoke()
-		print('Pyspot Invoked')
+		pytest.invoke()
+		print('Pytest Invoked')
 	except Exception as ex:
 		print('Exception %s' % ex)
 

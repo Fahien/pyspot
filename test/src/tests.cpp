@@ -3,19 +3,20 @@
 #include "pyspot/Exception.h"
 #include "pyspot/Tuple.h"
 #include "pyspot/String.h"
-#include "pyspot/extension/Pyspot.h"
-#include "pyspot/component/Single.h"
-#include "pyspot/component/String.h"
-#include "pyspot/component/Test.h"
-#include "pyspot/component/Transform.h"
+#include "pytest/extension/Pytest.h"
+#include "pytest/component/Single.h"
+#include "pytest/component/String.h"
+#include "pytest/component/Test.h"
+#include "pytest/component/Transform.h"
 
 
 using namespace pyspot;
+using namespace pytest;
 
 
 bool testHello()
 {
-	Interpreter interpreter{ "pyspot", PyInit_Pyspot, L"/test/script" };
+	Interpreter interpreter{ "pytest", PyInit_Pytest, L"/test/script" };
 	Module pymodule{ interpreter.ImportModule("hello") };
 	try
 	{
@@ -32,7 +33,7 @@ bool testHello()
 
 bool test2()
 {
-	Interpreter interpreter{ "pyspot", PyInit_Pyspot };
+	Interpreter interpreter{ "pytest", PyInit_Pytest };
 	Module pymodule{ interpreter.ImportModule("hello") };
 	try
 	{
@@ -49,7 +50,7 @@ bool test2()
 
 bool testArgs()
 {
-	Interpreter interpreter{ "pyspot", PyInit_Pyspot };
+	Interpreter interpreter{ "pytest", PyInit_Pytest };
 	Module pymodule{ interpreter.ImportModule("hello") };
 
 	Tuple arguments{ 1 };
@@ -73,7 +74,7 @@ bool testArgs()
 
 bool testSingle()
 {
-	Interpreter interpreter{ "pyspot", PyInit_Pyspot, L"/test/script" };
+	Interpreter interpreter{ "pytest", PyInit_Pytest, L"/test/script" };
 	Module pymodule{ interpreter.ImportModule("script") };
 
 	component::Single single{ 4.0f };
@@ -86,7 +87,7 @@ bool testSingle()
 
 bool testString()
 {
-	Interpreter interpreter{ "pyspot", PyInit_Pyspot, L"/test/script" };
+	Interpreter interpreter{ "pytest", PyInit_Pytest, L"/test/script" };
 	Module pymodule{ interpreter.ImportModule("script") };
 
 	String name{ "TestName" };
@@ -112,7 +113,7 @@ bool testString()
 
 bool testTest()
 {
-	Interpreter interpreter{ "pyspot", PyInit_Pyspot, L"/test/script" };
+	Interpreter interpreter{ "pytest", PyInit_Pytest, L"/test/script" };
 	Module pymodule{ interpreter.ImportModule("script") };
 
 	component::Test test{ 2, 4.0f };
@@ -125,7 +126,7 @@ bool testTest()
 
 bool testTransform()
 {
-	Interpreter interpreter{ "pyspot", PyInit_Pyspot, L"/test/script" };
+	Interpreter interpreter{ "pytest", PyInit_Pytest, L"/test/script" };
 	Module pymodule{ interpreter.ImportModule("script") };
 
 	component::Transform transform{};

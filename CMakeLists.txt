@@ -45,11 +45,11 @@ target_link_libraries(pyspot ${PYTHON_LIBRARIES})
 
 
 
-# Generate the PySpotExtension header
-set(EXTENSION_NAME "Pyspot")
-set(EXTENSION_JSON "${PROJECT_SOURCE_DIR}/test/extension/pyspot/${EXTENSION_NAME}.json")
-set(EXTENSION_HEADER ${PROJECT_BINARY_DIR}/test/include/pyspot/extension/${EXTENSION_NAME}.h)
-set(EXTENSION_SOURCE ${PROJECT_BINARY_DIR}/test/src/pyspot/extension/${EXTENSION_NAME}.cpp)
+# Generate the PytestExtension header
+set(EXTENSION_NAME "Pytest")
+set(EXTENSION_JSON "${PROJECT_SOURCE_DIR}/test/extension/pytest/${EXTENSION_NAME}.json")
+set(EXTENSION_HEADER ${PROJECT_BINARY_DIR}/test/include/pytest/extension/${EXTENSION_NAME}.h)
+set(EXTENSION_SOURCE ${PROJECT_BINARY_DIR}/test/src/pytest/extension/${EXTENSION_NAME}.cpp)
 add_custom_command(
 	OUTPUT ${EXTENSION_HEADER} ${EXTENSION_SOURCE}
 	COMMAND ${PYTHON_EXECUTABLE} generate-extension.py ${EXTENSION_JSON} -h > ${EXTENSION_HEADER}
@@ -59,11 +59,11 @@ add_custom_command(
 	VERBATIM)
 
 # Get all the json in test/extension/component and generate headers
-file(GLOB COMPONENTS test/extension/pyspot/component/*json)
+file(GLOB COMPONENTS test/extension/pytest/component/*json)
 foreach(COMPONENT ${COMPONENTS})
 	get_filename_component(NAME ${COMPONENT} NAME_WE)
 	list(APPEND COMPONENT_NAMES ${NAME})
-	set(COMPONENT_HEADER ${PROJECT_BINARY_DIR}/test/include/pyspot/component/${NAME}.h)
+	set(COMPONENT_HEADER ${PROJECT_BINARY_DIR}/test/include/pytest/component/${NAME}.h)
 	list(APPEND COMPONENT_HEADERS ${COMPONENT_HEADER})
 	add_custom_command(
 		OUTPUT ${COMPONENT_HEADER}

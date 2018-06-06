@@ -1,6 +1,6 @@
 {
 	"includes": [],
-	"name": "Pyspot",
+	"name": "Pytest",
 	"methods": [
 		{
 			"name": "invoke",
