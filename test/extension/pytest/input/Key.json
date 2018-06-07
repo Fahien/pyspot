@@ -1,5 +1,5 @@
 {
-	"name": "Input",
+	"name": "Key",
 	"namespace": "input",
 	"values": {
 		"UP":    0,

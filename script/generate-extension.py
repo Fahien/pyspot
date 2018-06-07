@@ -15,21 +15,20 @@ def prepare_header(name):
 	}
 
 
-def prepare_source(extension_dir, name, methods, components, enums):
+def prepare_source(extension_dir, name, methods, components):
 	"""Prepares dictionary template for the source"""
 	dictionary = prepare_header(name)
 	dictionary['methods']    = methods
-	dictionary['components'] = components
+	dictionary['components'] = []
 
-	dictionary['enums'] = []
-
-	for enum_name in enums:
+	for component_name in components:
 		try:
-			with open("%s/enum/%s.json" % (extension_dir, enum_name)) as json_data:
-				enum = json.load(json_data)
-				dictionary['enums'].append(enum)
+			component_path = "%s/%s.json" % (extension_dir, component_name.replace('::', '/'))
+			with open(component_path) as json_data:
+				component = json.load(json_data)
+				dictionary['components'].append(component)
 		except:
-			FileNotFoundError('Cannot load enum: %s not found' % enum_name)
+			FileNotFoundError('Cannot load component: %s not found' % component_name)
 
 	return dictionary
 
@@ -49,9 +48,9 @@ def create_header(name):
 	render_template('Extension.template.h', prepare_header(name))
 
 
-def create_source(extension_dir, name, methods, components, enums):
+def create_source(extension_dir, name, methods, components):
 	"""Creates the Extension source"""
-	render_template('Extension.template.cpp', prepare_source(extension_dir, name, methods, components, enums))
+	render_template('Extension.template.cpp', prepare_source(extension_dir, name, methods, components))
 
 
 def main():
@@ -78,8 +77,7 @@ def main():
 	else:
 		methods    = data['methods']
 		components = data['components']
-		enums      = data['enums']
-		create_source(extension_dir, name, methods, components, enums)
+		create_source(extension_dir, name, methods, components)
 
 
 main()

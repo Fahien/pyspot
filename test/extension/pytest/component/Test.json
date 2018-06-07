@@ -1,5 +1,6 @@
 {
 	"includes": [],
+	"namespace": "component",
 	"name": "Test",
 	"members": [
 		{

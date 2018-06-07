@@ -8,13 +8,13 @@
 		}
 	],
 	"components": [
-		"Single",
-		"String",
-		"Test",
-		"Transform",
-		"Vec3"
-	],
-	"enums": [
-		"Input"
+		"component::Single",
+		"component::String",
+		"component::Test",
+		"component::Transform",
+		"component::Vec3",
+		"input::Input",
+		"input::Action",
+		"input::Key"
 	]
 }

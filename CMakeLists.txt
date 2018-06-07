@@ -59,34 +59,28 @@ add_custom_command(
 	COMMENT "Generating ${EXTENSION}"
 	VERBATIM)
 
-# Get all the json in test/extension/pytest/component and generate headers
-file(GLOB COMPONENTS test/extension/pytest/component/*json)
-foreach(COMPONENT ${COMPONENTS})
-	get_filename_component(NAME ${COMPONENT} NAME_WE)
-	list(APPEND COMPONENT_NAMES ${NAME})
-	set(COMPONENT_HEADER ${PROJECT_BINARY_DIR}/test/include/pytest/component/${NAME}.h)
-	list(APPEND COMPONENT_HEADERS ${COMPONENT_HEADER})
-	add_custom_command(
-		OUTPUT ${COMPONENT_HEADER}
-		COMMAND ${PYTHON_EXECUTABLE} ${PROJECT_SOURCE_DIR}/script/generate-component.py ${EXTENSION_NAME} ${COMPONENT} > ${COMPONENT_HEADER}
-		WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/script
-		COMMENT "Generating ${COMPONENT_HEADER}"
-		VERBATIM)
-endforeach()
-
-# Get all the jsons in test/extension/pytest/enum and generate headers
-file(GLOB ENUMS test/extension/pytest/enum/*json)
-foreach(ENUM ${ENUMS})
-	get_filename_component(NAME ${ENUM} NAME_WE)
-	list(APPEND ENUM_NAMES ${NAME})
-	set(ENUM_HEADER ${PROJECT_BINARY_DIR}/test/include/pytest/input/${NAME}.h)
-	list(APPEND ENUM_HEADERS ${ENUM_HEADER})
-	add_custom_command(
-		OUTPUT ${ENUM_HEADER}
-		COMMAND ${PYTHON_EXECUTABLE} ${PROJECT_SOURCE_DIR}/script/generate-enum.py ${EXTENSION_NAME} ${ENUM} > ${ENUM_HEADER}
-		WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/script
-		COMMENT "Generating ${ENUM_HEADER}"
-		VERBATIM)
+# Get all the folders under test/extension/pytest
+set(PYTEST_PATH ${PROJECT_SOURCE_DIR}/test/extension/pytest)
+file(GLOB NAMESPACES LIST_DIRECTORY true ${PYTEST_PATH}/*)
+foreach(NAMESPACE ${NAMESPACES})
+	message(STATUS "CHECK ${NAMESPACE}")
+	if(IS_DIRECTORY ${NAMESPACE})
+		# Get all the jsons and generate headers
+		file(GLOB COMPONENTS ${NAMESPACE}/*json)
+		foreach(COMPONENT ${COMPONENTS})
+			get_filename_component(NAMESPACE_NAME ${NAMESPACE} NAME_WE)
+			get_filename_component(NAME ${COMPONENT} NAME_WE)
+			list(APPEND COMPONENT_NAMES ${NAME})
+			set(COMPONENT_HEADER ${PROJECT_BINARY_DIR}/test/include/pytest/${NAMESPACE_NAME}/${NAME}.h)
+			list(APPEND COMPONENT_HEADERS ${COMPONENT_HEADER})
+			add_custom_command(
+				OUTPUT ${COMPONENT_HEADER}
+				COMMAND ${PYTHON_EXECUTABLE} ${PROJECT_SOURCE_DIR}/script/generate-component.py ${EXTENSION_NAME} ${COMPONENT} > ${COMPONENT_HEADER}
+				WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/script
+				COMMENT "Generating ${COMPONENT_HEADER}"
+				VERBATIM)
+		endforeach()
+	endif()
 endforeach()
 
 

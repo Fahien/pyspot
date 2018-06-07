@@ -9,6 +9,8 @@
 #include "pytest/component/Test.h"
 #include "pytest/component/Transform.h"
 #include "pytest/input/Input.h"
+#include "pytest/input/Key.h"
+#include "pytest/input/Action.h"
 
 
 using namespace pyspot;
@@ -157,9 +159,11 @@ bool testInput()
 	Interpreter interpreter{ "pytest", PyInit_Pytest, L"/test/script" };
 	Module pymodule{ interpreter.ImportModule("script") };
 
-	input::Input i{ input::Input::LEFT };
+	input::Key k{ input::Key::LEFT };
+	input::Action a{ input::Action::RELEASE };
+	input::Input i{ k, a };
 	Tuple args{ 1 };
-	args.SetItem(0, input::to_python(i));
+	args.SetItem(0, i);
 	pymodule.CallFunction("test_input", args);
 	return true;
 }

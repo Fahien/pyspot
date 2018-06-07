@@ -83,7 +83,8 @@ def test_transform(transform):
 
 
 def test_input(input):
-	if (input == pytest.Input.LEFT):
-		print('Input is LEFT')
+	if (input.key == pytest.Key.LEFT):
+		if (input.action == pytest.Action.RELEASE):
+			print('Key LEFT Pressed')
 	else:
 		print('Wrong input')
