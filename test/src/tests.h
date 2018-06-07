@@ -9,6 +9,7 @@ bool testSingle();
 bool testString();
 bool testTest();
 bool testTransform();
+bool testInput();
 
 
 #endif // PST_TEST_H_

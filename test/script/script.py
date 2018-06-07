@@ -80,3 +80,10 @@ def test_transform(transform):
 		print('Exception captured: ', str(ex))
 	except:
 		print('Exception captured')
+
+
+def test_input(input):
+	if (input == pytest.Input.LEFT):
+		print('Input is LEFT')
+	else:
+		print('Wrong input')

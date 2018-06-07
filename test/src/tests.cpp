@@ -8,6 +8,7 @@
 #include "pytest/component/String.h"
 #include "pytest/component/Test.h"
 #include "pytest/component/Transform.h"
+#include "pytest/input/Input.h"
 
 
 using namespace pyspot;
@@ -147,5 +148,18 @@ bool testTransform()
 	       transform.GetRotation().GetY(),
 	       transform.GetRotation().GetZ()
 	);
+	return true;
+}
+
+
+bool testInput()
+{
+	Interpreter interpreter{ "pytest", PyInit_Pytest, L"/test/script" };
+	Module pymodule{ interpreter.ImportModule("script") };
+
+	input::Input i{ input::Input::LEFT };
+	Tuple args{ 1 };
+	args.SetItem(0, input::to_python(i));
+	pymodule.CallFunction("test_input", args);
 	return true;
 }

@@ -31,6 +31,7 @@ include_directories(${PST_SOURCE_DIR}
 set(SOURCES
 	${PST_SOURCE_DIR}/Interpreter.cpp
 	${PST_SOURCE_DIR}/Object.cpp
+	${PST_SOURCE_DIR}/Long.cpp
 	${PST_SOURCE_DIR}/String.cpp
 	${PST_SOURCE_DIR}/Function.cpp
 	${PST_SOURCE_DIR}/Module.cpp
@@ -58,7 +59,7 @@ add_custom_command(
 	COMMENT "Generating ${EXTENSION}"
 	VERBATIM)
 
-# Get all the json in test/extension/component and generate headers
+# Get all the json in test/extension/pytest/component and generate headers
 file(GLOB COMPONENTS test/extension/pytest/component/*json)
 foreach(COMPONENT ${COMPONENTS})
 	get_filename_component(NAME ${COMPONENT} NAME_WE)
@@ -72,11 +73,28 @@ foreach(COMPONENT ${COMPONENTS})
 		COMMENT "Generating ${COMPONENT_HEADER}"
 		VERBATIM)
 endforeach()
-	
-	# Test Sources
-	set(TEST_SOURCE_DIR ${PROJECT_SOURCE_DIR}/test/src)
-	set(TEST_SOURCES
+
+# Get all the jsons in test/extension/pytest/enum and generate headers
+file(GLOB ENUMS test/extension/pytest/enum/*json)
+foreach(ENUM ${ENUMS})
+	get_filename_component(NAME ${ENUM} NAME_WE)
+	list(APPEND ENUM_NAMES ${NAME})
+	set(ENUM_HEADER ${PROJECT_BINARY_DIR}/test/include/pytest/input/${NAME}.h)
+	list(APPEND ENUM_HEADERS ${ENUM_HEADER})
+	add_custom_command(
+		OUTPUT ${ENUM_HEADER}
+		COMMAND ${PYTHON_EXECUTABLE} ${PROJECT_SOURCE_DIR}/script/generate-enum.py ${EXTENSION_NAME} ${ENUM} > ${ENUM_HEADER}
+		WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/script
+		COMMENT "Generating ${ENUM_HEADER}"
+		VERBATIM)
+endforeach()
+
+
+# Test Sources
+set(TEST_SOURCE_DIR ${PROJECT_SOURCE_DIR}/test/src)
+set(TEST_SOURCES
 	${COMPONENT_HEADERS}
+	${ENUM_HEADERS}
 	${EXTENSION_HEADER}
 	${EXTENSION_SOURCE}
 	${TEST_SOURCE_DIR}/tests.h

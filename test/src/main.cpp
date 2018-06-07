@@ -10,7 +10,8 @@ int main(void)
 		testSingle() &&
 		testTest()   &&
 		testString() &&
-		testTransform()
+		testTransform() &&
+		testInput()
 	};
 	
 	return success ? EXIT_SUCCESS : EXIT_FAILURE;

@@ -1,5 +1,6 @@
 """This script generates a PySpot Extension"""
 
+import os
 import sys
 import json
 from jinja2 import Template
@@ -14,11 +15,22 @@ def prepare_header(name):
 	}
 
 
-def prepare_source(name, methods, components):
+def prepare_source(extension_dir, name, methods, components, enums):
 	"""Prepares dictionary template for the source"""
 	dictionary = prepare_header(name)
 	dictionary['methods']    = methods
 	dictionary['components'] = components
+
+	dictionary['enums'] = []
+
+	for enum_name in enums:
+		try:
+			with open("%s/enum/%s.json" % (extension_dir, enum_name)) as json_data:
+				enum = json.load(json_data)
+				dictionary['enums'].append(enum)
+		except:
+			FileNotFoundError('Cannot load enum: %s not found' % enum_name)
+
 	return dictionary
 
 
@@ -37,9 +49,9 @@ def create_header(name):
 	render_template('Extension.template.h', prepare_header(name))
 
 
-def create_source(name, methods, components):
+def create_source(extension_dir, name, methods, components, enums):
 	"""Creates the Extension source"""
-	render_template('Extension.template.cpp', prepare_source(name, methods, components))
+	render_template('Extension.template.cpp', prepare_source(extension_dir, name, methods, components, enums))
 
 
 def main():
@@ -49,6 +61,7 @@ def main():
 
 	# Get the json path
 	extension = sys.argv[1]
+	extension_dir = os.path.dirname(extension)
 
 	# Read the json file
 	try:
@@ -65,7 +78,8 @@ def main():
 	else:
 		methods    = data['methods']
 		components = data['components']
-		create_source(name, methods, components)
+		enums      = data['enums']
+		create_source(extension_dir, name, methods, components, enums)
 
 
 main()

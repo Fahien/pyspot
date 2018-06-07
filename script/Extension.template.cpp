@@ -3,6 +3,9 @@
 {%- for component in components %}
 {{ '#include "%s/component/%s.h"' % (extension, component) }}
 {%- endfor %}
+{%- for enum in enums %}
+#include "{{ extension }}/{{ enum['namespace'] }}/{{ enum['name'] }}.h"
+{%- endfor %}
 
 static PyObject* pstError;
 
@@ -48,15 +51,26 @@ PyMODINIT_FUNC PyInit_{{ Extension }}()
 	Py_INCREF(pstError);
 	PyModule_AddObject(module, "error", pstError);
 
-	{%- for component in components %}
-
-	if (PyType_Ready(&{{ extension }}{{ component }}) < 0)
+{% for component in components %}
+	if (PyType_Ready(&{{ extension ~ component }}) < 0)
 	{
 		return nullptr;
 	}
-	Py_INCREF(&{{ extension }}{{ component }});
-	PyModule_AddObject(module, "{{ component }}", reinterpret_cast<PyObject*>(&{{ extension }}{{ component }}));
+	Py_INCREF(&{{ extension + component }});
+	PyModule_AddObject(module, "{{ component }}", reinterpret_cast<PyObject*>(&{{ extension ~ component }}));
+{% endfor %}
+
+{% for enum in enums %}
+	if (PyType_Ready(&{{ extension ~ enum['name'] }}) < 0)
+	{
+		return nullptr;
+	}
+	{%- for key, val in enum['values'].items() %}
+	PyDict_SetItemString({{ extension ~ enum['name'] }}.tp_dict, "{{ key }}", PyLong_FromLong({{ val }}));
 	{%- endfor %}
+	Py_INCREF(&{{ extension ~ enum['name'] }});
+	PyModule_AddObject(module, "{{ enum['name'] }}", reinterpret_cast<PyObject*>(&{{ extension ~ enum['name'] }}));
+{% endfor %}
 
 	return module;
 }

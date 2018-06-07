@@ -11,9 +11,8 @@ String::String(PyObject* object)
 
 
 String::String(const char* str)
-{
-	mObject = PyUnicode_FromString(str);
-}
+:	String{ PyUnicode_FromString(str) }
+{}
 
 
 String::~String()

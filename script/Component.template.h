@@ -10,6 +10,7 @@
 #include "{{ extension }}/component/{{ include }}.h"
 {%- endfor %}
 
+/// {{ Component }}
 struct {{ Extension + Component }}
 {
 	PyObject_HEAD
@@ -24,9 +25,9 @@ struct {{ Extension + Component }}
 };
 
 
+/// {{ Component }} constructor
 static PyObject* {{ Extension + Component }}_New(PyTypeObject* type, PyObject* args, PyObject* kwds)
 {
-
 	{{ Extension + Component }}* self{ reinterpret_cast<{{ Extension + Component }}*>(type->tp_alloc(type, 0)) };
 
 	if (self != nullptr)
@@ -49,14 +50,15 @@ static PyObject* {{ Extension + Component }}_New(PyTypeObject* type, PyObject* a
 }
 
 
+/// {{ Component }} destructor
 static void {{ Extension + Component }}_Dealloc({{ Extension + Component }}* self)
 {
 	{%- for member in members %}
 		{%- if not is_builtin_type(member['type']) %}
 	Py_XDECREF(self->{{ member['name'] }});
-		{% endif %}
+		{%- endif %}
 	{%- endfor %}
-	Py_TYPE(self)->tp_free(static_cast<PyObject*>(static_cast<void*>(self)));
+	Py_TYPE(self)->tp_free(reinterpret_cast<PyObject*>(self));
 }
 
 
@@ -76,8 +78,8 @@ static int {{ Extension + Component }}_Init({{ Extension + Component }}* self, P
 		{%- set _ = member_parsers.append(parser_for_type(member['type'])) %}
 	{%- endfor %}
 	{%- set _ = member_list.append('nullptr') %}
-	static char* kwlist[]{ {{ member_list|join(', ') }} };
 
+	static char* kwlist[]{ {{ member_list|join(', ') }} };
 	static char* fmt{ "|{{ member_parsers|join() }}" };
 
 	if (!PyArg_ParseTupleAndKeywords(args, kwds, fmt, kwlist
@@ -113,8 +115,10 @@ static PyMemberDef {{ Extension + Component }}_members[]
 	{ nullptr } // Sentinel
 };
 
-{% for member in members %}
+
+{%- for member in members %}
 {%- if not is_builtin_type(member['type']) %}
+
 static PyObject* {{ Extension + Component }}_Get{{ member['name']|capitalize }}({{ Extension + Component }}* self, void* closure)
 {
 	Py_INCREF(self->{{ member['name'] }});
@@ -205,10 +209,9 @@ namespace {{ extension }}
 namespace component
 {
 
-
 class {{ Component }} : public pyspot::Object
 {
-public:
+  public:
 	{{ Component }}(PyObject* object)
 	:	pyspot::Object{ object }
 	{}
@@ -220,7 +223,7 @@ public:
 		}
 	{}
 
-	{% if members|length > 0 %}
+	{%- if members|length > 0 %}
 		{%- set arguments = [] %}
 		{%- for member in members %}
 			{%- if is_builtin_type(member['type']) %}
@@ -230,6 +233,7 @@ public:
 			{%- endif %}
 			{%- set _ = arguments.append(type % member['name']) %}
 		{%- endfor %}
+
 	{{ Component }}({{ arguments|join(', ') }})
 	:	pyspot::Object
 		{
@@ -251,8 +255,9 @@ public:
 		return reinterpret_cast<{{ Extension + Component }}*>(GetObject());
 	}
 
-	{% for member in members %}
+	{%- for member in members %}
 	{%- set pyspot_type = pyspot_for_type(member['type']) %}
+
 	{{ pyspot_type }} Get{{ member['name']|capitalize }}()
 	{
 		{%- if is_builtin_type(member['type']) %}
