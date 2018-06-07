@@ -2,13 +2,13 @@
 #define PST_{{ EXTENSION + COMPONENT }}_H_
 
 #include <cstring>
-#include <structmember.h>
 #include <pyspot/Interpreter.h>
 #include <pyspot/String.h>
 #include <pyspot/Tuple.h>
 {% for include in includes %}
 #include "{{ extension }}/component/{{ include }}.h"
-{%- endfor %}
+{% endfor %}
+#include <structmember.h> // at the end
 
 /// {{ Component }}
 struct {{ Extension + Component }}

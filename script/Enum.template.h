@@ -2,8 +2,8 @@
 #define PST_{{ EXTENSION + ENUM }}_H_
 
 #include <Python.h>
-#include <structmember.h>
 #include <pyspot/Long.h>
+#include <structmember.h> // at the end
 
 
 /// {{ Enum }}
