@@ -29,6 +29,7 @@ include_directories(${PST_SOURCE_DIR}
 
 # Sources
 set(SOURCES
+	${PST_SOURCE_DIR}/Error.cpp
 	${PST_SOURCE_DIR}/Interpreter.cpp
 	${PST_SOURCE_DIR}/Object.cpp
 	${PST_SOURCE_DIR}/Long.cpp

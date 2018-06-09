@@ -10,6 +10,7 @@ bool testString();
 bool testTest();
 bool testTransform();
 bool testInput();
+bool testMap();
 
 
 #endif // PST_TEST_H_

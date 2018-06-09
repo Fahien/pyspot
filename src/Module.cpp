@@ -2,6 +2,8 @@
 #include "pyspot/Function.h"
 #include "pyspot/String.h"
 #include "pyspot/Tuple.h"
+#include "pyspot/Exception.h"
+#include "pyspot/Error.h"
 
 using namespace pyspot;
 
@@ -9,9 +11,9 @@ using namespace pyspot;
 Module::Module(const String& name)
 {
 	mObject = PyImport_Import(name.GetObject());
-	if (!mObject)
+	if (PyErr_Occurred() || !mObject)
 	{
-		PyErr_Print();
+		throw Exception{ Error::Get() };
 	}
 }
 

@@ -167,3 +167,29 @@ bool testInput()
 	pymodule.CallFunction("test_input", args);
 	return true;
 }
+
+
+bool testMap()
+{
+	Interpreter interpreter{ "import/Map", PyInit_Pytest, L"/test/script" };
+	Module module{ interpreter.ImportModule("map") };
+	
+	component::Transform transform{};
+	Tuple args{ &transform };
+
+	module.CallFunction("init_map", args);
+	printf("Position: [%f, %f, %f]\n",
+	       transform.GetPosition().GetX(),
+	       transform.GetPosition().GetY(),
+	       transform.GetPosition().GetZ()
+	);
+
+	module.CallFunction("test_map");
+	printf("Position: [%f, %f, %f]\n",
+	       transform.GetPosition().GetX(),
+	       transform.GetPosition().GetY(),
+	       transform.GetPosition().GetZ()
+	);
+
+	return true;
+}

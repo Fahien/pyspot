@@ -7,6 +7,7 @@ using namespace pyspot;
 
 String::String(PyObject* object)
 :	Object{ object }
+,	mCStr{ Object::ToCString() }
 {}
 
 

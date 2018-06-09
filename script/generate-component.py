@@ -72,7 +72,6 @@ def load_include(namespace_path, type_name):
 		return json.load(type_file)
 
 
-
 def main():
 	"""Entry point"""
 	if len(sys.argv) < 3:
@@ -111,7 +110,6 @@ def main():
 		if not member['type'] in types_loaded and not is_builtin_type(member['type']):
 			includes.append(load_include(namespace_path, member['type']))
 			types_loaded.append(member['type'])
-
 
 	# Fill dictionary
 	dictionary = {

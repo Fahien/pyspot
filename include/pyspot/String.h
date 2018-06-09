@@ -12,6 +12,11 @@ class String : public Object
 	String(PyObject* object);
 	String(const char* str);
 	~String();
+
+	const wchar_t* ToCString() const { return mCStr; }
+
+  private:
+	const wchar_t* mCStr;
 };
 
 }

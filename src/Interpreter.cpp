@@ -1,6 +1,7 @@
 #include "pyspot/Interpreter.h"
 #include "pyspot/Module.h"
 #include "pyspot/String.h"
+#include "pyspot/Exception.h"
 
 using namespace pyspot;
 
@@ -29,7 +30,10 @@ Interpreter::Interpreter(const char* import, PyObject* (*function)(void))
 
 Interpreter::Interpreter(const char* import, PyObject* (*function)(void), const wchar_t* dir)
 {
-	PyImport_AppendInittab(import, function);
+	if (PyImport_AppendInittab(import, function) < 0)
+	{
+		throw Exception{ "Cannot import" };
+	}
 	initialize(dir);
 }
 
