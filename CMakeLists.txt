@@ -37,6 +37,7 @@ set(SOURCES
 	${PST_SOURCE_DIR}/Function.cpp
 	${PST_SOURCE_DIR}/Module.cpp
 	${PST_SOURCE_DIR}/Tuple.cpp
+	${PST_SOURCE_DIR}/Dictionary.cpp
 )
 source_group(Sources FILES ${SOURCES})
 

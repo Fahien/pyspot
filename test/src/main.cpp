@@ -19,7 +19,8 @@ int main(void)
 			testString() &&
 			testTransform() &&
 			testInput() &&
-			testMap()
+			testMap() &&
+			testDictionary()
 		;
 	}
 	catch (exception& e)

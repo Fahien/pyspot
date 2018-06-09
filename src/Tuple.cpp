@@ -11,13 +11,13 @@ Tuple::Tuple(size_t size)
 {}
 
 
-Tuple::Tuple(std::initializer_list<Object*> list)
+Tuple::Tuple(std::initializer_list<Object> list)
 :	Tuple{ list.size() }
 {
 	size_t i{ 0 };
-	for (const Object* o : list)
+	for (const Object& o : list)
 	{
-		SetItem(i++, *o);
+		SetItem(i++, o);
 	}
 }
 
@@ -26,9 +26,8 @@ void Tuple::SetItem(const size_t i, const Object& item)
 {
 	assert(i < mSize);
 
-	Py_INCREF(item.GetObject());
 	// Consume the item reference
-	PyTuple_SetItem(mObject, i, item.GetObject());
+	PyTuple_SetItem(mObject, i, item.GetIncref());
 }
 
 

@@ -3,6 +3,7 @@
 #include "pyspot/Exception.h"
 #include "pyspot/Tuple.h"
 #include "pyspot/String.h"
+#include "pyspot/Dictionary.h"
 #include "pytest/extension/Pytest.h"
 #include "pytest/component/Single.h"
 #include "pytest/component/String.h"
@@ -56,10 +57,8 @@ bool testArgs()
 	Interpreter interpreter{ "pytest", PyInit_Pytest };
 	Module pymodule{ interpreter.ImportModule("hello") };
 
-	Tuple arguments{ 1 };
-
 	String name{ "TestArg" };
-	arguments.SetItem(0, name);
+	Tuple arguments{ name };
 
 	try
 	{
@@ -81,7 +80,7 @@ bool testSingle()
 	Module pymodule{ interpreter.ImportModule("script") };
 
 	component::Single single{ 4.0f };
-	Tuple args{ &single };
+	Tuple args{ single };
 	pymodule.CallFunction("test_single", args);
 	printf("Result: %f\n", single.GetPrice());
 	return true;
@@ -99,7 +98,7 @@ bool testString()
 	printf("Name: %ls\n", name.ToCString());
 
 	printf("Test3: test_string\n");
-	Tuple args{ &container };
+	Tuple args{ container };
 	try
 	{
 		pymodule.CallFunction("test_string", args);
@@ -120,7 +119,7 @@ bool testTest()
 	Module pymodule{ interpreter.ImportModule("script") };
 
 	component::Test test{ 2, 4.0f };
-	Tuple args{ &test };
+	Tuple args{ test };
 	pymodule.CallFunction("test_component", args);
 	printf("Result: %d\n", test.GetValue());
 	return true;
@@ -133,7 +132,7 @@ bool testTransform()
 	Module pymodule{ interpreter.ImportModule("script") };
 
 	component::Transform transform{};
-	Tuple args{ &transform };
+	Tuple args{ transform };
 	pymodule.CallFunction("test_transform", args);
 	printf("Position: [%f, %f, %f]\n",
 	       transform.GetPosition().GetX(),
@@ -162,8 +161,7 @@ bool testInput()
 	input::Key k{ input::Key::LEFT };
 	input::Action a{ input::Action::RELEASE };
 	input::Input i{ k, a };
-	Tuple args{ 1 };
-	args.SetItem(0, i);
+	Tuple args{ i };
 	pymodule.CallFunction("test_input", args);
 	return true;
 }
@@ -175,7 +173,7 @@ bool testMap()
 	Module module{ interpreter.ImportModule("map") };
 	
 	component::Transform transform{};
-	Tuple args{ &transform };
+	Tuple args{ transform };
 
 	module.CallFunction("init_map", args);
 	printf("Position: [%f, %f, %f]\n",
@@ -185,6 +183,34 @@ bool testMap()
 	);
 
 	module.CallFunction("test_map");
+	printf("Position: [%f, %f, %f]\n",
+	       transform.GetPosition().GetX(),
+	       transform.GetPosition().GetY(),
+	       transform.GetPosition().GetZ()
+	);
+
+	return true;
+}
+
+
+bool testDictionary()
+{
+	Interpreter interpreter{ "import/Map", PyInit_Pytest, L"/test/script" };
+	Module module{ interpreter.ImportModule("map") };
+
+	component::Transform transform{};
+	Dictionary dict{};
+	dict.SetItem("transform", transform);
+
+	Tuple args{ dict };
+	module.CallFunction("init_dict", args);
+	printf("Position: [%f, %f, %f]\n",
+	       transform.GetPosition().GetX(),
+	       transform.GetPosition().GetY(),
+	       transform.GetPosition().GetZ()
+	);
+
+	module.CallFunction("test_dict");
 	printf("Position: [%f, %f, %f]\n",
 	       transform.GetPosition().GetX(),
 	       transform.GetPosition().GetY(),

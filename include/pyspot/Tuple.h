@@ -14,7 +14,7 @@ class Tuple : public Object
 {
 public:
 	Tuple(size_t size);
-	Tuple(std::initializer_list<Object*> list);
+	Tuple(std::initializer_list<Object> list);
 
 	inline size_t GetSize() const { return mSize; }
 

@@ -11,6 +11,7 @@ bool testTest();
 bool testTransform();
 bool testInput();
 bool testMap();
+bool testDictionary();
 
 
 #endif // PST_TEST_H_
