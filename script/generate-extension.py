@@ -33,30 +33,44 @@ def prepare_source(extension_dir, name, methods, components):
 	return dictionary
 
 
-def render_template(template_name, dictionary):
+def render_template(template_name, dictionary, out_path=None):
 	"""Renders a template using a dictionary"""
 	try:
 		with open(template_name) as template_file:
 			template = Template(template_file.read())
 	except FileNotFoundError:
 		exit('Cannot render template: %s not found' % template_name)
-	print(template.render(dictionary))
+
+	code = template.render(dictionary)
+
+	if out_path != None:
+		# Write to file
+		parent_path = os.path.dirname(out_path)
+		if not os.path.exists(parent_path):
+			os.makedirs(parent_path)
+		with open(out_path, "w") as out:
+			out.write(code)
+	else:
+		# Write to std output
+		print(code)
 
 
-def create_header(name):
+def create_header(name, out_path=None):
 	"""Creates the Extension header"""
-	render_template('Extension.template.h', prepare_header(name))
+	dictionary = prepare_header(name)
+	render_template('Extension.template.h', dictionary, out_path)
 
 
-def create_source(extension_dir, name, methods, components):
+def create_source(extension_dir, name, methods, components, out_path=None):
 	"""Creates the Extension source"""
-	render_template('Extension.template.cpp', prepare_source(extension_dir, name, methods, components))
+	dictionary = prepare_source(extension_dir, name, methods, components)
+	render_template('Extension.template.cpp', dictionary, out_path)
 
 
 def main():
 	"""Entry point"""
 	if len(sys.argv) < 2:
-		exit('Usage: %s extension.json [-h]' % sys.argv[0])
+		exit('Usage: %s extension.json [-h] [<output path>]' % sys.argv[0])
 
 	# Get the json path
 	extension = sys.argv[1]
@@ -72,12 +86,16 @@ def main():
 	name = data['name']
 
 	# Check the header switch
-	if len(sys.argv) == 3 and sys.argv[2] == '-h':
-		create_header(name)
+	if len(sys.argv) >= 3 and sys.argv[2] == '-h':
+		if len(sys.argv) == 4:
+			output_path = sys.argv[3]
+		create_header(name, output_path)
 	else:
+		if len(sys.argv) == 3:
+			output_path = sys.argv[2]
 		methods    = data['methods']
 		components = data['components']
-		create_source(extension_dir, name, methods, components)
+		create_source(extension_dir, name, methods, components, output_path)
 
 
 main()

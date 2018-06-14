@@ -8,6 +8,16 @@
 using namespace pyspot;
 
 
+Module::Module(const char* name)
+{
+	mObject = PyImport_ImportModule(name);
+	if (PyErr_Occurred() || !mObject)
+	{
+		throw Exception{ Error::Get() };
+	}
+}
+
+
 Module::Module(const String& name)
 {
 	mObject = PyImport_Import(name.GetObject());

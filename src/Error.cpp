@@ -24,11 +24,15 @@ string Error::Get()
 
 	PyObject* newline{ PyUnicode_FromString("\n")    };
 	PyObject* message{ PyUnicode_Join(newline, list) };
-	Py_DECREF(list);
-	Py_DECREF(newline);
+	Py_XDECREF(list);
+	Py_XDECREF(newline);
 
-	string ret{ PyUnicode_AsUTF8(message) };
-	Py_DECREF(message);
+	string ret{ "" };
+	if (message)
+	{
+		ret = PyUnicode_AsUTF8(message);
+		Py_XDECREF(message);
+	}
 	PyErr_Clear();
 
 	return ret;

@@ -75,7 +75,7 @@ def load_include(namespace_path, type_name):
 def main():
 	"""Entry point"""
 	if len(sys.argv) < 3:
-		exit('Usage: %s <extension name> <component.json> [-h]' % sys.argv[0])
+		exit('Usage: %s <extension name> <component.json> [<output path>]' % sys.argv[0])
 
 	# Get the extension name
 	extension_name = sys.argv[1]
@@ -107,7 +107,7 @@ def main():
 	includes = []
 	types_loaded = []
 	for member in members:
-		if not member['type'] in types_loaded and not is_builtin_type(member['type']):
+		if not member['type'] in types_loaded and not is_builtin_type(member['type']) and member['type'] != 'string':
 			includes.append(load_include(namespace_path, member['type']))
 			types_loaded.append(member['type'])
 
@@ -126,13 +126,25 @@ def main():
 	}
 
 	# Generate the code
-	print(template.render(dictionary,
+	code = template.render(dictionary,
 		initializer_for_type=initializer_for_type,
 		is_builtin_type=is_builtin_type,
 		parser_for_type=parser_for_type,
 		pytype_for_type=pytype_for_type,
 		pyspot_for_type=pyspot_for_type,
-		c_for_type=c_for_type))
+		c_for_type=c_for_type)
 
+	# Output
+	if len(sys.argv) == 4:
+		# Write code to file
+		file_path = sys.argv[3]
+		parent_path = os.path.dirname(file_path)
+		if not os.path.exists(parent_path):
+			os.makedirs(parent_path)
+		with open(file_path, "w") as out:
+			out.write(code)
+	else:
+		# Write to std output
+		print(code)
 
 main()

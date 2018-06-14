@@ -3,6 +3,12 @@
 #include "pyspot/String.h"
 #include "pyspot/Exception.h"
 
+#ifdef _WIN32
+# define PATH_SEP L";"
+#else
+# define PATH_SEP L":"
+#endif
+
 using namespace pyspot;
 
 
@@ -72,6 +78,6 @@ void Interpreter::addToPath(const wchar_t* folder)
 {
 	Module os { ImportModule("os") };
 	Object cwd{ os.CallFunction("getcwd") };
-	std::wstring path{ Py_GetPath() + (L";" + cwd.ToString()) + folder };
+	std::wstring path{ Py_GetPath() + (PATH_SEP + cwd.ToString()) + folder };
 	PySys_SetPath(path.c_str());
 }

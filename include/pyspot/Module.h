@@ -18,6 +18,7 @@ class Tuple;
 class Module : public Object
 {
 public:
+	Module(const char* name);
 	Module(const String& name);
 	~Module();
 

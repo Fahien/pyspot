@@ -43,7 +43,6 @@ source_group(Sources FILES ${SOURCES})
 
 # Library
 add_library(pyspot ${SOURCES})
-set_target_properties(pyspot PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(pyspot ${PYTHON_LIBRARIES})
 
 
@@ -55,8 +54,8 @@ set(EXTENSION_HEADER ${PROJECT_BINARY_DIR}/test/include/pytest/extension/${EXTEN
 set(EXTENSION_SOURCE ${PROJECT_BINARY_DIR}/test/src/pytest/extension/${EXTENSION_NAME}.cpp)
 add_custom_command(
 	OUTPUT ${EXTENSION_HEADER} ${EXTENSION_SOURCE}
-	COMMAND ${PYTHON_EXECUTABLE} generate-extension.py ${EXTENSION_JSON} -h > ${EXTENSION_HEADER}
-	COMMAND ${PYTHON_EXECUTABLE} generate-extension.py ${EXTENSION_JSON} > ${EXTENSION_SOURCE}
+	COMMAND ${PYTHON_EXECUTABLE} generate-extension.py ${EXTENSION_JSON} -h ${EXTENSION_HEADER}
+	COMMAND ${PYTHON_EXECUTABLE} generate-extension.py ${EXTENSION_JSON} ${EXTENSION_SOURCE}
 	WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/script
 	COMMENT "Generating ${EXTENSION}"
 	VERBATIM)
@@ -65,7 +64,6 @@ add_custom_command(
 set(PYTEST_PATH ${PROJECT_SOURCE_DIR}/test/extension/pytest)
 file(GLOB NAMESPACES LIST_DIRECTORY true ${PYTEST_PATH}/*)
 foreach(NAMESPACE ${NAMESPACES})
-	message(STATUS "CHECK ${NAMESPACE}")
 	if(IS_DIRECTORY ${NAMESPACE})
 		# Get all the jsons and generate headers
 		file(GLOB COMPONENTS ${NAMESPACE}/*json)
@@ -77,7 +75,7 @@ foreach(NAMESPACE ${NAMESPACES})
 			list(APPEND COMPONENT_HEADERS ${COMPONENT_HEADER})
 			add_custom_command(
 				OUTPUT ${COMPONENT_HEADER}
-				COMMAND ${PYTHON_EXECUTABLE} ${PROJECT_SOURCE_DIR}/script/generate-component.py ${EXTENSION_NAME} ${COMPONENT} > ${COMPONENT_HEADER}
+				COMMAND ${PYTHON_EXECUTABLE} ${PROJECT_SOURCE_DIR}/script/generate-component.py ${EXTENSION_NAME} ${COMPONENT} ${COMPONENT_HEADER}
 				WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/script
 				COMMENT "Generating ${COMPONENT_HEADER}"
 				VERBATIM)
@@ -100,7 +98,6 @@ source_group("Tests" FILES ${TESTS})
 
 # Test Executable
 add_executable(pyspot-test ${TEST_SOURCES} ${TESTS})
-set_target_properties(pyspot-test PROPERTIES LINKER_LANGUAGE CXX)
 target_include_directories(pyspot-test PUBLIC
 	${PROJECT_SOURCE_DIR}/test/include
 	${PROJECT_BINARY_DIR}/test/include)

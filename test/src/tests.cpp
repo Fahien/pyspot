@@ -21,7 +21,7 @@ using namespace pytest;
 bool testHello()
 {
 	Interpreter interpreter{ "pytest", PyInit_Pytest, L"/test/script" };
-	Module pymodule{ interpreter.ImportModule("hello") };
+	Module pymodule{ "hello" };
 	try
 	{
 		Object result{ pymodule.CallFunction("hello") };
