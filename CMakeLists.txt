@@ -24,9 +24,10 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 find_package(PythonInterp 3)
 find_package(PythonLibraries)
 
-include_directories(${PST_SOURCE_DIR}
-					${PST_INCLUDE_DIR}
-					${PST_GEN_INCLUDE_DIR})
+set(PST_INCLUDE_DIRS
+	${PST_INCLUDE_DIR}
+	${PST_GEN_INCLUDE_DIR}
+	${PYTHON_INCLUDE_DIR})
 
 # Sources
 set(SOURCES
@@ -45,7 +46,7 @@ source_group(Sources FILES ${SOURCES})
 # Library
 add_library(pyspot ${SOURCES})
 target_link_libraries(pyspot ${PYTHON_LIBRARIES})
-target_include_directories(pyspot PUBLIC ${PYTHON_INCLUDE_DIR})
+target_include_directories(pyspot PUBLIC ${PST_INCLUDE_DIRS})
 
 
 # Generate the PytestExtension header
@@ -99,9 +100,10 @@ source_group("Tests" FILES ${TESTS})
 
 # Test Executable
 add_executable(pyspot-test ${TEST_SOURCES} ${TESTS})
-target_include_directories(pyspot-test PUBLIC
+target_include_directories(pyspot-test PRIVATE
 	${PROJECT_SOURCE_DIR}/test/include
-	${PROJECT_BINARY_DIR}/test/include)
+	${PROJECT_BINARY_DIR}/test/include
+	${PST_INCLUDE_DIRS})
 target_link_libraries(pyspot-test pyspot)
 file(COPY ${PROJECT_SOURCE_DIR}/test/script DESTINATION ${PROJECT_BINARY_DIR}/test)
 
