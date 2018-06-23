@@ -10,6 +10,17 @@
 {% endfor %}
 #include <structmember.h> // at the end
 
+{%- set member_list = [] %}
+{%- set member_parsers = [] %}
+{%- for member in members %}
+	{%- set _ = member.update(static='a%s%s%s' % (Extension, Component, member['name']|capitalize)) %}
+	{%- set _ = member_list.append(member['static']) %}
+	{%- set _ = member_parsers.append(parser_for_type(member['type'])) %}
+	{%- set _ = member_list.append('nullptr') %}
+
+static char {{ member['static'] }}[{{ member['name']|length + 1 }}] = { {{ '"%s"' % member['name'] }} };
+{%- endfor %}
+
 /// {{ Component }}
 struct {{ Extension ~ Component }}
 {
@@ -71,16 +82,8 @@ static int {{ Extension ~ Component }}_Init({{ Extension ~ Component }}* self, P
 		{%- endif %}
 	{%- endfor %}
 
-	{%- set member_list = [] %}
-	{%- set member_parsers = [] %}
-	{%- for member in members %}
-		{%- set _ = member_list.append('"%s"' % member['name']) %}
-		{%- set _ = member_parsers.append(parser_for_type(member['type'])) %}
-	{%- endfor %}
-	{%- set _ = member_list.append('nullptr') %}
-
 	static char* kwlist[]{ {{ member_list|join(', ') }} };
-	static char* fmt{ "|{{ member_parsers|join() }}" };
+	static const char* fmt{ "|{{ member_parsers|join() }}" };
 
 	if (!PyArg_ParseTupleAndKeywords(args, kwds, fmt, kwlist
 		{%- for member in members %}, &{{ 'self->' if is_builtin_type(member['type']) }}{{ member['name'] }}{%- endfor %}))
@@ -109,7 +112,7 @@ static PyMemberDef {{ Extension ~ Component }}_members[]
 {
 	{%- for member in members %}
 	{%- if is_builtin_type(member['type']) %}
-	{ "{{ member['name'] }}", {{ pytype_for_type(member['type']) }}, offsetof({{ Extension ~ Component }}, {{ member['name'] }}), 0, "{{ member['name'] }}" },
+	{ {{ member['static'] }}, {{ pytype_for_type(member['type']) }}, offsetof({{ Extension ~ Component }}, {{ member['name'] }}), 0, {{ member['static'] }} },
 	{%- endif %}
 	{%- endfor %}
 	{ nullptr } // Sentinel
@@ -155,7 +158,7 @@ static PyGetSetDef {{ Extension ~ Component }}_accessors[]
 {
 	{%- for member in members %}
 	{%- if not is_builtin_type(member['type']) %}
-	{ "{{ member['name'] }}", (getter){{ Extension ~ Component }}_Get{{ member['name']|capitalize }}, (setter){{ Extension + Component }}_Set{{ member['name']|capitalize }}, "{{ member['name']|capitalize }}", nullptr },
+	{ {{ member['static'] }}, (getter){{ Extension ~ Component }}_Get{{ member['name']|capitalize }}, (setter){{ Extension + Component }}_Set{{ member['name']|capitalize }}, {{ member['static'] }}, nullptr },
 	{%- endif %}
 	{%- endfor %}
 	{ nullptr } // Sentinel
