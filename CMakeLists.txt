@@ -3,12 +3,12 @@ cmake_minimum_required(VERSION 3.6)
 set(CMAKE_C_STANDARD   11)
 set(CMAKE_CXX_STANDARD 11)
 
-project(PySpoT)
+set(PST_TITLE PySpot)
+project(${PST_TITLE} C CXX)
 
 # Version number
 set(PST_VERSION_MAJOR 0)
 set(PST_VERSION_MINOR 3)
-set(PST_TITLE PySpoT)
 
 # Source dir
 set(PST_SOURCE_DIR  ${PROJECT_SOURCE_DIR}/src)
@@ -19,13 +19,14 @@ set(PST_GEN_INCLUDE_DIR ${PROJECT_BINARY_DIR}/include)
 configure_file(${PST_SOURCE_DIR}/Config.h.in
 			   ${PST_GEN_INCLUDE_DIR}/Config.h)
 
+# CMake modules
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 find_package(PythonInterp 3)
-find_package(PythonLibs   3)
+find_package(PythonLibraries)
 
 include_directories(${PST_SOURCE_DIR}
 					${PST_INCLUDE_DIR}
-					${PST_GEN_INCLUDE_DIR}
-					${PYTHON_INCLUDE_DIR})
+					${PST_GEN_INCLUDE_DIR})
 
 # Sources
 set(SOURCES
@@ -44,7 +45,7 @@ source_group(Sources FILES ${SOURCES})
 # Library
 add_library(pyspot ${SOURCES})
 target_link_libraries(pyspot ${PYTHON_LIBRARIES})
-
+target_include_directories(pyspot PUBLIC ${PYTHON_INCLUDE_DIR})
 
 
 # Generate the PytestExtension header
