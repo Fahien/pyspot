@@ -11,6 +11,11 @@ String::String(PyObject* object)
 {}
 
 
+String::String(const std::string& str)
+: String{ str.c_str() }
+{}
+
+
 String::String(const char* str)
 :	String{ PyUnicode_FromString(str) }
 {}

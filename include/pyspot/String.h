@@ -10,6 +10,7 @@ class String : public Object
 {
   public:
 	String(PyObject* object);
+	String(const std::string& str);
 	String(const char* str);
 	~String();
 
