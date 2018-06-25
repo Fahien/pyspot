@@ -14,22 +14,22 @@ class Interpreter
 {
 public:
 	Interpreter();
-	Interpreter(const wchar_t* dir);
-	Interpreter(const std::wstring& dir);
-	Interpreter(const char* import, PyObject* (*function)(void));
-	Interpreter(const char* import, PyObject* (*function)(void), const wchar_t* dir);
-	Interpreter(const char* import, PyObject* (*function)(void), const std::wstring& dir);
+	Interpreter(const char* dir);
+	Interpreter(const std::string& dir);
+	Interpreter(const char* import, void (*function)(void));
+	Interpreter(const char* import, void (*function)(void), const char* dir);
+	Interpreter(const char* import, void (*function)(void), const std::string& dir);
 	~Interpreter();
 
 	Module ImportModule(const char* name);
 	Module ImportModule(const std::string& name);
 
 private:
-	void addToPath (const wchar_t* dir);
+	void addToPath (const char* dir);
 
-	void initialize(const wchar_t* dir);
+	void initialize(const char* dir);
 
-	std::wstring mPath;
+	std::string mPath;
 };
 
 }

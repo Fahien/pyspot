@@ -4,9 +4,9 @@
 #include "pyspot/Exception.h"
 
 #ifdef _WIN32
-# define PATH_SEP L";"
+# define PATH_SEP ";"
 #else
-# define PATH_SEP L":"
+# define PATH_SEP ":"
 #endif
 
 using namespace pyspot;
@@ -14,27 +14,27 @@ using namespace pyspot;
 
 Interpreter::Interpreter()
 {
-	initialize(L"/script");
+	initialize("/script");
 }
 
 
-Interpreter::Interpreter(const wchar_t* dir)
+Interpreter::Interpreter(const char* dir)
 {
 	initialize(dir);
 }
 
 
-Interpreter::Interpreter(const std::wstring& dir)
+Interpreter::Interpreter(const std::string& dir)
 :	Interpreter{ dir.c_str() }
 {}
 
 
-Interpreter::Interpreter(const char* import, PyObject* (*function)(void))
-:	Interpreter{ import, function, L"/script" }
+Interpreter::Interpreter(const char* import, void (*function)(void))
+:	Interpreter{ import, function, "/script" }
 {}
 
 
-Interpreter::Interpreter(const char* import, PyObject* (*function)(void), const wchar_t* dir)
+Interpreter::Interpreter(const char* import, void (*function)(void), const char* dir)
 {
 	if (PyImport_AppendInittab(import, function) < 0)
 	{
@@ -44,7 +44,7 @@ Interpreter::Interpreter(const char* import, PyObject* (*function)(void), const 
 }
 
 
-Interpreter::Interpreter(const char* import, PyObject* (*function)(void), const std::wstring& dir)
+Interpreter::Interpreter(const char* import, void (*function)(void), const std::string& dir)
 :	Interpreter{ import, function, dir.c_str() }
 {}
 
@@ -55,7 +55,7 @@ Interpreter::~Interpreter()
 }
 
 
-void Interpreter::initialize(const wchar_t* dir)
+void Interpreter::initialize(const char * dir)
 {
 	Py_Initialize();
 	addToPath(dir);
@@ -74,10 +74,10 @@ Module Interpreter::ImportModule(const char* name)
 }
 
 
-void Interpreter::addToPath(const wchar_t* folder)
+void Interpreter::addToPath(const char* folder)
 {
-	Module os { ImportModule("os") };
-	Object cwd{ os.CallFunction("getcwd") };
-	std::wstring path{ Py_GetPath() + (PATH_SEP + cwd.ToString()) + folder };
-	PySys_SetPath(path.c_str());
+	std::string path{ Py_GetPath() };
+	path += PATH_SEP;
+	path += folder;
+	PySys_SetPath(&path[0]);
 }

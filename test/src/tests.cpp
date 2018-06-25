@@ -13,6 +13,8 @@
 #include "pytest/input/Key.h"
 #include "pytest/input/Action.h"
 
+#include <iostream>
+
 
 using namespace pyspot;
 using namespace pytest;
@@ -20,12 +22,12 @@ using namespace pytest;
 
 bool testHello()
 {
-	Interpreter interpreter{ "pytest", PyInit_Pytest, L"/test/script" };
+	Interpreter interpreter{ "pytest", PyInit_Pytest, "/test/script" };
 	Module pymodule{ "hello" };
 	try
 	{
 		Object result{ pymodule.CallFunction("hello") };
-		printf("Test Hello result = %ls\n", result.ToString().c_str());
+		printf("Test Hello result = %s\n", result.ToString().c_str());
 	}
 	catch (const Exception& ex)
 	{
@@ -42,7 +44,7 @@ bool test2()
 	try
 	{
 		Object result{ pymodule.CallFunction("hello") };
-		printf("Test 2 result = %ls\n", result.ToString().c_str());
+		printf("Test 2 result = %s\n", result.ToString().c_str());
 	}
 	catch (const Exception & ex)
 	{
@@ -63,8 +65,8 @@ bool testArgs()
 	try
 	{
 		Object result{ pymodule.CallFunction("readargs", arguments) };
-		printf("Test Arg result = %ls\n", result.ToString().c_str());
-		printf("Test Arg name = %ls\n", name.ToString().c_str());
+		printf("Test Arg result = %s\n", result.ToString().c_str());
+		printf("Test Arg name = %s\n", name.ToString().c_str());
 	}
 	catch (const Exception & ex)
 	{
@@ -76,11 +78,15 @@ bool testArgs()
 
 bool testSingle()
 {
-	Interpreter interpreter{ "pytest", PyInit_Pytest, L"/test/script" };
+	Interpreter interpreter{ "pytest", PyInit_Pytest, "/test/script" };
+	printf("Interpreter..");
 	Module pymodule{ interpreter.ImportModule("script") };
+	printf("Module..");
 
 	component::Single single{ 4.0f };
+	printf("Single..");
 	Tuple args{ single };
+	printf("Tuple..");
 	pymodule.CallFunction("test_single", args);
 	printf("Result: %f\n", single.GetPrice());
 	return true;
@@ -89,24 +95,31 @@ bool testSingle()
 
 bool testString()
 {
-	Interpreter interpreter{ "pytest", PyInit_Pytest, L"/test/script" };
-	Module pymodule{ interpreter.ImportModule("script") };
-
-	String name{ "TestName" };
-	component::String container{ name };
-
-	printf("Name: %ls\n", name.ToCString());
-
-	printf("Test3: test_string\n");
-	Tuple args{ container };
+	Interpreter interpreter{ "pytest", PyInit_Pytest, "/test/script" };
 	try
 	{
-		pymodule.CallFunction("test_string", args);
-		printf("Result: %ls\n", container.GetName().ToCString());
+		Module pymodule{ interpreter.ImportModule("script") };
+
+		String name{ "TestName" };
+		component::String container{ name };
+
+		printf("Name: %s\n", name.ToCString());
+
+		printf("Test3: test_string\n");
+		Tuple args{ container };
+		try
+		{
+			pymodule.CallFunction("test_string", args);
+			printf("Result: %s\n", container.GetName().ToCString());
+		}
+		catch (const Exception & ex)
+		{
+			printf("Error correctly captured: %s\n", ex.what());
+		}
 	}
-	catch (const Exception & ex)
+	catch(Exception& e)
 	{
-		printf("Error correctly captured: %s\n", ex.what());
+		std::cout << e.what() << std::endl;
 	}
 
 	return true;
@@ -115,7 +128,7 @@ bool testString()
 
 bool testTest()
 {
-	Interpreter interpreter{ "pytest", PyInit_Pytest, L"/test/script" };
+	Interpreter interpreter{ "pytest", PyInit_Pytest, "/test/script" };
 	Module pymodule{ interpreter.ImportModule("script") };
 
 	component::Test test{ 2, 4.0f };
@@ -128,7 +141,7 @@ bool testTest()
 
 bool testTransform()
 {
-	Interpreter interpreter{ "pytest", PyInit_Pytest, L"/test/script" };
+	Interpreter interpreter{ "pytest", PyInit_Pytest, "/test/script" };
 	Module pymodule{ interpreter.ImportModule("script") };
 
 	component::Transform transform{};
@@ -155,7 +168,7 @@ bool testTransform()
 
 bool testInput()
 {
-	Interpreter interpreter{ "pytest", PyInit_Pytest, L"/test/script" };
+	Interpreter interpreter{ "pytest", PyInit_Pytest, "/test/script" };
 	Module pymodule{ interpreter.ImportModule("script") };
 
 	input::Key k{ input::Key::LEFT };
@@ -169,7 +182,7 @@ bool testInput()
 
 bool testMap()
 {
-	Interpreter interpreter{ "import/Map", PyInit_Pytest, L"/test/script" };
+	Interpreter interpreter{ "import/Map", PyInit_Pytest, "/test/script" };
 	Module module{ interpreter.ImportModule("map") };
 	
 	component::Transform transform{};
@@ -195,7 +208,7 @@ bool testMap()
 
 bool testDictionary()
 {
-	Interpreter interpreter{ "import/Map", PyInit_Pytest, L"/test/script" };
+	Interpreter interpreter{ "import/Map", PyInit_Pytest, "/test/script" };
 	Module module{ interpreter.ImportModule("map") };
 
 	component::Transform transform{};

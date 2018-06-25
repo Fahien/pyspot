@@ -3,7 +3,7 @@ import pytest
 
 
 def test_single(c):
-	print('Pytest module: ', end='')
+	print 'Pytest module: ',
 	print(dir(pytest))
 
 	try:
@@ -21,7 +21,7 @@ def test_single(c):
 
 
 def test_string(c):
-	print('Pytest module: ', end='')
+	print 'Pytest module: ',
 	print(dir(pytest))
 
 	try:
@@ -39,7 +39,7 @@ def test_string(c):
 
 
 def test_component(b):
-	print('Pytest module: ', end='')
+	print 'Pytest module: ',
 	print(dir(pytest))
 
 	print('Invoking Pytest')
@@ -64,7 +64,7 @@ def test_component(b):
 
 
 def test_transform(transform):
-	print('Pytest module: ', end='')
+	print 'Pytest module: ',
 	print(dir(pytest))
 	
 	try:

@@ -23,8 +23,8 @@ public:
 	PyObject* GetObject() const { return mObject; }
 	PyObject* GetIncref() const { Py_INCREF(mObject); return mObject; }
 
-	const wchar_t* ToCString() const { return PyUnicode_AS_UNICODE(mObject); }
-	std::wstring   ToString()  const { return ToCString(); }
+	const char* ToCString() const { return PyString_AsString(mObject); }
+	std::string ToString()  const { return ToCString(); }
 
 protected:
 	PyObject* mObject;

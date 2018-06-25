@@ -46,6 +46,7 @@ source_group(Sources FILES ${SOURCES})
 # Library
 add_library(pyspot ${SOURCES})
 target_link_libraries(pyspot ${PYTHON_LIBRARIES})
+set(PYSPOT_LIBRARIES pyspot ${PYTHON_LIBRARIES})
 target_include_directories(pyspot PUBLIC ${PST_INCLUDE_DIRS})
 
 
@@ -104,7 +105,7 @@ target_include_directories(pyspot-test PRIVATE
 	${PROJECT_SOURCE_DIR}/test/include
 	${PROJECT_BINARY_DIR}/test/include
 	${PST_INCLUDE_DIRS})
-target_link_libraries(pyspot-test pyspot)
+target_link_libraries(pyspot-test ${PYSPOT_LIBRARIES})
 file(COPY ${PROJECT_SOURCE_DIR}/test/script DESTINATION ${PROJECT_BINARY_DIR}/test)
 
 # Test

@@ -20,27 +20,27 @@ static PyMethodDef pstMethods[] = {
 	{ nullptr, nullptr, 0, nullptr } // Sentinel
 };
 
-static struct PyModuleDef moduleDef
-{
-	PyModuleDef_HEAD_INIT,
-	"{{ extension }}",
-	nullptr,
-	sizeof(ModuleState),
-	pstMethods,
-	nullptr,
-	nullptr,
-	nullptr,
-	nullptr,
-};
+//static struct PyModuleDef moduleDef
+//{
+//	PyVarObject_HEAD_INIT(NULL, 0)
+//	"{{ extension }}",
+//	nullptr,
+//	sizeof(ModuleState),
+//	pstMethods,
+//	nullptr,
+//	nullptr,
+//	nullptr,
+//	nullptr,
+//};
 
 
 PyMODINIT_FUNC PyInit_{{ Extension }}()
 {
 	// Create the module
-	PyObject* module{ PyModule_Create(&moduleDef) };
+	PyObject* module{ Py_InitModule("{{ extension }}", pstMethods) };
 	if (module == nullptr)
 	{
-		return nullptr;
+		return;
 	}
 
 	// Module exception
@@ -51,7 +51,7 @@ PyMODINIT_FUNC PyInit_{{ Extension }}()
 {% for component in components %}
 	if (PyType_Ready(&{{ extension ~ component['name'] }}) < 0)
 	{
-		return nullptr;
+		return;
 	}
 	{%- if 'values' in component %}
 	{%- for key, val in component['values'].items() %}
@@ -61,6 +61,4 @@ PyMODINIT_FUNC PyInit_{{ Extension }}()
 	Py_INCREF(&{{ extension ~ component['name'] }});
 	PyModule_AddObject(module, "{{ component['name'] }}", reinterpret_cast<PyObject*>(&{{ extension ~ component['name'] }}));
 {% endfor %}
-
-	return module;
 }
