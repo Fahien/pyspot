@@ -62,18 +62,6 @@ void Interpreter::initialize(const char * dir)
 }
 
 
-Module Interpreter::ImportModule(const std::string& name)
-{
-	return ImportModule(name.c_str());
-}
-
-
-Module Interpreter::ImportModule(const char* name)
-{
-	return Module{ String{ name } };
-}
-
-
 void Interpreter::addToPath(const char* folder)
 {
 	std::string path{ Py_GetPath() };

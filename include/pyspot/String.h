@@ -14,10 +14,11 @@ class String : public Object
 	String(const char* str);
 	~String();
 
-	const char* ToCString() const { return mCStr; }
+	std::string ToString() const { return mStr; }
+	const char* ToCString() const { return mStr.c_str(); }
 
   private:
-	const char* mCStr;
+	const std::string mStr;
 };
 
 }

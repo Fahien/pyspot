@@ -7,7 +7,7 @@ using namespace pyspot;
 
 String::String(PyObject* object)
 :	Object{ object }
-,	mCStr{ Object::ToCString() }
+,	mStr{ Object::ToString() }
 {}
 
 
@@ -17,7 +17,8 @@ String::String(const std::string& str)
 
 
 String::String(const char* str)
-:	String{ PyUnicode_FromString(str) }
+:	Object{ PyUnicode_FromString(str) }
+,	mStr{ str }
 {}
 
 

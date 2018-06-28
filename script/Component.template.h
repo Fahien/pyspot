@@ -11,15 +11,14 @@
 #include <structmember.h> // at the end
 
 {%- set member_list = [] %}
-{%- set member_parsers = [] %}
+{% set member_parsers = [] %}
 {%- for member in members %}
 	{%- set _ = member.update(static='a%s%s%s' % (Extension, Component, member['name']|capitalize)) %}
 	{%- set _ = member_list.append(member['static']) %}
 	{%- set _ = member_parsers.append(parser_for_type(member['type'])) %}
-	{%- set _ = member_list.append('nullptr') %}
-
 static char {{ member['static'] }}[{{ member['name']|length + 1 }}] = { {{ '"%s"' % member['name'] }} };
 {%- endfor %}
+{%- set _ = member_list.append('nullptr') %}
 
 /// {{ Component }}
 struct {{ Extension ~ Component }}
@@ -270,7 +269,7 @@ class {{ Component }} : public pyspot::Object
 		return reinterpret_cast<{{ Extension ~ Component }}*>(GetObject());
 	}
 
-	{%- for member in members %}
+{% for member in members %}
 	{%- set pyspot_type = pyspot_for_type(extension, member['type']) %}
 	{{ pyspot_type }} Get{{ member['name']|capitalize }}()
 	{
@@ -280,7 +279,7 @@ class {{ Component }} : public pyspot::Object
 		return {{ pyspot_type }}{ {{ Extension ~ Component }}_Get{{ member['name']|capitalize }}(GetComponent(), nullptr) };
 		{%- endif %}
 	}
-	{%- endfor %}
+{% endfor %}
 };
 
 }

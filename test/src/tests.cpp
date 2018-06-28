@@ -1,5 +1,6 @@
 #include "tests.h"
 #include "pyspot/Interpreter.h"
+#include "pyspot/Module.h"
 #include "pyspot/Exception.h"
 #include "pyspot/Tuple.h"
 #include "pyspot/String.h"
@@ -40,7 +41,7 @@ bool testHello()
 bool test2()
 {
 	Interpreter interpreter{ "pytest", PyInit_Pytest };
-	Module pymodule{ interpreter.ImportModule("hello") };
+	Module pymodule{ "hello" };
 	try
 	{
 		Object result{ pymodule.CallFunction("hello") };
@@ -57,7 +58,7 @@ bool test2()
 bool testArgs()
 {
 	Interpreter interpreter{ "pytest", PyInit_Pytest };
-	Module pymodule{ interpreter.ImportModule("hello") };
+	Module pymodule{ "hello" };
 
 	String name{ "TestArg" };
 	Tuple arguments{ name };
@@ -80,7 +81,7 @@ bool testSingle()
 {
 	Interpreter interpreter{ "pytest", PyInit_Pytest, "/test/script" };
 	printf("Interpreter..");
-	Module pymodule{ interpreter.ImportModule("script") };
+	Module pymodule{ "script" };
 	printf("Module..");
 
 	component::Single single{ 4.0f };
@@ -98,7 +99,7 @@ bool testString()
 	Interpreter interpreter{ "pytest", PyInit_Pytest, "/test/script" };
 	try
 	{
-		Module pymodule{ interpreter.ImportModule("script") };
+		Module pymodule{ "script" };
 
 		String name{ "TestName" };
 		component::String container{ name };
@@ -129,7 +130,7 @@ bool testString()
 bool testTest()
 {
 	Interpreter interpreter{ "pytest", PyInit_Pytest, "/test/script" };
-	Module pymodule{ interpreter.ImportModule("script") };
+	Module pymodule{ "script" };
 
 	component::Test test{ 2, 4.0f };
 	Tuple args{ test };
@@ -142,7 +143,7 @@ bool testTest()
 bool testTransform()
 {
 	Interpreter interpreter{ "pytest", PyInit_Pytest, "/test/script" };
-	Module pymodule{ interpreter.ImportModule("script") };
+	Module pymodule{ "script" };
 
 	component::Transform transform{};
 	Tuple args{ transform };
@@ -169,7 +170,7 @@ bool testTransform()
 bool testInput()
 {
 	Interpreter interpreter{ "pytest", PyInit_Pytest, "/test/script" };
-	Module pymodule{ interpreter.ImportModule("script") };
+	Module pymodule{ "script" };
 
 	input::Key k{ input::Key::LEFT };
 	input::Action a{ input::Action::RELEASE };
@@ -183,7 +184,7 @@ bool testInput()
 bool testMap()
 {
 	Interpreter interpreter{ "import/Map", PyInit_Pytest, "/test/script" };
-	Module module{ interpreter.ImportModule("map") };
+	Module module{ "map" };
 	
 	component::Transform transform{};
 	Tuple args{ transform };
@@ -209,7 +210,7 @@ bool testMap()
 bool testDictionary()
 {
 	Interpreter interpreter{ "import/Map", PyInit_Pytest, "/test/script" };
-	Module module{ interpreter.ImportModule("map") };
+	Module module{ "map" };
 
 	component::Transform transform{};
 	Dictionary dict{};

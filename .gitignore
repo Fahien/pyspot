@@ -2,3 +2,4 @@
 build
 include/Config.h
 __pycache__
+*.sh

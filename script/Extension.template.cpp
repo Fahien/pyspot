@@ -20,19 +20,8 @@ static PyMethodDef pstMethods[] = {
 	{ nullptr, nullptr, 0, nullptr } // Sentinel
 };
 
-//static struct PyModuleDef moduleDef
-//{
-//	PyVarObject_HEAD_INIT(NULL, 0)
-//	"{{ extension }}",
-//	nullptr,
-//	sizeof(ModuleState),
-//	pstMethods,
-//	nullptr,
-//	nullptr,
-//	nullptr,
-//	nullptr,
-//};
 
+static char a{{ Extension }}Error[{{ extension|length + 7 }}] = { "{{ extension }}.error" };
 
 PyMODINIT_FUNC PyInit_{{ Extension }}()
 {
@@ -44,7 +33,7 @@ PyMODINIT_FUNC PyInit_{{ Extension }}()
 	}
 
 	// Module exception
-	pstError = PyErr_NewException("{{ extension }}.error", nullptr, nullptr);
+	pstError = PyErr_NewException(a{{ Extension }}Error, nullptr, nullptr);
 	Py_INCREF(pstError);
 	PyModule_AddObject(module, "error", pstError);
 

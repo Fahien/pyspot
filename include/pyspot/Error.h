@@ -11,6 +11,7 @@ namespace pyspot
 class Error
 {
   public:
+	static void Check();
 	static std::string Get();
 };
 

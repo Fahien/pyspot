@@ -1,7 +1,5 @@
 #include "pyspot/Tuple.h"
 
-#include <cassert>
-
 using namespace pyspot;
 
 

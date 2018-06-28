@@ -9,22 +9,23 @@ using namespace pyspot;
 
 
 Module::Module(const char* name)
+:	Object{ PyImport_ImportModule(name) }
+,	mName{ name }
 {
-	mObject = PyImport_ImportModule(name);
-	if (PyErr_Occurred() || !mObject)
-	{
-		throw Exception{ Error::Get() };
-	}
+	Error::Check();
 }
 
 
+Module::Module(const std::string& name)
+:	Module{ name.c_str() }
+{}
+
+
 Module::Module(const String& name)
+:	Object{ PyImport_Import(name.GetObject()) }
+,	mName{ name.ToString() }
 {
-	mObject = PyImport_Import(name.GetObject());
-	if (PyErr_Occurred() || !mObject)
-	{
-		throw Exception{ Error::Get() };
-	}
+	Error::Check();
 }
 
 
