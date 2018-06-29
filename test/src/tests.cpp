@@ -23,7 +23,7 @@ using namespace pytest;
 
 bool testHello()
 {
-	Interpreter interpreter{ "pytest", PyInit_Pytest, "/test/script" };
+	Interpreter interpreter{ "pytest", PyInit_Pytest, "test/script" };
 	Module pymodule{ "hello" };
 	try
 	{
@@ -79,7 +79,7 @@ bool testArgs()
 
 bool testSingle()
 {
-	Interpreter interpreter{ "pytest", PyInit_Pytest, "/test/script" };
+	Interpreter interpreter{ "pytest", PyInit_Pytest, "test/script" };
 	printf("Interpreter..");
 	Module pymodule{ "script" };
 	printf("Module..");
@@ -96,7 +96,7 @@ bool testSingle()
 
 bool testString()
 {
-	Interpreter interpreter{ "pytest", PyInit_Pytest, "/test/script" };
+	Interpreter interpreter{ "pytest", PyInit_Pytest, "test/script" };
 	try
 	{
 		Module pymodule{ "script" };
@@ -129,7 +129,7 @@ bool testString()
 
 bool testTest()
 {
-	Interpreter interpreter{ "pytest", PyInit_Pytest, "/test/script" };
+	Interpreter interpreter{ "pytest", PyInit_Pytest, "test/script" };
 	Module pymodule{ "script" };
 
 	component::Test test{ 2, 4.0f };
@@ -142,7 +142,7 @@ bool testTest()
 
 bool testTransform()
 {
-	Interpreter interpreter{ "pytest", PyInit_Pytest, "/test/script" };
+	Interpreter interpreter{ "pytest", PyInit_Pytest, "test/script" };
 	Module pymodule{ "script" };
 
 	component::Transform transform{};
@@ -169,7 +169,7 @@ bool testTransform()
 
 bool testInput()
 {
-	Interpreter interpreter{ "pytest", PyInit_Pytest, "/test/script" };
+	Interpreter interpreter{ "pytest", PyInit_Pytest, "test/script" };
 	Module pymodule{ "script" };
 
 	input::Key k{ input::Key::LEFT };
@@ -183,7 +183,7 @@ bool testInput()
 
 bool testMap()
 {
-	Interpreter interpreter{ "import/Map", PyInit_Pytest, "/test/script" };
+	Interpreter interpreter{ "import/Map", PyInit_Pytest, "test/script" };
 	Module module{ "map" };
 	
 	component::Transform transform{};
@@ -209,7 +209,7 @@ bool testMap()
 
 bool testDictionary()
 {
-	Interpreter interpreter{ "import/Map", PyInit_Pytest, "/test/script" };
+	Interpreter interpreter{ "import/Map", PyInit_Pytest, "test/script" };
 	Module module{ "map" };
 
 	component::Transform transform{};

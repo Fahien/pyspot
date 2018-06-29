@@ -3,3 +3,6 @@ build
 include/Config.h
 __pycache__
 *.sh
+python2.7
+*.pyc
+*.bat

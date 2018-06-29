@@ -45,8 +45,8 @@ source_group(Sources FILES ${SOURCES})
 
 # Library
 add_library(pyspot ${SOURCES})
-target_link_libraries(pyspot ${PYTHON_LIBRARIES})
-set(PYSPOT_LIBRARIES pyspot ${PYTHON_LIBRARIES})
+target_link_libraries(pyspot PUBLIC ${PYTHON_LIBRARIES})
+set(PYSPOT_LIBRARIES pyspot)
 target_include_directories(pyspot PUBLIC ${PST_INCLUDE_DIRS})
 
 
