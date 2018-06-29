@@ -1,7 +1,7 @@
 #ifndef PST_STRING_H_
 #define PST_STRING_H_
 
-#include "Object.h"
+#include "pyspot/Object.h"
 
 namespace pyspot
 {

@@ -1,7 +1,7 @@
 #ifndef PST_TUPLE_H_
 #define PST_TUPLE_H_
 
-#include "Object.h"
+#include "pyspot/Object.h"
 
 #include <initializer_list>
 

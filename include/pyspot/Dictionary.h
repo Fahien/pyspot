@@ -2,7 +2,8 @@
 #define PST_DICTIONARY_H_
 
 #include <string>
-#include "Object.h"
+
+#include "pyspot/Object.h"
 
 namespace pyspot
 {
