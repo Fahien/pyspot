@@ -49,6 +49,16 @@ target_link_libraries(pyspot PUBLIC ${PYTHON_LIBRARIES})
 set(PYSPOT_LIBRARIES pyspot)
 target_include_directories(pyspot PUBLIC ${PST_INCLUDE_DIRS})
 
+if(${CMAKE_SYSTEM_NAME} MATCHES "Android")
+	add_custom_command(
+		TARGET PRE_BUILD
+			${PYSPOT_LIBRARIES}
+		COMMAND
+			${CMAKE_COMMAND} -E copy
+			${CMAKE_CURRENT_SOURCE_DIR}/lib/${CMAKE_ANDROID_ARCH_ABI}/libpython2.7.so
+			${CMAKE_CURRENT_BINARY_DIR}/libpython2.7.so)
+endif()
+
 
 # Generate the PytestExtension header
 set(EXTENSION_NAME "Pytest")

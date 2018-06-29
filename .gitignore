@@ -6,3 +6,4 @@ __pycache__
 python2.7
 *.pyc
 *.bat
+*.so
