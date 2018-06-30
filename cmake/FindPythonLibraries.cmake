@@ -4,7 +4,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Android")
 	if(NOT TARGET ${PYTHON_NAME})
 		add_library(${PYTHON_NAME} SHARED IMPORTED)
 		set_target_properties(${PYTHON_NAME} PROPERTIES
-			IMPORTED_LOCATION ${CMAKE_CURRENT_BINARY_DIR}/libpython2.7.so)
+			IMPORTED_LOCATION ${CMAKE_BINARY_DIR}/libpython2.7.so)
 	endif()
 
 	set(PYTHON_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include/pyspot/android/python2.7)
