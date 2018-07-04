@@ -280,6 +280,12 @@ class {{ Component }} : public pyspot::Object
 		{%- endif %}
 	}
 {% endfor %}
+{%- if values %}
+	bool operator==(const long& other) const
+	{
+		return PyLong_AsLong(GetObject()) == other;
+	}
+{% endif %}
 };
 
 }
