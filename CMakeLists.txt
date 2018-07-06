@@ -36,7 +36,7 @@ set(SOURCES
 	${PST_SOURCE_DIR}/Object.cpp
 	${PST_SOURCE_DIR}/Long.cpp
 	${PST_SOURCE_DIR}/String.cpp
-	${PST_SOURCE_DIR}/Function.cpp
+	${PST_SOURCE_DIR}/Method.cpp
 	${PST_SOURCE_DIR}/Module.cpp
 	${PST_SOURCE_DIR}/Tuple.cpp
 	${PST_SOURCE_DIR}/Dictionary.cpp

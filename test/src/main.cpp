@@ -20,7 +20,8 @@ int main(void)
 			testTransform() &&
 			testInput() &&
 			testMap() &&
-			testDictionary()
+			testDictionary() &&
+			testBuildCustomPythonObject()
 		;
 	}
 	catch (exception& e)

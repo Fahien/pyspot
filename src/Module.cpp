@@ -1,5 +1,5 @@
 #include "pyspot/Module.h"
-#include "pyspot/Function.h"
+#include "pyspot/Method.h"
 #include "pyspot/String.h"
 #include "pyspot/Tuple.h"
 #include "pyspot/Exception.h"
@@ -33,27 +33,27 @@ Module::~Module()
 {}
 
 
-Object Module::CallFunction(const std::string& name)
+Object Module::Invoke(const std::string& name)
 {
-	auto pair = mFunctions.find(name);
-	if (pair == mFunctions.end())
+	auto pair = mMethods.find(name);
+	if (pair == mMethods.end())
 	{
-		mFunctions[name] = Function{ *this, name };
-		pair = mFunctions.find(name);
+		mMethods[name] = Method{ *this, name };
+		pair = mMethods.find(name);
 	}
 
-	return pair->second.Call();
+	return pair->second.Invoke();
 }
 
 
-Object Module::CallFunction(const std::string& name, const Tuple& args)
+Object Module::Invoke(const std::string& name, const Tuple& args)
 {
-	auto pair = mFunctions.find(name);
-	if (pair == mFunctions.end())
+	auto pair = mMethods.find(name);
+	if (pair == mMethods.end())
 	{
-		mFunctions[name] = Function{ *this, name };
-		pair = mFunctions.find(name);
+		mMethods[name] = Method{ *this, name };
+		pair = mMethods.find(name);
 	}
 
-	return pair->second.Call(args);
+	return pair->second.Invoke(args);
 }

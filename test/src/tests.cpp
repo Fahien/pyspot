@@ -17,6 +17,7 @@
 #include <iostream>
 
 
+using namespace std;
 using namespace pyspot;
 using namespace pytest;
 
@@ -27,29 +28,12 @@ bool testHello()
 	Module pymodule{ "hello" };
 	try
 	{
-		Object result{ pymodule.CallFunction("hello") };
+		Object result{ pymodule.Invoke("hello") };
 		printf("Test Hello result = %s\n", result.ToString().c_str());
 	}
 	catch (const Exception& ex)
 	{
 		printf("Error: %s\n", ex.what());
-	}
-	return true;
-}
-
-
-bool test2()
-{
-	Interpreter interpreter{ "pytest", PyInit_Pytest };
-	Module pymodule{ "hello" };
-	try
-	{
-		Object result{ pymodule.CallFunction("hello") };
-		printf("Test 2 result = %s\n", result.ToString().c_str());
-	}
-	catch (const Exception & ex)
-	{
-		printf("Error correctly captured: %s\n", ex.what());
 	}
 	return true;
 }
@@ -65,7 +49,7 @@ bool testArgs()
 
 	try
 	{
-		Object result{ pymodule.CallFunction("readargs", arguments) };
+		Object result{ pymodule.Invoke("readargs", arguments) };
 		printf("Test Arg result = %s\n", result.ToString().c_str());
 		printf("Test Arg name = %s\n", name.ToString().c_str());
 	}
@@ -88,7 +72,7 @@ bool testSingle()
 	printf("Single..");
 	Tuple args{ single };
 	printf("Tuple..");
-	pymodule.CallFunction("test_single", args);
+	pymodule.Invoke("test_single", args);
 	printf("Result: %f\n", single.GetPrice());
 	return true;
 }
@@ -110,7 +94,7 @@ bool testString()
 		Tuple args{ container };
 		try
 		{
-			pymodule.CallFunction("test_string", args);
+			pymodule.Invoke("test_string", args);
 			printf("Result: %s\n", container.GetName().ToCString());
 		}
 		catch (const Exception & ex)
@@ -134,7 +118,7 @@ bool testTest()
 
 	component::Test test{ 2, 4.0f };
 	Tuple args{ test };
-	pymodule.CallFunction("test_component", args);
+	pymodule.Invoke("test_component", args);
 	printf("Result: %d\n", test.GetValue());
 	return true;
 }
@@ -147,7 +131,7 @@ bool testTransform()
 
 	component::Transform transform{};
 	Tuple args{ transform };
-	pymodule.CallFunction("test_transform", args);
+	pymodule.Invoke("test_transform", args);
 	printf("Position: [%f, %f, %f]\n",
 	       transform.GetPosition().GetX(),
 	       transform.GetPosition().GetY(),
@@ -176,27 +160,27 @@ bool testInput()
 	input::Action a{ input::Action::RELEASE };
 	input::Input i{ k, a };
 	Tuple args{ i };
-	pymodule.CallFunction("test_input", args);
+	pymodule.Invoke("test_input", args);
 	return true;
 }
 
 
 bool testMap()
 {
-	Interpreter interpreter{ "import/Map", PyInit_Pytest, "test/script" };
+	Interpreter interpreter{ "pytest", PyInit_Pytest, "test/script" };
 	Module module{ "map" };
 	
 	component::Transform transform{};
 	Tuple args{ transform };
 
-	module.CallFunction("init_map", args);
+	module.Invoke("init_map", args);
 	printf("Position: [%f, %f, %f]\n",
 	       transform.GetPosition().GetX(),
 	       transform.GetPosition().GetY(),
 	       transform.GetPosition().GetZ()
 	);
 
-	module.CallFunction("test_map");
+	module.Invoke("test_map");
 	printf("Position: [%f, %f, %f]\n",
 	       transform.GetPosition().GetX(),
 	       transform.GetPosition().GetY(),
@@ -209,7 +193,7 @@ bool testMap()
 
 bool testDictionary()
 {
-	Interpreter interpreter{ "import/Map", PyInit_Pytest, "test/script" };
+	Interpreter interpreter{ "pytest", PyInit_Pytest, "test/script" };
 	Module module{ "map" };
 
 	component::Transform transform{};
@@ -217,19 +201,43 @@ bool testDictionary()
 	dict.SetItem("transform", transform);
 
 	Tuple args{ dict };
-	module.CallFunction("init_dict", args);
+	module.Invoke("init_dict", args);
 	printf("Position: [%f, %f, %f]\n",
 	       transform.GetPosition().GetX(),
 	       transform.GetPosition().GetY(),
 	       transform.GetPosition().GetZ()
 	);
 
-	module.CallFunction("test_dict");
+	module.Invoke("test_dict");
 	printf("Position: [%f, %f, %f]\n",
 	       transform.GetPosition().GetX(),
 	       transform.GetPosition().GetY(),
 	       transform.GetPosition().GetZ()
 	);
+
+	return true;
+}
+
+
+bool testBuildCustomPythonObject()
+{
+	Interpreter interpreter{ "pytest", PyInit_Pytest, "test/script" };
+
+	// Create a utils.Map
+	Module utils{ "utils" };
+	Dictionary map{ utils.Invoke("Map") };
+	assert(map.GetObject() != nullptr);
+
+	// Add a transform
+	component::Transform transform;
+	map.SetItem("transform", transform);
+
+	// Modify within script
+	Module module{ "map" };
+	module.Invoke("test_parameter", Tuple{ map });
+
+	cout << transform.GetPosition().GetX() << endl;
+	assert(transform.GetPosition().GetX() == 1.0f);
 
 	return true;
 }

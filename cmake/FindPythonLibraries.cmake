@@ -25,7 +25,7 @@ else()
 		add_library(${PYTHON_NAME} STATIC IMPORTED)
 		set_target_properties(${PYTHON_NAME} PROPERTIES
 			IMPORTED_LOCATION "$ENV{PYTHON27_PATH}/libs/python27.lib")
-		message("PYTHON: $ENV{PYTHON27_PATH}")
+		message(STATUS "Found PythonLibraries: $ENV{PYTHON27_PATH}")
 	endif()
 
 	set(PYTHON_INCLUDE_DIR "$ENV{PYTHON27_PATH}/include")

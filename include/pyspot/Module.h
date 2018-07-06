@@ -2,7 +2,7 @@
 #define PST_MODULE_H_
 
 #include "pyspot/Object.h"
-#include "pyspot/Function.h"
+#include "pyspot/Method.h"
 
 #include <map>
 #include <string>
@@ -24,12 +24,12 @@ public:
 
 	const std::string& GetName() const { return mName; }
 
-	Object CallFunction(const std::string& name);
-	Object CallFunction(const std::string& name, const Tuple& args);
+	Object Invoke(const std::string& name);
+	Object Invoke(const std::string& name, const Tuple& args);
 
 private:
 	const std::string mName;
-	std::map<const std::string, Function> mFunctions;
+	std::map<const std::string, Method> mMethods;
 };
 
 

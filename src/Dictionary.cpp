@@ -8,6 +8,11 @@ Dictionary::Dictionary()
 {}
 
 
+Dictionary::Dictionary(const Object& other)
+:	Object{ (PyDict_Check(other.GetObject()), other.GetIncref()) }
+{}
+
+
 Dictionary::~Dictionary()
 {
 	PyDict_Clear(mObject);

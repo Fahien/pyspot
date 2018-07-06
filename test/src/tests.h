@@ -12,6 +12,7 @@ bool testTransform();
 bool testInput();
 bool testMap();
 bool testDictionary();
+bool testBuildCustomPythonObject();
 
 
 #endif // PST_TEST_H_

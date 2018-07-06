@@ -1,8 +1,8 @@
 #!/usr/bin/python
 import pytest
-import data
+import utils
 
-entity = data.Map()
+entity = utils.Map()
 
 def init_map(transform):
 	transform.position.x = 1.0
@@ -13,7 +13,7 @@ def test_map():
 	entity.transform.position.x = 2.0
 
 
-dictionary = data.Map()
+dictionary = utils.Map()
 
 def init_dict(components):
 	dictionary.update(components)
@@ -21,3 +21,6 @@ def init_dict(components):
 
 def test_dict():
 	dictionary.transform.position.x = 4.0
+
+def test_parameter(passed_entity):
+	passed_entity.transform.position.x = 1.0

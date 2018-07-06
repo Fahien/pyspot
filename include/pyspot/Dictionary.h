@@ -15,6 +15,7 @@ class Dictionary : public Object
 {
   public:
 	Dictionary();
+	Dictionary(const Object& other);
 	~Dictionary();
 
 	void SetItem(const char* key, Object& val);
