@@ -72,9 +72,13 @@ static void {{ Extension ~ Component }}_Dealloc({{ Extension ~ Component }}* sel
 }
 
 
+/// {{ Component }} init
 static int {{ Extension ~ Component }}_Init({{ Extension ~ Component }}* self, PyObject* args, PyObject* kwds)
 {
-	PyObject* temp{ nullptr };
+	{%- for member in members %}
+		{%- if not is_builtin_type(member['type']) %}PyObject* temp{ nullptr };{% break %}{%- endif %}
+	{%- endfor %}
+
 	{%- for member in members %}
 		{%- if not is_builtin_type(member['type']) %}
 	PyObject* {{ member['name'] }}{ nullptr };

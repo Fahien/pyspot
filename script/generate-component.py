@@ -94,7 +94,7 @@ def main():
 	template_name = 'Component.template.h'
 	try:
 		with open(template_name) as template_file:
-			template = Template(template_file.read())
+			template = Template(template_file.read(), extensions=['jinja2.ext.loopcontrols'])
 	except FileNotFoundError:
 		exit('Cannot render template: %s not found' % template_name)
 
