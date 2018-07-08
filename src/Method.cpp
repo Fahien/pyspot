@@ -9,15 +9,25 @@
 using namespace pyspot;
 
 
-Method::Method() {}
-
-
 Method::Method(const Module& module, const std::string& name)
-:   Object{ PyObject_GetAttrString(module.GetObject(), name.c_str()) }
+:	Object{ PyObject_GetAttrString(module.GetObject(), name.c_str()) }
+,	mName{ name }
 {
 	if (!mObject || !PyCallable_Check(mObject))
 	{
-		throw Exception{ "Not a method" };
+		throw Exception{ _T("Not a method") };
+	}
+}
+
+
+
+Method::Method(const Module& module, const String& name)
+:	Object{ PyObject_GetAttr(module.GetObject(), name.GetObject()) }
+,	mName{ name.ToString() }
+{
+	if (!mObject || !PyCallable_Check(mObject))
+	{
+		throw Exception{ _T("Not a method") };
 	}
 }
 

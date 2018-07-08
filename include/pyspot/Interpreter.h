@@ -4,6 +4,8 @@
 #include <string>
 #include <Python.h>
 
+#include "pyspot/common.h"
+
 
 namespace pyspot
 {
@@ -11,20 +13,16 @@ namespace pyspot
 class Interpreter
 {
 public:
-	Interpreter();
-	Interpreter(const char* dir);
-	Interpreter(const std::string& dir);
-	Interpreter(const char* import, void (*function)(void));
-	Interpreter(const char* import, void (*function)(void), const char* dir);
-	Interpreter(const char* import, void (*function)(void), const std::string& dir);
+	Interpreter(const string& dir = _T("script"));
+	Interpreter(const char* import, init_f function, const string& dir = _T("script"));
 	~Interpreter();
 
 private:
-	void addToPath (const char* dir);
+	void addToPath (const string& dir);
 
-	void initialize(const char* dir);
+	void initialize(const string& dir);
 
-	std::string mPath;
+	string mPath;
 };
 
 }

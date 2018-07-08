@@ -16,8 +16,8 @@ Module::Module(const char* name)
 }
 
 
-Module::Module(const std::string& name)
-:	Module{ name.c_str() }
+Module::Module(const string& name)
+:	Module{ String{ name } }
 {}
 
 
@@ -38,7 +38,7 @@ Object Module::Invoke(const std::string& name)
 	auto pair = mMethods.find(name);
 	if (pair == mMethods.end())
 	{
-		mMethods[name] = Method{ *this, name };
+		mMethods.emplace(name, Method{ *this, name });
 		pair = mMethods.find(name);
 	}
 
@@ -51,7 +51,7 @@ Object Module::Invoke(const std::string& name, const Tuple& args)
 	auto pair = mMethods.find(name);
 	if (pair == mMethods.end())
 	{
-		mMethods[name] = Method{ *this, name };
+		mMethods.emplace(name, Method{ *this, name });
 		pair = mMethods.find(name);
 	}
 

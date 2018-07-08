@@ -3,6 +3,8 @@
 
 #include <string>
 
+#include "pyspot/common.h"
+
 
 namespace pyspot
 {
@@ -12,7 +14,7 @@ class Error
 {
   public:
 	static void Check();
-	static std::string Get();
+	static string Get();
 };
 
 

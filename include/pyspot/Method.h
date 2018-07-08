@@ -2,6 +2,7 @@
 #define PST_METHOD_H_
 
 #include "pyspot/Object.h"
+#include "pyspot/String.h"
 
 namespace pyspot
 {
@@ -14,12 +15,17 @@ class Tuple;
 class Method : public Object
 {
 public:
-	Method();
 	Method(const Module& module, const std::string& name);
+	Method(const Module& module, const String& name);
 	~Method();
+
+	const std::string& GetName() const { return mName; }
 
 	Object Invoke() const;
 	Object Invoke(const Tuple& args) const;
+
+private:
+	const std::string mName;
 };
 
 

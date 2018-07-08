@@ -5,6 +5,8 @@ import sys
 import json
 from jinja2 import Template
 
+PYTHON = {}
+
 
 def prepare_header(name):
 	"""Prepares dictionary template for the header"""
@@ -58,22 +60,25 @@ def render_template(template_name, dictionary, out_path=None):
 def create_header(name, out_path=None):
 	"""Creates the Extension header"""
 	dictionary = prepare_header(name)
-	render_template('Extension.template.h', dictionary, out_path)
+	render_template(PYTHON["version"] + '/Extension.template.h', dictionary, out_path)
 
 
 def create_source(extension_dir, name, methods, components, out_path=None):
 	"""Creates the Extension source"""
 	dictionary = prepare_source(extension_dir, name, methods, components)
-	render_template('Extension.template.cpp', dictionary, out_path)
+	render_template(PYTHON["version"] + '/Extension.template.cpp', dictionary, out_path)
 
 
 def main():
 	"""Entry point"""
-	if len(sys.argv) < 2:
-		exit('Usage: %s extension.json [-h] [<output path>]' % sys.argv[0])
+	if len(sys.argv) < 3:
+		exit('Usage: %s <python version> <extension.json> [-h] [<output path>]' % sys.argv[0])
+
+	# Get python version
+	PYTHON["version"] = sys.argv[1]
 
 	# Get the json path
-	extension = sys.argv[1]
+	extension = sys.argv[2]
 	extension_dir = os.path.dirname(extension)
 
 	# Read the json file
@@ -86,13 +91,13 @@ def main():
 	name = data['name']
 
 	# Check the header switch
-	if len(sys.argv) >= 3 and sys.argv[2] == '-h':
-		if len(sys.argv) == 4:
-			output_path = sys.argv[3]
+	if len(sys.argv) >= 4 and sys.argv[3] == '-h':
+		if len(sys.argv) == 5:
+			output_path = sys.argv[4]
 		create_header(name, output_path)
 	else:
-		if len(sys.argv) == 3:
-			output_path = sys.argv[2]
+		if len(sys.argv) == 4:
+			output_path = sys.argv[3]
 		methods    = data['methods']
 		components = data['components']
 		create_source(extension_dir, name, methods, components, output_path)

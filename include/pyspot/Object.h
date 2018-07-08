@@ -4,8 +4,11 @@
 #include <Python.h>
 #include <string>
 
+#include "pyspot/common.h"
+
 namespace pyspot
 {
+
 
 class Object
 {
@@ -23,8 +26,16 @@ public:
 	PyObject* GetObject() const { return mObject; }
 	PyObject* GetIncref() const { Py_INCREF(mObject); return mObject; }
 
-	const char* ToCString() const { return PyString_AsString(mObject); }
-	std::string ToString()  const { return ToCString(); }
+	#if PYTHON_VERSION >= 3
+	const char*    ToCString()  const { return PyUnicode_AS_DATA(mObject); }
+	const wchar_t* ToWCString() const { return PyUnicode_AS_UNICODE(mObject); }
+	#else
+	const char*    ToCString()  const { return PyString_AS_STRING(mObject); }
+	const wchar_t* ToWCString() const { return L""; }
+	#endif
+	std::string    ToString()   const { return ToCString(); }
+	std::wstring   ToWString()  const { return ToWCString(); }
+	string ToTString() const;
 
 protected:
 	PyObject* mObject;

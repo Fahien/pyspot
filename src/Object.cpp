@@ -65,3 +65,13 @@ Object& Object::operator=(Object&& other)
 
 	return *this;
 }
+
+
+string Object::ToTString() const
+{
+	#if PYTHON_VERSION >= 3
+	return ToWString();
+	#else
+	return ToString();
+	#endif
+}

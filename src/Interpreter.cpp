@@ -4,49 +4,28 @@
 #include "pyspot/Exception.h"
 
 #ifdef _WIN32
-# define PATH_SEP ";"
+# define PATH_SEP _T(";")
 #else
-# define PATH_SEP ":"
+# define PATH_SEP _T(":")
 #endif
 
 using namespace pyspot;
 
 
-Interpreter::Interpreter()
-{
-	initialize("/script");
-}
-
-
-Interpreter::Interpreter(const char* dir)
+Interpreter::Interpreter(const string& dir)
 {
 	initialize(dir);
 }
 
 
-Interpreter::Interpreter(const std::string& dir)
-:	Interpreter{ dir.c_str() }
-{}
-
-
-Interpreter::Interpreter(const char* import, void (*function)(void))
-:	Interpreter{ import, function, "/script" }
-{}
-
-
-Interpreter::Interpreter(const char* import, void (*function)(void), const char* dir)
+Interpreter::Interpreter(const char* import, init_f function, const string& dir)
 {
 	if (PyImport_AppendInittab(import, function) < 0)
 	{
-		throw Exception{ "Cannot import" };
+		throw Exception{ _T("Cannot import") };
 	}
 	initialize(dir);
 }
-
-
-Interpreter::Interpreter(const char* import, void (*function)(void), const std::string& dir)
-:	Interpreter{ import, function, dir.c_str() }
-{}
 
 
 Interpreter::~Interpreter()
@@ -55,16 +34,16 @@ Interpreter::~Interpreter()
 }
 
 
-void Interpreter::initialize(const char * dir)
+void Interpreter::initialize(const string& dir)
 {
 	Py_Initialize();
 	addToPath(dir);
 }
 
 
-void Interpreter::addToPath(const char* folder)
+void Interpreter::addToPath(const string& folder)
 {
-	std::string path{ Py_GetPath() };
+	string path{ Py_GetPath() };
 	path += PATH_SEP;
 	path += folder;
 	PySys_SetPath(&path[0]);

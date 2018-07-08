@@ -3,20 +3,27 @@
 
 #include <stdexcept>
 
+#include "pyspot/common.h"
+
 
 namespace pyspot
 {
 
-class Exception : public std::runtime_error
+class Exception : public std::exception
 {
   public:
-	Exception(const char* msg)
-	:	std::runtime_error{ msg }
+	Exception(cstring msg)
+	:	mMsg{ msg }
 	{}
 
-	Exception(const std::string& msg)
-	: std::runtime_error{ msg }
+	Exception(const string& msg)
+	:	mMsg{ std::move(msg) }
 	{}
+
+	const string& What() const { return mMsg; }
+
+  private:
+	const string mMsg;
 };
 
 }

@@ -7,7 +7,6 @@
 #include "pyspot/Error.h"
 
 
-using namespace std;
 using namespace pyspot;
 
 
@@ -26,32 +25,26 @@ string Error::Get()
 	// Fetch the current exception
 	PyErr_Fetch(&type, &value, &traceback);
 
-	string ret{ "" };
-	ret += String{ PyObject_Repr(type) }.ToString();
-	ret += String{ PyObject_Repr(value) }.ToString();
+	string ret;
+	ret += String{ PyObject_Repr(type) }.ToTString();
+	ret += String{ PyObject_Repr(value) }.ToTString();
 
-	if (traceback) {
+	if (traceback)
+	{
 		/* See if we can get a full traceback */
-		PyObject *module_name = PyString_FromString("traceback");
-		PyObject *pyth_module = PyImport_Import(module_name);
-		Py_DECREF(module_name);
+		auto tracebackModule = Module{ "traceback" };
 
-		if (pyth_module == NULL) {
-			return ret;
-		}
-
-		PyObject *pyth_func = PyObject_GetAttrString(pyth_module, "format_exception");
-		if (pyth_func && PyCallable_Check(pyth_func)) {
+		PyObject *pyth_func = PyObject_GetAttrString(tracebackModule.GetObject(), "format_exception");
+		if (pyth_func && PyCallable_Check(pyth_func))
+		{
 			PyObject *pyth_val;
 
 			pyth_val = PyObject_CallFunctionObjArgs(pyth_func, type, value, traceback, NULL);
-
-			PyObject *pystr = PyObject_Str(pyth_val);
-			ret += PyString_AsString(pystr);
+			ret += String{ PyObject_Str(pyth_val) }.ToTString();
 			Py_XDECREF(pyth_val);
 		}
 
-		ret += String{PyObject_Repr(traceback)}.ToString();
+		ret += String{ PyObject_Repr(traceback) }.ToTString();
 	}
 
 	PyErr_Clear();

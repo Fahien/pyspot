@@ -74,14 +74,17 @@ def load_include(namespace_path, type_name):
 
 def main():
 	"""Entry point"""
-	if len(sys.argv) < 3:
-		exit('Usage: %s <extension name> <component.json> [<output path>]' % sys.argv[0])
+	if len(sys.argv) < 4:
+		exit('Usage: %s <python version> <extension name> <component.json> [<output path>]' % sys.argv[0])
+	
+	# Get python version
+	python_version = sys.argv[1]
 
 	# Get the extension name
-	extension_name = sys.argv[1]
+	extension_name = sys.argv[2]
 
 	# Get the component path
-	component_path = sys.argv[2]
+	component_path = sys.argv[3]
 
 	# Read the json file with
 	try:
@@ -91,7 +94,7 @@ def main():
 		exit('Cannot generate PySpot component: %s not found' % component_path)
 
 	# Open jinja template
-	template_name = 'Component.template.h'
+	template_name = python_version + '/Component.template.h'
 	try:
 		with open(template_name) as template_file:
 			template = Template(template_file.read(), extensions=['jinja2.ext.loopcontrols'])
@@ -135,9 +138,9 @@ def main():
 		c_for_type=c_for_type)
 
 	# Output
-	if len(sys.argv) == 4:
+	if len(sys.argv) == 5:
 		# Write code to file
-		file_path = sys.argv[3]
+		file_path = sys.argv[4]
 		parent_path = os.path.dirname(file_path)
 		if not os.path.exists(parent_path):
 			os.makedirs(parent_path)

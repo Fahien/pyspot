@@ -16,20 +16,25 @@
 
 #include <iostream>
 
-
 using namespace std;
 using namespace pyspot;
 using namespace pytest;
 
+#if PYTHON_VERSION >= 3
+# define TEST_DIR _T("test/script/3")
+#else
+# define TEST_DIR _T("test/script/2")
+#endif
+
 
 bool testHello()
 {
-	Interpreter interpreter{ "pytest", PyInit_Pytest, "test/script" };
+	Interpreter interpreter{ "pytest", PyInit_Pytest, TEST_DIR };
 	Module pymodule{ "hello" };
 	try
 	{
 		Object result{ pymodule.Invoke("hello") };
-		printf("Test Hello result = %s\n", result.ToString().c_str());
+		printf("Test Hello result = %s\n", result.ToTString().c_str());
 	}
 	catch (const Exception& ex)
 	{
@@ -50,8 +55,8 @@ bool testArgs()
 	try
 	{
 		Object result{ pymodule.Invoke("readargs", arguments) };
-		printf("Test Arg result = %s\n", result.ToString().c_str());
-		printf("Test Arg name = %s\n", name.ToString().c_str());
+		printf("Test Arg result = %s\n", result.ToTString().c_str());
+		printf("Test Arg name = %s\n", name.ToTString().c_str());
 	}
 	catch (const Exception & ex)
 	{
@@ -63,7 +68,7 @@ bool testArgs()
 
 bool testSingle()
 {
-	Interpreter interpreter{ "pytest", PyInit_Pytest, "test/script" };
+	Interpreter interpreter{ "pytest", PyInit_Pytest, TEST_DIR };
 	printf("Interpreter..");
 	Module pymodule{ "script" };
 	printf("Module..");
@@ -80,7 +85,7 @@ bool testSingle()
 
 bool testString()
 {
-	Interpreter interpreter{ "pytest", PyInit_Pytest, "test/script" };
+	Interpreter interpreter{ "pytest", PyInit_Pytest, TEST_DIR };
 	try
 	{
 		Module pymodule{ "script" };
@@ -113,7 +118,7 @@ bool testString()
 
 bool testTest()
 {
-	Interpreter interpreter{ "pytest", PyInit_Pytest, "test/script" };
+	Interpreter interpreter{ "pytest", PyInit_Pytest, TEST_DIR };
 	Module pymodule{ "script" };
 
 	component::Test test{ 2, 4.0f };
@@ -126,7 +131,7 @@ bool testTest()
 
 bool testTransform()
 {
-	Interpreter interpreter{ "pytest", PyInit_Pytest, "test/script" };
+	Interpreter interpreter{ "pytest", PyInit_Pytest, TEST_DIR };
 	Module pymodule{ "script" };
 
 	component::Transform transform{};
@@ -153,7 +158,7 @@ bool testTransform()
 
 bool testInput()
 {
-	Interpreter interpreter{ "pytest", PyInit_Pytest, "test/script" };
+	Interpreter interpreter{ "pytest", PyInit_Pytest, TEST_DIR };
 	Module pymodule{ "script" };
 
 	input::Key k{ input::Key::LEFT };
@@ -167,7 +172,7 @@ bool testInput()
 
 bool testMap()
 {
-	Interpreter interpreter{ "pytest", PyInit_Pytest, "test/script" };
+	Interpreter interpreter{ "pytest", PyInit_Pytest, TEST_DIR };
 	Module module{ "map" };
 	
 	component::Transform transform{};
@@ -193,7 +198,7 @@ bool testMap()
 
 bool testDictionary()
 {
-	Interpreter interpreter{ "pytest", PyInit_Pytest, "test/script" };
+	Interpreter interpreter{ "pytest", PyInit_Pytest, TEST_DIR };
 	Module module{ "map" };
 
 	component::Transform transform{};
@@ -221,7 +226,7 @@ bool testDictionary()
 
 bool testBuildCustomPythonObject()
 {
-	Interpreter interpreter{ "pytest", PyInit_Pytest, "test/script" };
+	Interpreter interpreter{ "pytest", PyInit_Pytest, TEST_DIR };
 
 	// Create a utils.Map
 	Module utils{ "utils" };

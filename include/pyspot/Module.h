@@ -1,11 +1,13 @@
 #ifndef PST_MODULE_H_
 #define PST_MODULE_H_
 
-#include "pyspot/Object.h"
-#include "pyspot/Method.h"
-
 #include <map>
 #include <string>
+
+#include "pyspot/Object.h"
+#include "pyspot/Method.h"
+#include "pyspot/String.h"
+
 
 namespace pyspot
 {
@@ -18,7 +20,7 @@ class Module : public Object
 {
 public:
 	Module(const char* name);
-	Module(const std::string& name);
+	Module(const string& name);
 	Module(const String& name);
 	~Module();
 
