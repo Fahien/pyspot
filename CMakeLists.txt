@@ -12,6 +12,7 @@ set(PST_VERSION_MAJOR 0)
 set(PST_VERSION_MINOR 4)
 
 # Directories
+set(PST_SCRIPT_DIR      ${CMAKE_CURRENT_SOURCE_DIR}/script)
 set(PST_SOURCE_DIR      ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set(PST_INCLUDE_DIR     ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(PST_GEN_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/include)
@@ -63,50 +64,14 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Android")
 endif()
 
 
-# Generate the PytestExtension header
-set(EXTENSION_NAME "Pytest")
-set(EXTENSION_JSON "${CMAKE_CURRENT_SOURCE_DIR}/test/extension/pytest/${EXTENSION_NAME}.json")
-set(EXTENSION_HEADER ${CMAKE_CURRENT_BINARY_DIR}/test/include/pytest/extension/${EXTENSION_NAME}.h)
-set(EXTENSION_SOURCE ${CMAKE_CURRENT_BINARY_DIR}/test/src/pytest/extension/${EXTENSION_NAME}.cpp)
-add_custom_command(
-	OUTPUT ${EXTENSION_HEADER} ${EXTENSION_SOURCE}
-	COMMAND ${PYTHON_EXECUTABLE} generate-extension.py ${PYTHON_VERSION} ${EXTENSION_JSON} -h ${EXTENSION_HEADER}
-	COMMAND ${PYTHON_EXECUTABLE} generate-extension.py ${PYTHON_VERSION} ${EXTENSION_JSON} ${EXTENSION_SOURCE}
-	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/script
-	COMMENT "Generating ${EXTENSION}"
-	VERBATIM)
-
-# Get all the folders under test/extension/pytest
-set(PYTEST_PATH ${CMAKE_CURRENT_SOURCE_DIR}/test/extension/pytest)
-file(GLOB NAMESPACES LIST_DIRECTORY true ${PYTEST_PATH}/*)
-foreach(NAMESPACE ${NAMESPACES})
-	if(IS_DIRECTORY ${NAMESPACE})
-		# Get all the jsons and generate headers
-		file(GLOB COMPONENTS ${NAMESPACE}/*json)
-		foreach(COMPONENT ${COMPONENTS})
-			get_filename_component(NAMESPACE_NAME ${NAMESPACE} NAME_WE)
-			get_filename_component(NAME ${COMPONENT} NAME_WE)
-			list(APPEND COMPONENT_NAMES ${NAME})
-			set(COMPONENT_HEADER ${PROJECT_BINARY_DIR}/test/include/pytest/${NAMESPACE_NAME}/${NAME}.h)
-			list(APPEND COMPONENT_HEADERS ${COMPONENT_HEADER})
-			add_custom_command(
-				OUTPUT ${COMPONENT_HEADER}
-				COMMAND ${PYTHON_EXECUTABLE} ${PROJECT_SOURCE_DIR}/script/generate-component.py ${PYTHON_VERSION} ${EXTENSION_NAME} ${COMPONENT} ${COMPONENT_HEADER}
-				WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/script
-				COMMENT "Generating ${COMPONENT_HEADER} COMMAND ${PROJECT_SOURCE_DIR}/script/generate-component.py ${PYTHON_VERSION} ${EXTENSION_NAME} ${COMPONENT} ${COMPONENT_HEADER}"
-				VERBATIM)
-		endforeach()
-	endif()
-endforeach()
-
+# Generate the PytestExtension
+include(ExtensionGenerator)
+generate_extension(${CMAKE_CURRENT_SOURCE_DIR}/test/extension Pytest)
 
 # Test Sources
 set(TEST_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/test/src)
 set(TEST_SOURCES
-	${COMPONENT_HEADERS}
-	${ENUM_HEADERS}
-	${EXTENSION_HEADER}
-	${EXTENSION_SOURCE}
+	${EXTENSION_SOURCES}
 	${TEST_SOURCE_DIR}/tests.h
 	${TEST_SOURCE_DIR}/tests.cpp
 	${TEST_SOURCE_DIR}/main.cpp)
@@ -116,7 +81,7 @@ source_group("Tests" FILES ${TESTS})
 add_executable(pst-test ${TEST_SOURCES} ${TESTS})
 target_include_directories(pst-test PRIVATE
 	${CMAKE_CURRENT_SOURCE_DIR}/test/include
-	${CMAKE_CURRENT_BINARY_DIR}/test/include
+	${CMAKE_CURRENT_BINARY_DIR}/include
 	${PST_INCLUDE_DIRS})
 target_link_libraries(pst-test ${PYSPOT_LIBRARIES})
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/test/script DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/test)
