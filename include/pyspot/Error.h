@@ -14,7 +14,7 @@ class Error
 {
   public:
 	static void Check();
-	static string Get();
+	static tstring Get();
 };
 
 

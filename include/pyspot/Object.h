@@ -35,7 +35,7 @@ public:
 	#endif
 	std::string    ToString()   const { return ToCString(); }
 	std::wstring   ToWString()  const { return ToWCString(); }
-	string ToTString() const;
+	tstring ToTString() const;
 
 protected:
 	PyObject* mObject;

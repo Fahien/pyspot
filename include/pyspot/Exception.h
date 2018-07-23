@@ -16,14 +16,14 @@ class Exception : public std::exception
 	:	mMsg{ msg }
 	{}
 
-	Exception(const string& msg)
+	Exception(const tstring& msg)
 	:	mMsg{ std::move(msg) }
 	{}
 
-	const string& What() const { return mMsg; }
+	const tstring& What() const { return mMsg; }
 
   private:
-	const string mMsg;
+	const tstring mMsg;
 };
 
 }
