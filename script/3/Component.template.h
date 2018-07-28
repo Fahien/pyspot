@@ -275,6 +275,7 @@ class {{ Component }} : public pyspot::Object
 
 {% for member in members %}
 	{%- set pyspot_type = pyspot_for_type(extension, member['type']) %}
+	/// @returns {{ member['name'] }}
 	{{ pyspot_type }} Get{{ member['name']|capitalize }}()
 	{
 		{%- if is_builtin_type(member['type']) %}
@@ -283,6 +284,14 @@ class {{ Component }} : public pyspot::Object
 		return {{ pyspot_type }}{ {{ Extension ~ Component }}_Get{{ member['name']|capitalize }}(GetComponent(), nullptr) };
 		{%- endif %}
 	}
+{% if is_builtin_type(member['type']) %}
+	/// Set {{ member['name'] }}
+	/// @param[in] {{ member['name'] }}
+	void Set{{ member['name']|capitalize }}({{ pyspot_type }} {{ member['name'] }})
+	{
+		GetComponent()->{{ member['name'] }} = {{ member['name'] }};
+	}
+{%- endif %}
 {% endfor %}
 {%- if values %}
 	bool operator==(const long& other) const

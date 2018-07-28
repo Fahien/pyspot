@@ -69,16 +69,16 @@ bool testArgs()
 bool testSingle()
 {
 	Interpreter interpreter{ "pytest", PyInit_Pytest, TEST_DIR };
-	printf("Interpreter..");
 	Module pymodule{ "script" };
-	printf("Module..");
 
 	component::Single single{ 4.0f };
-	printf("Single..");
 	Tuple args{ single };
-	printf("Tuple..");
 	pymodule.Invoke("test_single", args);
 	printf("Result: %f\n", single.GetPrice());
+
+	single.SetPrice(0.0f);
+	assert(single.GetPrice() == 0.0f);
+
 	return true;
 }
 
@@ -137,6 +137,7 @@ bool testTransform()
 	component::Transform transform{};
 	Tuple args{ transform };
 	pymodule.Invoke("test_transform", args);
+
 	printf("Position: [%f, %f, %f]\n",
 	       transform.GetPosition().GetX(),
 	       transform.GetPosition().GetY(),
@@ -152,6 +153,7 @@ bool testTransform()
 	       transform.GetRotation().GetY(),
 	       transform.GetRotation().GetZ()
 	);
+
 	return true;
 }
 
