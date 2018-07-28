@@ -16,7 +16,7 @@ Module::Module(const char* name)
 }
 
 
-Module::Module(const string& name)
+Module::Module(const tstring& name)
 :	Module{ String{ name } }
 {}
 

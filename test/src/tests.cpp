@@ -34,7 +34,7 @@ bool testHello()
 	try
 	{
 		Object result{ pymodule.Invoke("hello") };
-		printf("Test Hello result = %s\n", result.ToTString().c_str());
+		printf("Test Hello result = %ls\n", result.ToTString().c_str());
 	}
 	catch (const Exception& ex)
 	{
@@ -55,8 +55,8 @@ bool testArgs()
 	try
 	{
 		Object result{ pymodule.Invoke("readargs", arguments) };
-		printf("Test Arg result = %s\n", result.ToTString().c_str());
-		printf("Test Arg name = %s\n", name.ToTString().c_str());
+		printf("Test Arg result = %ls\n", result.ToTString().c_str());
+		printf("Test Arg name = %ls\n", name.ToTString().c_str());
 	}
 	catch (const Exception & ex)
 	{

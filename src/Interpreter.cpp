@@ -12,13 +12,13 @@
 using namespace pyspot;
 
 
-Interpreter::Interpreter(const string& dir)
+Interpreter::Interpreter(const tstring& dir)
 {
 	initialize(dir);
 }
 
 
-Interpreter::Interpreter(const char* import, init_f function, const string& dir)
+Interpreter::Interpreter(const char* import, init_f function, const tstring& dir)
 {
 	if (PyImport_AppendInittab(import, function) < 0)
 	{
@@ -34,16 +34,16 @@ Interpreter::~Interpreter()
 }
 
 
-void Interpreter::initialize(const string& dir)
+void Interpreter::initialize(const tstring& dir)
 {
 	Py_Initialize();
 	addToPath(dir);
 }
 
 
-void Interpreter::addToPath(const string& folder)
+void Interpreter::addToPath(const tstring& folder)
 {
-	string path{ Py_GetPath() };
+	tstring path{ Py_GetPath() };
 	path += PATH_SEP;
 	path += folder;
 	PySys_SetPath(&path[0]);

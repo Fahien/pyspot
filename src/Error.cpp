@@ -19,13 +19,13 @@ void Error::Check()
 }
 
 
-string Error::Get()
+tstring Error::Get()
 {
 	PyObject *type, *value, *traceback;
 	// Fetch the current exception
 	PyErr_Fetch(&type, &value, &traceback);
 
-	string ret;
+	tstring ret;
 	ret += String{ PyObject_Repr(type) }.ToTString();
 	ret += String{ PyObject_Repr(value) }.ToTString();
 

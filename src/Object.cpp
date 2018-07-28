@@ -67,7 +67,7 @@ Object& Object::operator=(Object&& other)
 }
 
 
-string Object::ToTString() const
+tstring Object::ToTString() const
 {
 	#if PYTHON_VERSION >= 3
 	return ToWString();

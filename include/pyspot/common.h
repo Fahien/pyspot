@@ -2,6 +2,7 @@
 #define PST_COMMON_H_
 
 #include <string>
+#include <Python.h>
 
 
 namespace pyspot
@@ -11,12 +12,12 @@ namespace pyspot
 #define _T(x) L ##x
 using init_f = PyObject* (*)(void);
 using cstring = const wchar_t*;
-using string  = std::wstring;
+using tstring  = std::wstring;
 #else
 #define _T(x) x
 using init_f = void (*)(void);
 using cstring = const char*;
-using string  = std::string;
+using tstring  = std::string;
 #endif
 
 }

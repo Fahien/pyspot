@@ -13,16 +13,16 @@ namespace pyspot
 class Interpreter
 {
 public:
-	Interpreter(const string& dir = _T("script"));
-	Interpreter(const char* import, init_f function, const string& dir = _T("script"));
+	Interpreter(const tstring& dir = _T("script"));
+	Interpreter(const char* import, init_f function, const tstring& dir = _T("script"));
 	~Interpreter();
 
 private:
-	void addToPath (const string& dir);
+	void addToPath (const tstring& dir);
 
-	void initialize(const string& dir);
+	void initialize(const tstring& dir);
 
-	string mPath;
+	tstring mPath;
 };
 
 }
