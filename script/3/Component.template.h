@@ -5,67 +5,36 @@
 #include <pyspot/Interpreter.h>
 #include <pyspot/String.h>
 #include <pyspot/Tuple.h>
+#include <pyspot/Wrapper.h>
 {% for include in includes %}
 #include "{{ extension }}/{{ include['namespace'] }}/{{ include['name'] }}.h"
 {% endfor %}
+#include <{{ '%s/%s.h' % (namespace, Component) }}>
 #include <structmember.h> // at the end
 
 {%- set member_list = [] %}
 {% set member_parsers = [] %}
 {%- for member in members %}
-	{%- set _ = member.update(static='a%s%s%s' % (Extension, Component, member['name']|capitalize)) %}
+	{%- set _ = member.update(static='g_a%s%s%s' % (Extension, Component, member['name']|capitalize)) %}
 	{%- set _ = member_list.append(member['static']) %}
 	{%- set _ = member_parsers.append(parser_for_type(member['type'])) %}
 static char {{ member['static'] }}[{{ member['name']|length + 1 }}] = { {{ '"%s"' % member['name'] }} };
 {%- endfor %}
 {%- set _ = member_list.append('nullptr') %}
 
-/// {{ Component }}
-struct {{ Extension ~ Component }}
-{
-	PyObject_HEAD
-	{%- for member in members %}
-		{%- if is_builtin_type(member['type']) %}
-			{%- set type = c_for_type(member['type']) %}
-		{%- else %}
-			{%- set type = 'PyObject* %s' %}
-		{%- endif %}
-	{{ type % member['name'] }};
-	{%- endfor %}
-};
 
-
-/// {{ Component }} constructor
-static PyObject* {{ Extension ~ Component }}_New(PyTypeObject* type, PyObject* args, PyObject* kwds)
-{
-	{{ Extension ~ Component }}* self{ reinterpret_cast<{{ Extension ~ Component }}*>(type->tp_alloc(type, 0)) };
-
-	if (self != nullptr)
-	{
-		{%- for member in members %}
-			{%- set default = member['default'] if 'default' in member else None %}
-		self->{{ member['name'] }} = {{ initializer_for_type(extension, member['type'], default) }};
-			{#- Check non builtin types #}
-			{%- if not is_builtin_type(member['type']) %}
-		if (self->{{ member['name'] }} == nullptr)
-		{
-			Py_DECREF(self);
-			return nullptr;
-		}
-			{%- endif %}
-		{%- endfor %}
-	}
-
-	return reinterpret_cast<PyObject*>(self);
-}
 
 
 /// {{ Component }} destructor
-static void {{ Extension ~ Component }}_Dealloc({{ Extension ~ Component }}* self)
+static void {{ Extension ~ Component }}_Dealloc(_PyspotWrapper* self)
 {
+	if (self->ownData)
+	{
+		delete reinterpret_cast<{{ '%s::%s' % (namespace, Component) }}*>(self->data);
+	}
 	{%- for member in members %}
 		{%- if not is_builtin_type(member['type']) %}
-	Py_XDECREF(self->{{ member['name'] }});
+	//Py_XDECREF(self->{{ member['name'] }});
 		{%- endif %}
 	{%- endfor %}
 	Py_TYPE(self)->tp_free(reinterpret_cast<PyObject*>(self));
@@ -73,7 +42,7 @@ static void {{ Extension ~ Component }}_Dealloc({{ Extension ~ Component }}* sel
 
 
 /// {{ Component }} init
-static int {{ Extension ~ Component }}_Init({{ Extension ~ Component }}* self, PyObject* args, PyObject* kwds)
+static int {{ Extension ~ Component }}_Init(_PyspotWrapper* self, PyObject* args, PyObject* kwds)
 {
 	{%- for member in members %}
 		{%- if not is_builtin_type(member['type']) %}PyObject* temp{ nullptr };{% break %}{%- endif %}
@@ -88,8 +57,10 @@ static int {{ Extension ~ Component }}_Init({{ Extension ~ Component }}* self, P
 	static char* kwlist[]{ {{ member_list|join(', ') }} };
 	static const char* fmt{ "|{{ member_parsers|join() }}" };
 
+	auto data = reinterpret_cast<{{ '%s::%s' % (namespace, Component) }}*>(self->data);
+
 	if (!PyArg_ParseTupleAndKeywords(args, kwds, fmt, kwlist
-		{%- for member in members %}, &{{ 'self->' if is_builtin_type(member['type']) }}{{ member['name'] }}{%- endfor %}))
+		{%- for member in members %}, &{{ 'data->' if is_builtin_type(member['type']) }}{{ member['name'] }}{%- endfor %}))
 	{
 		return -1;
 	}
@@ -99,9 +70,9 @@ static int {{ Extension ~ Component }}_Init({{ Extension ~ Component }}* self, P
 
 	if ({{ member['name'] }})
 	{
-		temp = self->{{ member['name'] }};
+		temp = data->{{ member['name'] }};
 		Py_INCREF({{ member['name'] }});
-		self->{{ member['name'] }} = {{ member['name'] }};
+		data->{{ member['name'] }} = {{ member['name'] }};
 		Py_XDECREF(temp);
 	}
 	{%- endif %}
@@ -113,25 +84,25 @@ static int {{ Extension ~ Component }}_Init({{ Extension ~ Component }}* self, P
 
 static PyMemberDef {{ Extension ~ Component }}_members[]
 {
-	{%- for member in members %}
-	{%- if is_builtin_type(member['type']) %}
-	{ {{ member['static'] }}, {{ pytype_for_type(member['type']) }}, offsetof({{ Extension ~ Component }}, {{ member['name'] }}), 0, {{ member['static'] }} },
-	{%- endif %}
-	{%- endfor %}
 	{ nullptr } // Sentinel
 };
 
 
 {%- for member in members %}
-{%- if not is_builtin_type(member['type']) %}
 
-static PyObject* {{ Extension ~ Component }}_Get{{ member['name']|capitalize }}({{ Extension ~ Component }}* self, void* closure)
+static PyObject* {{ Extension ~ Component }}_Get{{ member['name']|capitalize }}(_PyspotWrapper* self, void* closure)
 {
-	Py_INCREF(self->{{ member['name'] }});
-	return self->{{ member['name'] }};
+	auto data = reinterpret_cast<{{ '%s::%s' % (namespace, Component) }}*>(self->data);
+
+	{%- if not is_builtin_type(member['type']) %}
+	Py_INCREF(data->{{ member['name'] }});
+	return data->{{ member['name'] }};
+	{%- else %}
+	return PyFloat_FromDouble(static_cast<double>(data->{{ member['name'] }}));
+	{%- endif %}
 }
 
-static int {{ Extension ~ Component }}_Set{{ member['name']|capitalize }}({{ Extension ~ Component }}* self, PyObject* value, void* closure)
+static int {{ Extension ~ Component }}_Set{{ member['name']|capitalize }}(_PyspotWrapper* self, PyObject* value, void* closure)
 {
 	if (value == nullptr)
 	{
@@ -147,54 +118,73 @@ static int {{ Extension ~ Component }}_Set{{ member['name']|capitalize }}({{ Ext
 	}
 
 	{%- endif %}
-	Py_DECREF(self->{{ member['name'] }});
+
+	auto data = reinterpret_cast<{{ '%s::%s' % (namespace, Component) }}*>(self->data);
+
+	{%- if not is_builtin_type(member['type']) %}
+	Py_DECREF(data->{{ member['name'] }});
 	Py_INCREF(value);
-	self->{{ member['name'] }} = value;
+	data->{{ member['name'] }} = value;
+	{%- else %}
+	data->{{ member['name'] }} = static_cast<{{ member['type'] }}>(PyFloat_AsDouble(value));
+	{%- endif %}
 
 	return 0;
 }
-{%- endif %}
+
 {%- endfor %}
 
 
 static PyGetSetDef {{ Extension ~ Component }}_accessors[]
 {
 	{%- for member in members %}
-	{%- if not is_builtin_type(member['type']) %}
 	{ {{ member['static'] }}, (getter){{ Extension ~ Component }}_Get{{ member['name']|capitalize }}, (setter){{ Extension + Component }}_Set{{ member['name']|capitalize }}, {{ member['static'] }}, nullptr },
-	{%- endif %}
 	{%- endfor %}
 	{ nullptr } // Sentinel
 };
 
 
-static PyTypeObject {{ extension ~ Component }} = {
-	PyVarObject_HEAD_INIT(NULL, 0) "{{ extension }}.{{ Component }}",
-	sizeof({{ Extension ~ Component }}),
+static PyTypeObject g_{{ Extension ~ Component }}TypeObject = {
+	PyVarObject_HEAD_INIT(NULL, 0)
+
+	"{{ extension }}.{{ Component }}",
+	sizeof(_PyspotWrapper),
 	0,
-	(destructor){{ Extension ~ Component }}_Dealloc,
-	0,
-	0,
-	0,
-	0,
-	0,
+
+	reinterpret_cast<destructor>({{ Extension ~ Component }}_Dealloc),
 	0,
 	0,
 	0,
 	0,
 	0,
+
+	0,
+	0,
+	0,
+
 	0,
 	0,
 	0,
 	0,
+	0,
+
+	0,
+
 	Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,
-	"{{ Extension ~ Component }} object",
+
+	"{{ Extension ~ Component }}",
+
+	0,
+
+	0,
+
+	0,
+
+	0,
+
 	0,
 	0,
-	0,
-	0,
-	0,
-	0,
+
 	0,
 	{{ Extension ~ Component }}_members,
 	{{ Extension ~ Component }}_accessors,
@@ -203,104 +193,22 @@ static PyTypeObject {{ extension ~ Component }} = {
 	0,
 	0,
 	0,
-	(initproc){{ Extension ~ Component }}_Init,
+	reinterpret_cast<initproc>({{ Extension ~ Component }}_Init),
 	0,
-	{{ Extension ~ Component }}_New,
+	PyspotWrapper_New,
 };
 
 
-namespace {{ extension }}
+namespace pyspot
 {
 
-namespace {{ namespace }}
+template<>
+Wrapper<{{ "%s::%s" % (namespace, Component) }}>::Wrapper({{ '%s::%s' % (namespace, Component) }}& t)
+:	Object { (PyType_Ready(&g_{{ Extension ~ Component }}TypeObject), PyspotWrapper_New(&g_{{ Extension ~ Component }}TypeObject, nullptr, nullptr)) }
+,	payload{ t }
 {
-
-class {{ Component }} : public pyspot::Object
-{
-  public:
-	{%- if values %}
-	enum : long {
-		{%- for key, val in values.items() %}
-		{{ key|upper }} = {{ val }},
-		{%- endfor %}
-	};
-
-	{{ Component }}(const long value)
-	:	pyspot::Object{ PyLong_FromLong(value) }
-	{}
-	{%- endif %}
-
-	{{ Component }}(PyObject* object)
-	:	pyspot::Object{ object }
-	{}
-
-	{{ Component }}()
-	:	pyspot::Object
-		{
-			(PyType_Ready(&{{ extension ~ Component }}), {{ Extension ~ Component }}_New(&{{ extension ~ Component }}, nullptr, nullptr))
-		}
-	{}
-
-	{%- if members|length > 0 %}
-		{%- set arguments = [] %}
-		{%- for member in members %}
-			{%- if is_builtin_type(member['type']) %}
-				{%- set type = c_for_type(member['type']) %}
-			{%- else %}
-				{%- set type = 'pyspot::Object& %s' %}
-			{%- endif %}
-			{%- set _ = arguments.append(type % member['name']) %}
-		{%- endfor %}
-
-	{{ Component }}({{ arguments|join(', ') }})
-	:	pyspot::Object
-		{
-			(PyType_Ready(&{{ extension ~ Component }}), {{ Extension ~ Component }}_New(&{{ extension ~ Component }}, nullptr, nullptr))
-		}
-	{
-		pyspot::Tuple arguments{ {{ members|length }} };
-		{%- for i in range(members|length) %}
-		arguments.SetItem({{ i }}, {{ members[i]['name'] }});
-		{%- endfor %}
-		{{ Extension ~ Component }}_Init(GetComponent(), arguments.GetObject(), nullptr);
-	}
-	{%- endif %}
-
-	~{{ Component }}(){}
-
-	{{ Extension ~ Component }}* GetComponent()
-	{
-		return reinterpret_cast<{{ Extension ~ Component }}*>(GetObject());
-	}
-
-{% for member in members %}
-	{%- set pyspot_type = pyspot_for_type(extension, member['type']) %}
-	/// @returns {{ member['name'] }}
-	{{ pyspot_type }} Get{{ member['name']|capitalize }}()
-	{
-		{%- if is_builtin_type(member['type']) %}
-		return GetComponent()->{{ member['name'] }};
-		{%- else %}
-		return {{ pyspot_type }}{ {{ Extension ~ Component }}_Get{{ member['name']|capitalize }}(GetComponent(), nullptr) };
-		{%- endif %}
-	}
-{% if is_builtin_type(member['type']) %}
-	/// Set {{ member['name'] }}
-	/// @param[in] {{ member['name'] }}
-	void Set{{ member['name']|capitalize }}({{ pyspot_type }} {{ member['name'] }})
-	{
-		GetComponent()->{{ member['name'] }} = {{ member['name'] }};
-	}
-{%- endif %}
-{% endfor %}
-{%- if values %}
-	bool operator==(const long& other) const
-	{
-		return PyLong_AsLong(GetObject()) == other;
-	}
-{% endif %}
-};
-
+	auto {{ component }} = reinterpret_cast<_PyspotWrapper*>(mObject);
+	{{ component }}->data = &t;
 }
 
 }

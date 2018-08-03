@@ -1,0 +1,10 @@
+{
+	"namespace": "wrap",
+	"name": "Test",
+	"members": [
+		{
+			"name": "value",
+			"type": "float"
+		}
+	]
+}

@@ -38,7 +38,7 @@ bool testHello()
 	}
 	catch (const Exception& ex)
 	{
-		printf("Error: %s\n", ex.what());
+		printf("Error: %s\n", ex.What().c_str());
 	}
 	return true;
 }
@@ -60,7 +60,7 @@ bool testArgs()
 	}
 	catch (const Exception & ex)
 	{
-		printf("Error correctly captured: %s\n", ex.what());
+		printf("Error correctly captured: %s\n", ex.What().c_str());
 	}
 	return true;
 }
@@ -104,12 +104,12 @@ bool testString()
 		}
 		catch (const Exception & ex)
 		{
-			printf("Error correctly captured: %s\n", ex.what());
+			printf("Error correctly captured: %s\n", ex.What().c_str());
 		}
 	}
 	catch(Exception& e)
 	{
-		std::cout << e.what() << std::endl;
+		printf("%s\n", e.What().c_str());
 	}
 
 	return true;

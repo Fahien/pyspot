@@ -4,7 +4,8 @@
 #include "{{ extension }}/{{ component['namespace'] }}/{{ component['name'] }}.h"
 {%- endfor %}
 
-static PyObject* pstError;
+static PyObject* g_{{ Extension }}Error;
+static char g_a{{ Extension }}Error[{{ extension|length + 7 }}] = { "{{ extension }}.error" };
 
 struct ModuleState
 {
@@ -13,7 +14,7 @@ struct ModuleState
 
 #include "{{ extension }}/extension/{{ Extension }}.incl.cpp"
 
-static PyMethodDef pstMethods[] = {
+static PyMethodDef g_MethodDef[] = {
 	{%- for method in methods %}
 	{ "{{ method['name'] }}", {{ method['name'] }}, METH_VARARGS, "{{ method['description'] }}" },
 	{%- endfor %}
@@ -21,16 +22,16 @@ static PyMethodDef pstMethods[] = {
 };
 
 
-static char a{{ Extension }}Description[{{ extension|length + 1 }}] = { "{{ Extension }}" };
+static char g_a{{ Extension }}Description[{{ extension|length + 1 }}] = { "{{ Extension }}" };
 
 
-static struct PyModuleDef moduleDef
+static struct PyModuleDef g_ModuleDef
 {
 	PyModuleDef_HEAD_INIT,
-	a{{ Extension }}Description,
+	g_a{{ Extension }}Description,
 	nullptr,
 	sizeof(ModuleState),
-	pstMethods,
+	g_MethodDef,
 	nullptr,
 	nullptr,
 	nullptr,
@@ -38,24 +39,22 @@ static struct PyModuleDef moduleDef
 };
 
 
-static char a{{ Extension }}Error[{{ extension|length + 7 }}] = { "{{ extension }}.error" };
-
 PyMODINIT_FUNC PyInit_{{ Extension }}()
 {
 	// Create the module
-	PyObject* module{ PyModule_Create(&moduleDef) };
+	PyObject* module{ PyModule_Create(&g_ModuleDef) };
 	if (module == nullptr)
 	{
 		return nullptr;
 	}
 
 	// Module exception
-	pstError = PyErr_NewException(a{{ Extension }}Error, nullptr, nullptr);
-	Py_INCREF(pstError);
-	PyModule_AddObject(module, "error", pstError);
+	g_{{ Extension }}Error = PyErr_NewException(g_a{{ Extension }}Error, nullptr, nullptr);
+	Py_INCREF(g_{{ Extension }}Error);
+	PyModule_AddObject(module, "error", g_{{ Extension }}Error);
 
 {% for component in components %}
-	if (PyType_Ready(&{{ extension ~ component['name'] }}) < 0)
+	if (PyType_Ready(&g_{{ Extension ~ component['name'] }}TypeObject) < 0)
 	{
 		return nullptr;
 	}
@@ -64,8 +63,8 @@ PyMODINIT_FUNC PyInit_{{ Extension }}()
 	PyDict_SetItemString({{ extension ~ component['name'] }}.tp_dict, "{{ key }}", PyLong_FromLong({{ val }}));
 	{%- endfor %}
 	{%- endif %}
-	Py_INCREF(&{{ extension ~ component['name'] }});
-	PyModule_AddObject(module, "{{ component['name'] }}", reinterpret_cast<PyObject*>(&{{ extension ~ component['name'] }}));
+	Py_INCREF(&g_{{ Extension ~ component['name'] }}TypeObject);
+	PyModule_AddObject(module, "{{ component['name'] }}", reinterpret_cast<PyObject*>(&g_{{ Extension ~ component['name'] }}TypeObject));
 {% endfor %}
 
 	return module;

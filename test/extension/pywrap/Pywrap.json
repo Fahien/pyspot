@@ -1,0 +1,7 @@
+{
+	"name": "Pywrap",
+	"methods": [],
+	"components": [
+		"wrap::Test"
+	]
+}
