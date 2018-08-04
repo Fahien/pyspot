@@ -7,7 +7,7 @@ namespace wrap
 class Person
 {
   public:
-	Person(const std::string& n) : name{ n } {}
+	Person(const std::string& n = "") : name{ n } {}
 
 	std::string name;
 };

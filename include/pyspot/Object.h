@@ -15,10 +15,10 @@ class Object
 public:
 	Object();
 	Object(PyObject* object);
-	~Object();
+	virtual ~Object();
 
-	Object(const Object&  other);
-	Object(const Object&& other);
+	Object(const Object& other);
+	Object(Object&& other);
 
 	Object& operator=(const Object& other);
 	Object& operator=(Object&& other);

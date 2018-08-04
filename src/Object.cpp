@@ -26,9 +26,11 @@ Object::Object(const Object& other)
 }
 
 
-Object::Object(const Object&& other)
-: mObject{ other.mObject }
-{}
+Object::Object(Object&& other)
+:	mObject{ other.mObject }
+{
+	other.mObject = nullptr;
+}
 
 
 Object& Object::operator=(const Object& other)

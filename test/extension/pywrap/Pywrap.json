@@ -2,6 +2,7 @@
 	"name": "Pywrap",
 	"methods": [],
 	"components": [
-		"wrap::Test"
+		"wrap::Test",
+		"wrap::Person"
 	]
 }

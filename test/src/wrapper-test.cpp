@@ -8,11 +8,11 @@
 #include <pyspot/Wrapper.h>
 
 #include "pywrap/extension/Pywrap.h"
-#include "pywrap/wrap/Person.h"
 #include "wrap/Test.h"
 
 using namespace pyspot;
 using namespace wrap;
+using namespace std;
 
 #if PYTHON_VERSION >= 3
 # define TEST_DIR _T("test/script/3")
@@ -23,11 +23,18 @@ using namespace wrap;
 
 void testTest()
 {
-	Test test{ 2.0f };
+	Person person{ "Trillian" };
+	Test test{ 2.0f, "Arthur", "Ford", person };
 	Wrapper<Test> wTest{ test };
 	Module module{ "wrapper" };
 	Object result{ module.Invoke("test_test", Tuple{ wTest }) };
 	assert(test.value == 3.0f);
+	assert(test.cname == string{ "Dent" });
+	assert(test.name  == "Prefect");
+	assert(test.person.name == "McMillian");
+
+	Wrapper<Test> zaphod{ result };
+	assert(zaphod.GetPayload().person.name == "Zaphod");
 }
 
 

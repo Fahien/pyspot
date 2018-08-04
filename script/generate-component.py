@@ -20,17 +20,23 @@ def c_for_type(type):
 
 
 def to_python_type(type):
+	if type == 'int'    : return 'PyLong_FromLong(static_cast<long>(%s))'
+	if type == 'long'   : return 'PyLong_FromLong(%s)'
 	if type == 'float'  : return 'PyFloat_FromDouble(static_cast<double>(%s))'
+	if type == 'double' : return 'PyFloat_FromDouble(%s)'
 	if type == 'cstring': return 'PyUnicode_FromString(%s)'
 	if type == 'string' : return 'PyUnicode_FromString(%s.c_str())'
-	else                : return 'UnknownType(%s)'
+	else                : return 'pyspot::Wrapper<'+type+'>{ %s }.GetIncref()'
 
 
 def to_c_type(type):
+	if type == 'int'    : return 'static_cast<int>(PyLong_AsLong(%s))'
+	if type == 'long'   : return 'PyLong_AsLong(%s)'
 	if type == 'float'  : return 'static_cast<float>(PyFloat_AsDouble(%s))'
+	if type == 'double' : return 'PyFloat_AsDouble(%s)'
 	if type == 'cstring': return 'PyUnicode_AsUTF8(%s)'
 	if type == 'string' : return 'PyUnicode_AsUTF8(%s)'
-	else                : return 'UnknownType(%s)'
+	else                : return '*reinterpret_cast<'+type+'*>(reinterpret_cast<_PyspotWrapper*>(%s)->data)'
 
 
 def pyspot_for_type(extension, type):
@@ -49,8 +55,10 @@ def initializer_for_type(extension, type, default=None):
 
 def parser_for_type(type):
 	if type == 'int'     : return 'i'
+	if type == 'long'    : return 'l'
 	if type == 'unsigned': return 'I'
 	if type == 'float'   : return 'f'
+	if type == 'double'  : return 'd'
 	else                 : return 'O'
 
 
@@ -124,7 +132,10 @@ def main():
 	includes = []
 	types_loaded = []
 	for member in members:
-		if not member['type'] in types_loaded and not is_builtin_type(member['type']) and member['type'] != 'string':
+		if (not member['type'] in types_loaded  and
+		    not is_builtin_type(member['type']) and
+		    member['type'] != 'string'          and
+		    member['type'] != 'cstring'):
 			includes.append(load_include(namespace_path, member['type']))
 			types_loaded.append(member['type'])
 

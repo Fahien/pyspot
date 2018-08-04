@@ -30,11 +30,7 @@ static void {{ Extension ~ Component }}_Dealloc(_PyspotWrapper* self)
 	{
 		delete reinterpret_cast<{{ '%s::%s' % (namespace, Component) }}*>(self->data);
 	}
-	{%- for member in members %}
-		{%- if not is_builtin_type(member['type']) %}
-	//Py_XDECREF(self->{{ member['name'] }});
-		{%- endif %}
-	{%- endfor %}
+
 	Py_TYPE(self)->tp_free(reinterpret_cast<PyObject*>(self));
 }
 
@@ -55,21 +51,31 @@ static int {{ Extension ~ Component }}_Init(_PyspotWrapper* self, PyObject* args
 	static char* kwlist[]{ {{ member_list|join(', ') }} };
 	static const char* fmt{ "|{{ member_parsers|join() }}" };
 
-	auto data = reinterpret_cast<{{ '%s::%s' % (namespace, Component) }}*>(self->data);
+	{{ '%s::%s' % (namespace, Component) }}* data{ nullptr };
+
+	if (self->data)
+	{
+		data = reinterpret_cast<{{ '%s::%s' % (namespace, Component) }}*>(self->data);
+	}
+	else
+	{
+		data = new {{ '%s::%s' % (namespace, Component) }};
+		self->data = data;
+		self->ownData = true;
+	}
 
 	if (!PyArg_ParseTupleAndKeywords(args, kwds, fmt, kwlist
 		{%- for member in members %}, &{{ 'data->' if is_builtin_type(member['type']) }}{{ member['name'] }}{%- endfor %}))
 	{
 		return -1;
 	}
-
 {% for member in members %}
 {%- if not is_builtin_type(member['type']) %}
 	if ({{ member['name'] }})
 	{
 		data->{{ member['name'] }} = {{ to_c_type(member['type']) % member['name'] }};
 	}
-{%- endif %}
+{% endif %}
 {%- endfor %}
 
 	return 0;

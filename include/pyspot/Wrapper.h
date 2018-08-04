@@ -126,7 +126,12 @@ template<typename T>
 class Wrapper : public Object
 {
   public:
-	Wrapper(T&);
+	Wrapper(const Object& object)
+	:	Object { object }
+	,	payload{ *reinterpret_cast<T*>(reinterpret_cast<_PyspotWrapper*>(mObject)->data) }
+	{}
+
+	inline Wrapper(T&);
 
 	T& GetPayload() const { return payload; }
 

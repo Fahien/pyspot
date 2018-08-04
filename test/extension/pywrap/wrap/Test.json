@@ -5,6 +5,18 @@
 		{
 			"name": "value",
 			"type": "float"
+		},
+		{
+			"name": "cname",
+			"type": "cstring"
+		},
+		{
+			"name": "name",
+			"type": "string"
+		},
+		{
+			"name": "person",
+			"type": "wrap::Person"
 		}
 	]
 }

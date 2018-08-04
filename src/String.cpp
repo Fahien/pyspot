@@ -7,10 +7,15 @@ using namespace pyspot;
 
 String::String(PyObject* object)
 :	Object{ object }
-,	mStr { Object::ToString() }
+,	mStr { Object::ToString()  }
 ,	mWStr{ Object::ToWString() }
 {}
 
+String::String(const Object& object)
+:	Object{ object }
+,	mStr { Object::ToString()  }
+,	mWStr{ Object::ToWString() }
+{}
 
 String::String(const std::wstring& str)
 :	String{ PyUnicode_FromWideChar(str.c_str(), str.length()) }
