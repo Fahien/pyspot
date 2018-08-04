@@ -23,8 +23,6 @@ static char {{ member['static'] }}[{{ member['name']|length + 1 }}] = { {{ '"%s"
 {%- set _ = member_list.append('nullptr') %}
 
 
-
-
 /// {{ Component }} destructor
 static void {{ Extension ~ Component }}_Dealloc(_PyspotWrapper* self)
 {
@@ -45,7 +43,7 @@ static void {{ Extension ~ Component }}_Dealloc(_PyspotWrapper* self)
 static int {{ Extension ~ Component }}_Init(_PyspotWrapper* self, PyObject* args, PyObject* kwds)
 {
 	{%- for member in members %}
-		{%- if not is_builtin_type(member['type']) %}PyObject* temp{ nullptr };{% break %}{%- endif %}
+	{% if not is_builtin_type(member['type']) %}PyObject* temp{ nullptr };{% break %}{%- endif %}
 	{%- endfor %}
 
 	{%- for member in members %}
@@ -65,18 +63,14 @@ static int {{ Extension ~ Component }}_Init(_PyspotWrapper* self, PyObject* args
 		return -1;
 	}
 
-	{%- for member in members %}
-	{%- if not is_builtin_type(member['type']) %}
-
+{% for member in members %}
+{%- if not is_builtin_type(member['type']) %}
 	if ({{ member['name'] }})
 	{
-		temp = data->{{ member['name'] }};
-		Py_INCREF({{ member['name'] }});
-		data->{{ member['name'] }} = {{ member['name'] }};
-		Py_XDECREF(temp);
+		data->{{ member['name'] }} = {{ to_c_type(member['type']) % member['name'] }};
 	}
-	{%- endif %}
-	{%- endfor %}
+{%- endif %}
+{%- endfor %}
 
 	return 0;
 }
@@ -87,19 +81,11 @@ static PyMemberDef {{ Extension ~ Component }}_members[]
 	{ nullptr } // Sentinel
 };
 
-
-{%- for member in members %}
-
+{% for member in members %}
 static PyObject* {{ Extension ~ Component }}_Get{{ member['name']|capitalize }}(_PyspotWrapper* self, void* closure)
 {
 	auto data = reinterpret_cast<{{ '%s::%s' % (namespace, Component) }}*>(self->data);
-
-	{%- if not is_builtin_type(member['type']) %}
-	Py_INCREF(data->{{ member['name'] }});
-	return data->{{ member['name'] }};
-	{%- else %}
-	return PyFloat_FromDouble(static_cast<double>(data->{{ member['name'] }}));
-	{%- endif %}
+	return {{ to_python_type(member['type']) % ('data->' ~ member['name']) }};
 }
 
 static int {{ Extension ~ Component }}_Set{{ member['name']|capitalize }}(_PyspotWrapper* self, PyObject* value, void* closure)
@@ -120,20 +106,11 @@ static int {{ Extension ~ Component }}_Set{{ member['name']|capitalize }}(_Pyspo
 	{%- endif %}
 
 	auto data = reinterpret_cast<{{ '%s::%s' % (namespace, Component) }}*>(self->data);
-
-	{%- if not is_builtin_type(member['type']) %}
-	Py_DECREF(data->{{ member['name'] }});
-	Py_INCREF(value);
-	data->{{ member['name'] }} = value;
-	{%- else %}
-	data->{{ member['name'] }} = static_cast<{{ member['type'] }}>(PyFloat_AsDouble(value));
-	{%- endif %}
+	data->{{ member['name'] }} = {{ to_c_type(member['type']) % 'value' }};
 
 	return 0;
 }
-
-{%- endfor %}
-
+{% endfor %}
 
 static PyGetSetDef {{ Extension ~ Component }}_accessors[]
 {

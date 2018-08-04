@@ -8,6 +8,7 @@
 #include <pyspot/Wrapper.h>
 
 #include "pywrap/extension/Pywrap.h"
+#include "pywrap/wrap/Person.h"
 #include "wrap/Test.h"
 
 using namespace pyspot;
@@ -20,19 +21,34 @@ using namespace wrap;
 #endif
 
 
+void testTest()
+{
+	Test test{ 2.0f };
+	Wrapper<Test> wTest{ test };
+	Module module{ "wrapper" };
+	Object result{ module.Invoke("test_test", Tuple{ wTest }) };
+	assert(test.value == 3.0f);
+}
+
+
+void testPerson()
+{
+	Person person{ "Amrik" };
+	Wrapper<Person> wPerson{ person };
+	Module module{ "wrapper" };
+	Object result{ module.Invoke("test_person", Tuple{ wPerson }) };
+	assert(person.name == "Antonio");
+}
+
+
 int main()
 {
 	Interpreter interpreter{ "pyspot", PyInit_Pywrap, TEST_DIR };
 
-	Test test{ 2.0f };
-	Wrapper<Test> wTest{ test };
-
-	Module module{ "wrapper" };
-
 	try
 	{
-		Object result{ module.Invoke("test", Tuple{ wTest }) };
-		assert(test.value == 3.0f);
+		testTest();
+		testPerson();
 	}
 	catch (const Exception& ex)
 	{

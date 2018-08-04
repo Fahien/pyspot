@@ -19,10 +19,24 @@ def c_for_type(type):
 	else               : return type + ' %s'
 
 
+def to_python_type(type):
+	if type == 'float'  : return 'PyFloat_FromDouble(static_cast<double>(%s))'
+	if type == 'cstring': return 'PyUnicode_FromString(%s)'
+	if type == 'string' : return 'PyUnicode_FromString(%s.c_str())'
+	else                : return 'UnknownType(%s)'
+
+
+def to_c_type(type):
+	if type == 'float'  : return 'static_cast<float>(PyFloat_AsDouble(%s))'
+	if type == 'cstring': return 'PyUnicode_AsUTF8(%s)'
+	if type == 'string' : return 'PyUnicode_AsUTF8(%s)'
+	else                : return 'UnknownType(%s)'
+
+
 def pyspot_for_type(extension, type):
-	if is_builtin_type(type): return type
-	if type == 'string'     : return 'pyspot::String'
-	else                    : return '%s::%s' % (extension, type)
+	if type == 'float' : return 'pyspot::Float'
+	if type == 'string': return 'pyspot::String'
+	else               : return '%s::%s' % (extension, type)
 
 
 def initializer_for_type(extension, type, default=None):
@@ -134,6 +148,8 @@ def main():
 		is_builtin_type=is_builtin_type,
 		parser_for_type=parser_for_type,
 		pytype_for_type=pytype_for_type,
+		to_python_type=to_python_type,
+		to_c_type=to_c_type,
 		pyspot_for_type=pyspot_for_type,
 		c_for_type=c_for_type)
 

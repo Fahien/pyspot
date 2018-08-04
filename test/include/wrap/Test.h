@@ -12,6 +12,7 @@ class Test
 	float value;
 };
 
+
 }
 
 #endif // WRAP_TEST_H_

@@ -1,0 +1,10 @@
+{
+	"namespace": "wrap",
+	"name": "Person",
+	"members": [
+		{
+			"name": "name",
+			"type": "string"
+		}
+	]
+}
