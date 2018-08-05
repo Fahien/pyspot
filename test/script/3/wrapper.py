@@ -3,7 +3,7 @@ import pyspot
 
 
 def test_test(obj):
-	obj.value = 3.0
+	obj.SetValue(4.0)
 	obj.cname = "Dent"
 	obj.name  = "Prefect"
 	obj.person.name = "McMillian"

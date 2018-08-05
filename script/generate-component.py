@@ -80,6 +80,13 @@ def pytype_for_type(type):
 	else                       : return 'T_OBJECT_EX'
 
 
+def method_flags_for_args(args):
+	return 'METH_VARARGS | METH_KEYWORDS'
+	if len(args) == 0: return 'METH_NOARGS'
+	if len(args) == 1: return 'METH_O'
+	else             : return 'METH_VARARGS | METH_KEYWORDS'
+
+
 def load_include(namespace_path, type_name):
 	"""Loads a json type"""
 	extension_path = os.path.dirname(namespace_path)
@@ -123,9 +130,10 @@ def main():
 	except FileNotFoundError:
 		exit('Cannot render template: %s not found' % template_name)
 
-	# Load members and enum values
+	# Load members, enum values, and methods
 	members = data['members'] if 'members' in data else []
-	values  = data['values'] if 'values' in data else []
+	values  = data['values']  if 'values'  in data else []
+	methods = data['methods'] if 'methods' in data else []
 
 	# Load includes
 	namespace_path = os.path.dirname(component_path)
@@ -150,7 +158,8 @@ def main():
 		'Component': data['name'].lower().capitalize(),
 		'COMPONENT': data['name'].upper(),
 		'members'  : members,
-		'values'   : values
+		'values'   : values,
+		'methods'  : methods
 	}
 
 	# Generate the code
@@ -162,7 +171,8 @@ def main():
 		to_python_type=to_python_type,
 		to_c_type=to_c_type,
 		pyspot_for_type=pyspot_for_type,
-		c_for_type=c_for_type)
+		c_for_type=c_for_type,
+		method_flags_for_args=method_flags_for_args)
 
 	# Output
 	if len(sys.argv) == 5:

@@ -28,7 +28,7 @@ void testTest()
 	Wrapper<Test> wTest{ test };
 	Module module{ "wrapper" };
 	Object result{ module.Invoke("test_test", Tuple{ wTest }) };
-	assert(test.value == 3.0f);
+	assert(test.value == 4.0f);
 	assert(test.cname == string{ "Dent" });
 	assert(test.name  == "Prefect");
 	assert(test.person.name == "McMillian");
