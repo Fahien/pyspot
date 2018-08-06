@@ -17,6 +17,7 @@ class Test
 	            const Person& p      = Person{ "Trillian" });
 
 	void SetValue(const float v) { value = v; }
+	std::string GetNames() const { return name + cname; }
 
 	float value;
 	const char* cname;

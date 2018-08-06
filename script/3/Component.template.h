@@ -176,9 +176,14 @@ static PyObject* {{ Extension ~ Component }}_Method_{{ method['name'] }}(_Pyspot
 {%- endfor %}
 
 	auto data = reinterpret_cast<{{ '%s::%s' % (namespace, Component) }}*>(self->data);
+	
+{%- if method['type'] == 'void' %}
 	data->{{ method['name'] }}({{ c_args_list|join(',') }});
-
 	return Py_None;
+{%- else %}
+	{{ c_for_type(method['type']) % 'ret'}} { data->{{ method['name'] }}({{ c_args_list|join(',') }}) };
+	return {{ to_python_type(method['type']) % 'ret' }};
+{%- endif %}
 }
 {% endfor %}
 

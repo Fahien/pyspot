@@ -29,6 +29,11 @@
 					"name": "value"
 				}
 			]
+		},
+		{
+			"name": "GetNames",
+			"type": "string",
+			"args": []
 		}
 	]
 }

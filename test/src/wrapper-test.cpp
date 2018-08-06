@@ -31,10 +31,10 @@ void testTest()
 	assert(test.value == 4.0f);
 	assert(test.cname == string{ "Dent" });
 	assert(test.name  == "Prefect");
-	assert(test.person.name == "McMillian");
+	assert(test.person.name == "PrefectDent");
 
 	Wrapper<Test> zaphod{ result };
-	assert(zaphod.GetPayload().person.name == "Zaphod");
+	assert(zaphod->person.name == "Zaphod");
 }
 
 

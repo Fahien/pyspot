@@ -15,8 +15,9 @@ def is_builtin_type(type):
 
 
 def c_for_type(type):
-	if type == 'string': return 'char %s[64]'
-	else               : return type + ' %s'
+	if type == 'cstring': return 'char %s[64]'
+	if type == 'string' : return 'std::string %s'
+	else                : return type + ' %s'
 
 
 def to_python_type(type):
