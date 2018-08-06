@@ -1,5 +1,6 @@
 #include <cstdlib>
 #include <cassert>
+#include <iostream>
 
 #include <pyspot/Interpreter.h>
 #include <pyspot/Module.h>
@@ -15,51 +16,106 @@ using namespace wrap;
 using namespace std;
 
 #if PYTHON_VERSION >= 3
-# define TEST_DIR _T("test/script/3")
+# define TEST_DIR _T( "test/script/3" )
 #else
-# define TEST_DIR _T("test/script/2")
+# define TEST_DIR _T( "test/script/2" )
 #endif
 
-
-void testTest()
+namespace test
 {
-	Person person{ "Trillian" };
-	Test test{ 2.0f, "Arthur", "Ford", person };
-	Wrapper<Test> wTest{ test };
-	Module module{ "wrapper" };
-	Object result{ module.Invoke("test_test", Tuple{ wTest }) };
-	assert(test.value == 4.0f);
-	assert(test.cname == string{ "Dent" });
-	assert(test.name  == "Prefect");
-	assert(test.person.name == "PrefectDent");
 
-	Wrapper<Test> zaphod{ result };
-	assert(zaphod->person.name == "Zaphod");
+
+Module& getModule()
+{
+
+	static Interpreter interpreter { "pyspot", PyInit_Pywrap, TEST_DIR };
+	static Module module { "wrapper" };
+	return module;
 }
 
 
-void testPerson()
+void CanModifyMemberInt()
 {
-	Person person{ "Amrik" };
-	Wrapper<Person> wPerson{ person };
-	Module module{ "wrapper" };
-	Object result{ module.Invoke("test_person", Tuple{ wPerson }) };
-	assert(person.name == "Antonio");
+	Test test {};
+	assert( test.index == 0 );
+	getModule().Invoke( "modify_member_int", { Wrapper<Test>{ test } } );
+	assert( test.index == 1 && "Cannot modify member int" );
 }
 
+
+void CanModifyMemberFloat()
+{
+	Test test {};
+	assert( test.value == 0.0f );
+	getModule().Invoke( "modify_member_float", { Wrapper<Test>{ test } } );
+	assert( test.value == 1.0f && "Cannot modify member float" );
+}
+
+
+void CanModifyMemberCString()
+{
+	Test test {};
+	assert( test.cname == "Arthur" );
+	getModule().Invoke( "modify_member_cstring", { Wrapper<Test>{ test } } );
+	assert( test.cname == string{ "Dent" } && "Cannot modify member cstring" );
+}
+
+
+void CanModifyMemberString()
+{
+	Test test {};
+	assert( test.name == "Ford" );
+	getModule().Invoke( "modify_member_string", { Wrapper<Test>{ test } } );
+	assert( test.name == "Prefect" && "Cannot modify member string" );
+}
+
+
+void CanCallMethodWithArg()
+{
+	Test test {};
+	assert( test.value == 0.0f );
+	getModule().Invoke( "call_method_with_arg", { Wrapper<Test>{ test } } );
+	assert( test.value == 1.0f );
+}
+
+
+void CanGetMethodReturnValue()
+{
+	Test test {};
+	assert( test.person.name == "Trillian" );
+	getModule().Invoke( "get_method_return_value", { Wrapper<Test>{ test } } );
+	assert( test.person.name == "FordArthur" );
+}
+
+
+void CanGetCreatedObject()
+{
+	Wrapper<Test> wTest { getModule().Invoke( "get_created_object" ) };
+	assert( wTest->index == 1 );
+	assert( wTest->value == 2.0f );
+	assert( wTest->cname == string{ "Deep" } );
+	assert( wTest->name  == "Thought" );
+	assert( wTest->person.name == "Zaphod" );
+}
+
+
+}
 
 int main()
 {
-	Interpreter interpreter{ "pyspot", PyInit_Pywrap, TEST_DIR };
-
 	try
 	{
-		testTest();
-		testPerson();
+		test::CanModifyMemberInt();
+		test::CanModifyMemberFloat();
+		test::CanModifyMemberCString();
+		test::CanModifyMemberString();
+		test::CanCallMethodWithArg();
+		test::CanGetMethodReturnValue();
+		test::CanGetCreatedObject();
 	}
 	catch (const Exception& ex)
 	{
-		fprintf(stderr, "Error %ls\n", ex.What().c_str());
+		wcerr << "Error: " << ex.What() << endl;
 	}
 
 	return EXIT_SUCCESS;

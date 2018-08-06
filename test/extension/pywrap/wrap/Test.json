@@ -3,6 +3,10 @@
 	"name": "Test",
 	"members": [
 		{
+			"name": "index",
+			"type": "int"
+		},
+		{
 			"name": "value",
 			"type": "float"
 		},
