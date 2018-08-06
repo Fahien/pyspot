@@ -99,6 +99,13 @@ void CanGetCreatedObject()
 }
 
 
+void CanInvokeCMethod()
+{
+	String ret { getModule().Invoke( "invoke_c_method" ) };
+	assert( ret.ToString() == "PyWrap" );
+}
+
+
 }
 
 int main()
@@ -112,6 +119,7 @@ int main()
 		test::CanCallMethodWithArg();
 		test::CanGetMethodReturnValue();
 		test::CanGetCreatedObject();
+		test::CanInvokeCMethod();
 	}
 	catch (const Exception& ex)
 	{

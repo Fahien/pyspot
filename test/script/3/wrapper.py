@@ -29,3 +29,7 @@ def get_method_return_value( obj ):
 def get_created_object():
 	person = pyspot.Person( name="Zaphod" )
 	return pyspot.Test( 1, 2.0, "Deep", "Thought", person )
+
+
+def invoke_c_method():
+	return pyspot.GetStringFromC()

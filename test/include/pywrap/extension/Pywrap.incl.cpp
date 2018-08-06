@@ -1,12 +1,9 @@
-#include <iostream>
-#include <Python.h>
+#include <pyspot/String.h>
 
-using namespace std;
+using namespace pyspot;
 
 
-static PyObject* invoke(PyObject* self, PyObject* args)
+static PyObject* GetStringFromC(PyObject* self, PyObject* args)
 {
-	cout << "Within invoke!" << endl;
-	Py_INCREF(Py_None);
-	return Py_None;
+	return String{ "PyWrap" }.GetIncref();
 }

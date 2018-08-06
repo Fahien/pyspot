@@ -1,6 +1,11 @@
 {
 	"name": "Pywrap",
-	"methods": [],
+	"methods": [
+		{
+			"name": "GetStringFromC",
+			"description": "Returns a string"
+		}
+	],
 	"components": [
 		"wrap::Test",
 		"wrap::Person"
