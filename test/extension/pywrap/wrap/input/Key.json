@@ -1,6 +1,7 @@
 {
-	"name": "Key",
 	"namespace": "wrap::input",
+	"name": "Key",
+	"header": "wrap/input/Input.h",
 	"values": {
 		"UP":    0,
 		"LEFT":  1,

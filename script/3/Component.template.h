@@ -6,10 +6,17 @@
 #include <pyspot/String.h>
 #include <pyspot/Tuple.h>
 #include <pyspot/Wrapper.h>
+
 {% for include in includes %}
 #include "{{ extension }}/{{ include['namespace']|replace( '::', '/' ) }}/{{ include['name'] }}.h"
-{% endfor %}
+{%- endfor %}
+
+{%- if header %}
+#include <{{ header }}>
+{%- else %}
 #include <{{ '%s/%s.h' % (namespace|replace( '::', '/' ), Component) }}>
+{%- endif %}
+
 #include <structmember.h> // at the end
 
 {%- set member_list = [] %}

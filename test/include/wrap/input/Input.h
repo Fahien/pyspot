@@ -1,14 +1,28 @@
 #ifndef WRAP_INPUT_H_
 #define WRAP_INPUT_H_
 
-#include "wrap/input/Key.h"
-#include "wrap/input/Action.h"
 
 namespace wrap
 {
 
 namespace input
 {
+
+
+enum class Key
+{
+	UP    = 0,
+	LEFT  = 1,
+	DOWN  = 2,
+	RIGHT = 3,
+};
+
+
+enum class Action
+{
+	RELEASE = 0,
+	PRESS   = 1,
+};
 
 
 class Input

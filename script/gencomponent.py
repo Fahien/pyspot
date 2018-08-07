@@ -123,6 +123,7 @@ def generate_component(python_version, extension_path, component_path, output_pa
 	members = data['members'] if 'members' in data else []
 	values  = data['values']  if 'values'  in data else []
 	methods = data['methods'] if 'methods' in data else []
+	header  = data['header']  if 'header'  in data else None
 
 	# Load includes
 	namespace_path = os.path.dirname(component_path)
@@ -144,6 +145,7 @@ def generate_component(python_version, extension_path, component_path, output_pa
 		'Extension': extension_name.lower().capitalize(),
 		'EXTENSION': extension_name.upper(),
 		'namespace': data['namespace'],
+		'header'   : header,
 		'includes' : includes,
 		'component': data['name'].lower(),
 		'Component': data['name'].lower().capitalize(),
