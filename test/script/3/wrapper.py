@@ -33,3 +33,13 @@ def get_created_object():
 
 def invoke_c_method():
 	return pyspot.GetStringFromC()
+
+
+def compare_enums(inp):
+	print(dir(pyspot.Key))
+
+	if inp.key == pyspot.Key.UP:
+		inp.key = pyspot.Key.RIGHT
+
+	if inp.action == pyspot.Action.PRESS:
+		inp.action = pyspot.Action.RELEASE

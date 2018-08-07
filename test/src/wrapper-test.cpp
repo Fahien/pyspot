@@ -10,6 +10,7 @@
 
 #include "pywrap/extension/Pywrap.h"
 #include "wrap/Test.h"
+#include "wrap/input/Input.h"
 
 using namespace pyspot;
 using namespace wrap;
@@ -102,7 +103,17 @@ void CanGetCreatedObject()
 void CanInvokeCMethod()
 {
 	String ret { getModule().Invoke( "invoke_c_method" ) };
-	assert( ret.ToString() == "PyWrap" );
+	assert( ret == "PyWrap" );
+}
+
+
+void CanCompareEnums()
+{
+	input::Input inp { input::Key::UP, input::Action::PRESS };
+	getModule().Invoke( "compare_enums", { Wrapper<input::Input>{ inp } } );
+
+	assert( inp.key == input::Key::RIGHT );
+	assert( inp.action == input::Action::RELEASE );
 }
 
 
@@ -112,6 +123,9 @@ int main()
 {
 	try
 	{
+		// Init first
+		test::getModule();
+
 		test::CanModifyMemberInt();
 		test::CanModifyMemberFloat();
 		test::CanModifyMemberCString();
@@ -120,6 +134,7 @@ int main()
 		test::CanGetMethodReturnValue();
 		test::CanGetCreatedObject();
 		test::CanInvokeCMethod();
+		test::CanCompareEnums();
 	}
 	catch (const Exception& ex)
 	{

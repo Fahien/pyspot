@@ -7,9 +7,9 @@
 #include <pyspot/Tuple.h>
 #include <pyspot/Wrapper.h>
 {% for include in includes %}
-#include "{{ extension }}/{{ include['namespace'] }}/{{ include['name'] }}.h"
+#include "{{ extension }}/{{ include['namespace']|replace( '::', '/' ) }}/{{ include['name'] }}.h"
 {% endfor %}
-#include <{{ '%s/%s.h' % (namespace, Component) }}>
+#include <{{ '%s/%s.h' % (namespace|replace( '::', '/' ), Component) }}>
 #include <structmember.h> // at the end
 
 {%- set member_list = [] %}
@@ -41,10 +41,6 @@ static void {{ Extension ~ Component }}_Dealloc(_PyspotWrapper* self)
 /// {{ Component }} init
 static int {{ Extension ~ Component }}_Init(_PyspotWrapper* self, PyObject* args, PyObject* kwds)
 {
-	{%- for member in members %}
-	{% if not is_builtin_type(member['type']) %}PyObject* temp{ nullptr };{% break %}{%- endif %}
-	{%- endfor %}
-
 	{%- for member in members %}
 		{%- if not is_builtin_type(member['type']) %}
 	PyObject* {{ member['name'] }}{ nullptr };
@@ -82,6 +78,31 @@ static int {{ Extension ~ Component }}_Init(_PyspotWrapper* self, PyObject* args
 {%- endfor %}
 
 	return 0;
+}
+
+/// Compare
+static PyObject* {{ Extension ~ Component }}_Cmp( _PyspotWrapper* lhs, _PyspotWrapper* rhs, int op )
+{
+{%- if values|length > 0 %}
+	if (op == Py_EQ)
+	{
+		auto& lData = *reinterpret_cast<{{ '%s::%s' % (namespace, Component) }}*>( lhs->data );
+		auto& rData = *reinterpret_cast<{{ '%s::%s' % (namespace, Component) }}*>( rhs->data );
+		
+		if ( lData == rData )
+		{
+			Py_INCREF( Py_True );
+			return Py_True;
+		}
+		else
+		{
+			Py_INCREF( Py_False );
+			return Py_False;
+		}
+	}
+{% endif %}
+	Py_INCREF( Py_NotImplemented );
+	return Py_NotImplemented;
 }
 
 
@@ -203,13 +224,13 @@ static PyMethodDef {{ Extension ~ Component }}_methods[]
 
 
 static PyTypeObject g_{{ Extension ~ Component }}TypeObject = {
-	PyVarObject_HEAD_INIT(NULL, 0)
+	PyVarObject_HEAD_INIT( NULL, 0 )
 
 	"{{ extension }}.{{ Component }}",
-	sizeof(_PyspotWrapper),
+	sizeof( _PyspotWrapper ),
 	0,
 
-	reinterpret_cast<destructor>({{ Extension ~ Component }}_Dealloc),
+	reinterpret_cast<destructor>( {{ Extension ~ Component }}_Dealloc ),
 	0,
 	0,
 	0,
@@ -236,7 +257,7 @@ static PyTypeObject g_{{ Extension ~ Component }}TypeObject = {
 
 	0,
 
-	0,
+	reinterpret_cast<richcmpfunc>( {{ Extension ~ Component }}_Cmp ),
 
 	0,
 
@@ -251,7 +272,7 @@ static PyTypeObject g_{{ Extension ~ Component }}TypeObject = {
 	0,
 	0,
 	0,
-	reinterpret_cast<initproc>({{ Extension ~ Component }}_Init),
+	reinterpret_cast<initproc>( {{ Extension ~ Component }}_Init ),
 	0,
 	PyspotWrapper_New,
 };
@@ -259,6 +280,7 @@ static PyTypeObject g_{{ Extension ~ Component }}TypeObject = {
 
 namespace pyspot
 {
+
 
 template<>
 Wrapper<{{ "%s::%s" % (namespace, Component) }}>::Wrapper({{ '%s::%s' % (namespace, Component) }}& t)
@@ -268,6 +290,18 @@ Wrapper<{{ "%s::%s" % (namespace, Component) }}>::Wrapper({{ '%s::%s' % (namespa
 	auto {{ component }} = reinterpret_cast<_PyspotWrapper*>(mObject);
 	{{ component }}->data = &t;
 }
+
+
+template<>
+Wrapper<{{ "%s::%s" % (namespace, Component) }}>::Wrapper({{ '%s::%s' % (namespace, Component) }}&& t)
+:	Object { (PyType_Ready(&g_{{ Extension ~ Component }}TypeObject), PyspotWrapper_New(&g_{{ Extension ~ Component }}TypeObject, nullptr, nullptr)) }
+,	payload{ t }
+{
+	auto {{ component }} = reinterpret_cast<_PyspotWrapper*>(mObject);
+	{{ component }}->data    = new {{ '%s::%s' % (namespace, Component) }} { t };
+	{{ component }}->ownData = true;
+}
+
 
 }
 

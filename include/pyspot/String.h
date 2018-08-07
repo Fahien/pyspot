@@ -18,8 +18,18 @@ class String : public Object
   private:
 	const std::string  mStr;
 	const std::wstring mWStr;
+
+	friend bool operator==(const String&, const std::string&);
 };
 
+
+inline bool operator==(const String& lhs, const std::string& rhs)
+{
+	return lhs.mStr == rhs;
 }
+
+
+}
+
 
 #endif // PST_STRING_H_

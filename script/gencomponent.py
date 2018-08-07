@@ -88,9 +88,8 @@ def method_flags_for_args(args):
 	else             : return 'METH_VARARGS | METH_KEYWORDS'
 
 
-def load_include(namespace_path, type_name):
+def load_include(extension_path, namespace_path, type_name):
 	"""Loads a json type"""
-	extension_path = os.path.dirname(namespace_path)
 
 	type_path = '%s/%s.json' % (namespace_path, type_name)
 	if not os.path.exists(type_path):
@@ -102,19 +101,8 @@ def load_include(namespace_path, type_name):
 		return json.load(type_file)
 
 
-def main():
+def generate_component(python_version, extension_path, component_path, output_path=None):
 	"""Entry point"""
-	if len(sys.argv) < 4:
-		exit('Usage: %s <python version> <extension name> <component.json> [<output path>]' % sys.argv[0])
-	
-	# Get python version
-	python_version = sys.argv[1]
-
-	# Get the extension name
-	extension_name = sys.argv[2]
-
-	# Get the component path
-	component_path = sys.argv[3]
 
 	# Read the json file with
 	try:
@@ -145,8 +133,10 @@ def main():
 		    not is_builtin_type(member['type']) and
 		    member['type'] != 'string'          and
 		    member['type'] != 'cstring'):
-			includes.append(load_include(namespace_path, member['type']))
+			includes.append(load_include(extension_path, namespace_path, member['type']))
 			types_loaded.append(member['type'])
+
+	extension_name = os.path.basename( extension_path )
 
 	# Fill dictionary
 	dictionary = {
@@ -176,16 +166,13 @@ def main():
 		method_flags_for_args=method_flags_for_args)
 
 	# Output
-	if len(sys.argv) == 5:
+	if output_path != None:
 		# Write code to file
-		file_path = sys.argv[4]
-		parent_path = os.path.dirname(file_path)
+		parent_path = os.path.dirname(output_path)
 		if not os.path.exists(parent_path):
 			os.makedirs(parent_path)
-		with open(file_path, "w") as out:
+		with open(output_path, "w") as out:
 			out.write(code)
 	else:
 		# Write to std output
 		print(code)
-
-main()

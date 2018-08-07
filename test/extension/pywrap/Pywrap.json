@@ -8,6 +8,9 @@
 	],
 	"components": [
 		"wrap::Test",
-		"wrap::Person"
+		"wrap::Person",
+		"wrap::input::Key",
+		"wrap::input::Action",
+		"wrap::input::Input"
 	]
 }

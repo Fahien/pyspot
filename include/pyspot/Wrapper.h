@@ -132,6 +132,7 @@ class Wrapper : public Object
 	{}
 
 	inline Wrapper(T&);
+	inline Wrapper(T&&);
 
 	T& GetPayload() const { return payload; }
 	T& operator*()  const { return payload; }

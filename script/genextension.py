@@ -3,6 +3,7 @@
 import os
 import sys
 import json
+import gencomponent
 from jinja2 import Template
 
 PYTHON = {}
@@ -75,7 +76,7 @@ def main():
 		exit('Usage: %s <python version> <extension.json> [-h] [<output path>]' % sys.argv[0])
 
 	# Get python version
-	PYTHON["version"] = sys.argv[1]
+	PYTHON['version'] = sys.argv[1]
 
 	# Get the json path
 	extension = sys.argv[2]
@@ -95,12 +96,18 @@ def main():
 		if len(sys.argv) == 5:
 			output_path = sys.argv[4]
 		create_header(name, output_path)
+
+		for component in data['components']:
+			component_relative_path = component.replace('::', '/')
+			component_path = '%s/%s.json' % ( extension_dir, component_relative_path )
+			output_dir = os.path.dirname( os.path.dirname( output_path ) )
+			component_output_path = '%s/%s.h' % ( output_dir, component_relative_path )
+			gencomponent.generate_component(PYTHON['version'], extension_dir, component_path, component_output_path)
 	else:
 		if len(sys.argv) == 4:
 			output_path = sys.argv[3]
 		methods    = data['methods']
 		components = data['components']
 		create_source(extension_dir, name, methods, components, output_path)
-
 
 main()

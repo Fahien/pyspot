@@ -1,7 +1,7 @@
 #include "{{ extension }}/extension/{{ Extension }}.h"
 
 {%- for component in components %}
-#include "{{ extension }}/{{ component['namespace'] }}/{{ component['name'] }}.h"
+#include "{{ extension }}/{{ component['namespace']|replace( '::', '/' ) }}/{{ component['name'] }}.h"
 {%- endfor %}
 
 static PyObject* g_{{ Extension }}Error;
@@ -60,7 +60,7 @@ PyMODINIT_FUNC PyInit_{{ Extension }}()
 	}
 	{%- if 'values' in component %}
 	{%- for key, val in component['values'].items() %}
-	PyDict_SetItemString({{ extension ~ component['name'] }}.tp_dict, "{{ key }}", PyLong_FromLong({{ val }}));
+	PyDict_SetItemString( g_{{ Extension ~ component['name'] }}TypeObject.tp_dict, "{{ key }}", Wrapper<{{ '%s::%s' % ( component['namespace'], component['name'] ) }}>{ {{ '%s::%s::%s' % ( component['namespace'], component['name'], key ) }} }.GetIncref() );
 	{%- endfor %}
 	{%- endif %}
 	Py_INCREF(&g_{{ Extension ~ component['name'] }}TypeObject);
