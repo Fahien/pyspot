@@ -68,29 +68,8 @@ endif()
 include(ExtensionGenerator)
 generate_extension(${CMAKE_CURRENT_SOURCE_DIR}/test/extension Pywrap)
 
-# Test Sources
-set(TEST_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/test/src)
-set(TEST_SOURCES
-	# TODO remove
-	${CMAKE_CURRENT_BINARY_DIR}/src/pytest/extension/Pytest.cpp
-	${TEST_SOURCE_DIR}/tests.h
-	${TEST_SOURCE_DIR}/tests.cpp
-	${TEST_SOURCE_DIR}/main.cpp)
-
-# Test Executable
-add_executable(pst-test ${TEST_SOURCES})
-target_include_directories(pst-test PRIVATE
-	${CMAKE_CURRENT_SOURCE_DIR}/test/include
-	${CMAKE_CURRENT_BINARY_DIR}/include
-	${PST_INCLUDE_DIRS})
-target_link_libraries(pst-test ${PYSPOT_LIBRARIES})
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/test/script DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/test)
-
-# Test
-add_test(pst-test ${EXECUTABLE_OUTPUT_PATH}/pst-test)
-
-
 # Wrapper Test Sources
+set(TEST_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/test/src)
 set(WTEST_SOURCES
 	${EXTENSION_SOURCES}
 	${TEST_SOURCE_DIR}/wrapper-test.cpp)
