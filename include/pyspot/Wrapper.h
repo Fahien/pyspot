@@ -128,18 +128,19 @@ class Wrapper : public Object
   public:
 	Wrapper(const Object& object)
 	:	Object { object }
-	,	payload{ *reinterpret_cast<T*>(reinterpret_cast<_PyspotWrapper*>(mObject)->data) }
+	,	payload{ reinterpret_cast<T*>(reinterpret_cast<_PyspotWrapper*>(mObject)->data) }
 	{}
 
-	inline Wrapper(T&);
-	inline Wrapper(T&&);
+	Wrapper(const T&);
+	Wrapper(T*);
+	Wrapper(T&&);
 
-	T& GetPayload() const { return payload; }
-	T& operator*()  const { return payload; }
-	T* operator->() const { return &payload; }
+	T& GetPayload() const { return *payload; }
+	T& operator*()  const { return *payload; }
+	T* operator->() const { return  payload; }
 
   private:
-	T& payload;
+	T* payload;
 };
 
 

@@ -29,7 +29,7 @@ namespace test
 Module& getModule()
 {
 
-	static Interpreter interpreter { "pyspot", PyInit_Pywrap, TEST_DIR };
+	static Interpreter interpreter { "pyspot", PyInit_pywrap, TEST_DIR };
 	static Module module { "wrapper" };
 	return module;
 }

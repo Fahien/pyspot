@@ -3,6 +3,7 @@
 
 #include "pyspot/Interpreter.h"
 
-PyMODINIT_FUNC PyInit_{{ Extension }}();
+
+PyMODINIT_FUNC PyInit_{{ extension }}(); // Default lowercase name
 
 #endif // PST_{{ EXTENSION }}_H_

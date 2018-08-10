@@ -55,5 +55,9 @@ Object Module::Invoke(const std::string& name, const Tuple& args)
 		pair = mMethods.find(name);
 	}
 
-	return pair->second.Invoke(args);
+	auto ret = pair->second.Invoke(args);
+#ifndef NDEBUG
+	Error::Check();
+#endif
+	return ret;
 }
