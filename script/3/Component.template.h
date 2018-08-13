@@ -36,11 +36,12 @@ static char {{ method['static'] }}[{{ method['name']|length + 1 }}] = { {{ '"%s"
 /// {{ Component }} destructor
 static void {{ Extension ~ Component }}_Dealloc(_PyspotWrapper* self)
 {
+	{%- if destructible %}
 	if (self->ownData)
 	{
 		delete reinterpret_cast<{{ '%s::%s' % (namespace, Component) }}*>(self->data);
 	}
-
+	{%- endif %}
 	Py_TYPE(self)->tp_free(reinterpret_cast<PyObject*>(self));
 }
 
@@ -65,9 +66,13 @@ static int {{ Extension ~ Component }}_Init(_PyspotWrapper* self, PyObject* args
 	}
 	else
 	{
+{%- if constructible %}
 		data = new {{ '%s::%s' % (namespace, Component) }};
 		self->data = data;
 		self->ownData = true;
+{%- else %}
+		return 0;
+{%- endif %}
 	}
 
 	if (!PyArg_ParseTupleAndKeywords(args, kwds, fmt, kwlist
@@ -83,7 +88,6 @@ static int {{ Extension ~ Component }}_Init(_PyspotWrapper* self, PyObject* args
 	}
 {% endif %}
 {%- endfor %}
-
 	return 0;
 }
 
@@ -287,6 +291,7 @@ static PyTypeObject g_{{ Extension ~ Component }}TypeObject = {
 
 template<>
 pyspot::Wrapper<{{ "%s::%s" % ( namespace, Component ) }}>::Wrapper( const {{ '%s::%s' % (namespace, Component) }}& t )
+{%- if constructible %}
 :	pyspot::Object { ( PyType_Ready( &g_{{ Extension ~ Component }}TypeObject ), PyspotWrapper_New( &g_{{ Extension ~ Component }}TypeObject, nullptr, nullptr ) ) }
 ,	payload{ nullptr }
 {
@@ -295,6 +300,7 @@ pyspot::Wrapper<{{ "%s::%s" % ( namespace, Component ) }}>::Wrapper( const {{ '%
 	{{ component }}->data = payload;
 	{{ component }}->ownData = true;
 }
+{% else %}	= delete;{% endif %}
 
 
 template<>
@@ -309,6 +315,7 @@ pyspot::Wrapper<{{ "%s::%s" % ( namespace, Component ) }}>::Wrapper( {{ '%s::%s'
 
 template<>
 pyspot::Wrapper<{{ "%s::%s" % ( namespace, Component ) }}>::Wrapper( {{ '%s::%s' % ( namespace, Component ) }}&& t )
+{%- if constructible %}
 :	pyspot::Object { ( PyType_Ready( &g_{{ Extension ~ Component }}TypeObject ), PyspotWrapper_New( &g_{{ Extension ~ Component }}TypeObject, nullptr, nullptr ) ) }
 ,	payload{ nullptr }
 {
@@ -317,6 +324,7 @@ pyspot::Wrapper<{{ "%s::%s" % ( namespace, Component ) }}>::Wrapper( {{ '%s::%s'
 	{{ component }}->data = payload;
 	{{ component }}->ownData = true;
 }
+{% else %}	= delete;{% endif %}
 
 
 #endif // PST{{ EXTENSION ~ COMPONENT }}_H_

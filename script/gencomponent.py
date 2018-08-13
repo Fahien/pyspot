@@ -8,7 +8,8 @@ from jinja2 import Template
 
 
 def is_builtin_type(type):
-	if (type == 'int'      or
+	if (type == 'bool'     or
+	    type == 'int'      or
 	    type == 'unsigned' or
 	    type == 'float')  : return True
 	else                  : return False
@@ -21,6 +22,7 @@ def c_for_type(type):
 
 
 def to_python_type(type):
+	if type == 'bool'   : return 'PyBool_FromLong(static_cast<long>(%s))'
 	if type == 'int'    : return 'PyLong_FromLong(static_cast<long>(%s))'
 	if type == 'long'   : return 'PyLong_FromLong(%s)'
 	if type == 'float'  : return 'PyFloat_FromDouble(static_cast<double>(%s))'
@@ -31,6 +33,7 @@ def to_python_type(type):
 
 
 def to_c_type(type):
+	if type == 'bool'   : return 'static_cast<bool>(PyLong_AsLong(%s))'
 	if type == 'int'    : return 'static_cast<int>(PyLong_AsLong(%s))'
 	if type == 'long'   : return 'PyLong_AsLong(%s)'
 	if type == 'float'  : return 'static_cast<float>(PyFloat_AsDouble(%s))'
@@ -124,6 +127,8 @@ def generate_component(python_version, extension_path, component_path, output_pa
 	values  = data['values']  if 'values'  in data else []
 	methods = data['methods'] if 'methods' in data else []
 	header  = data['header']  if 'header'  in data else None
+	constructible = data['constructible'] if 'constructible' in data else True
+	destructible = data['destructible'] if 'destructible' in data else True
 
 	# Load includes
 	namespace_path = os.path.dirname(component_path)
@@ -147,8 +152,10 @@ def generate_component(python_version, extension_path, component_path, output_pa
 		'namespace': data['namespace'],
 		'header'   : header,
 		'includes' : includes,
+		'constructible': constructible,
+		'destructible': destructible,
 		'component': data['name'].lower(),
-		'Component': data['name'].lower().capitalize(),
+		'Component': data['name'],
 		'COMPONENT': data['name'].upper(),
 		'members'  : members,
 		'values'   : values,

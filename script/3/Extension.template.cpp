@@ -54,7 +54,7 @@ PyMODINIT_FUNC PyInit_{{ extension }}()
 	PyModule_AddObject( module, "error", g_{{ Extension }}Error );
 
 {% for component in components %}
-	{%- set CompName = 'g_' ~ Extension ~ component['name']|lower|capitalize ~ 'TypeObject' %}
+	{%- set CompName = 'g_' ~ Extension ~ component['name'] ~ 'TypeObject' %}
 	if ( PyType_Ready( &{{ CompName }} ) < 0 )
 	{
 		return nullptr;
