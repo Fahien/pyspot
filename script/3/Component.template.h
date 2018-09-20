@@ -290,15 +290,13 @@ static PyTypeObject g_{{ Extension ~ Component }}TypeObject = {
 
 
 template<>
-pyspot::Wrapper<{{ "%s::%s" % ( namespace, Component ) }}>::Wrapper( const {{ '%s::%s' % (namespace, Component) }}& t )
+pyspot::Wrapper<{{ "%s::%s" % ( namespace, Component ) }}>::Wrapper( {{ '%s::%s' % (namespace, Component) }}& t )
 {%- if constructible %}
 :	pyspot::Object { ( PyType_Ready( &g_{{ Extension ~ Component }}TypeObject ), PyspotWrapper_New( &g_{{ Extension ~ Component }}TypeObject, nullptr, nullptr ) ) }
-,	payload{ nullptr }
+,	payload{ &t }
 {
 	auto {{ component }} = reinterpret_cast<_PyspotWrapper*>( mObject );
-	payload = new {{ '%s::%s' % ( namespace, Component ) }} { t };
 	{{ component }}->data = payload;
-	{{ component }}->ownData = true;
 }
 {% else %}	= delete;{% endif %}
 
@@ -317,10 +315,9 @@ template<>
 pyspot::Wrapper<{{ "%s::%s" % ( namespace, Component ) }}>::Wrapper( {{ '%s::%s' % ( namespace, Component ) }}&& t )
 {%- if constructible %}
 :	pyspot::Object { ( PyType_Ready( &g_{{ Extension ~ Component }}TypeObject ), PyspotWrapper_New( &g_{{ Extension ~ Component }}TypeObject, nullptr, nullptr ) ) }
-,	payload{ nullptr }
+,	payload { new {{ '%s::%s' % ( namespace, Component ) }} { std::move( t ) } }
 {
 	auto {{ component }} = reinterpret_cast<_PyspotWrapper*>( mObject );
-	payload = new {{ '%s::%s' % ( namespace, Component ) }} { std::move( t ) };
 	{{ component }}->data = payload;
 	{{ component }}->ownData = true;
 }

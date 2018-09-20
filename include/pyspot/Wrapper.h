@@ -131,7 +131,7 @@ class Wrapper : public Object
 	,	payload{ reinterpret_cast<T*>(reinterpret_cast<_PyspotWrapper*>(mObject)->data) }
 	{}
 
-	Wrapper(const T&);
+	Wrapper(T&);
 	Wrapper(T*);
 	Wrapper(T&&);
 
