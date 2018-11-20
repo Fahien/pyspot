@@ -6,5 +6,4 @@
 
 ## Wrapper
 
-- Use the _PyspotWrapper
-- Generate code from already defined classes
+- Improve Pywrap

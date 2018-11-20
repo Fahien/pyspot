@@ -1,16 +1,7 @@
-#include <cstdlib>
-#include <cassert>
-#include <iostream>
+#include "wrapper-test.h"
 
-#include <pyspot/Interpreter.h>
-#include <pyspot/Module.h>
-#include <pyspot/Tuple.h>
-#include <pyspot/Exception.h>
-#include <pyspot/Wrapper.h>
-
-#include "pywrap/extension/Pywrap.h"
-#include "wrap/Test.h"
-#include "wrap/input/Input.h"
+#include <pyspot/Bindings.h>
+#include <pyspot/Extension.h>
 
 using namespace pyspot;
 using namespace wrap;
@@ -29,7 +20,7 @@ namespace test
 Module& getModule()
 {
 
-	static Interpreter interpreter { "pyspot", PyInit_pywrap, TEST_DIR };
+	static Interpreter interpreter { "pyspot", PyInit_extension, TEST_DIR };
 	static Module module { "wrapper" };
 	return module;
 }
@@ -39,7 +30,7 @@ void CanModifyMemberInt()
 {
 	Test test {};
 	assert( test.index == 0 );
-	getModule().Invoke( "modify_member_int", { Wrapper<Test>{ test } } );
+	getModule().Invoke( "modify_member_int", { Wrapper<Test>{ &test } } );
 	assert( test.index == 1 && "Cannot modify member int" );
 }
 
@@ -48,7 +39,7 @@ void CanModifyMemberFloat()
 {
 	Test test {};
 	assert( test.value == 0.0f );
-	getModule().Invoke( "modify_member_float", { Wrapper<Test>{ test } } );
+	getModule().Invoke( "modify_member_float", { Wrapper<Test>{ &test } } );
 	assert( test.value == 1.0f && "Cannot modify member float" );
 }
 
@@ -57,7 +48,7 @@ void CanModifyMemberCString()
 {
 	Test test {};
 	assert( test.cname == "Arthur" );
-	getModule().Invoke( "modify_member_cstring", { Wrapper<Test>{ test } } );
+	getModule().Invoke( "modify_member_cstring", { Wrapper<Test>{ &test } } );
 	assert( test.cname == string{ "Dent" } && "Cannot modify member cstring" );
 }
 
@@ -66,7 +57,7 @@ void CanModifyMemberString()
 {
 	Test test {};
 	assert( test.name == "Ford" );
-	getModule().Invoke( "modify_member_string", { Wrapper<Test>{ test } } );
+	getModule().Invoke( "modify_member_string", { Wrapper<Test>{ &test } } );
 	assert( test.name == "Prefect" && "Cannot modify member string" );
 }
 
@@ -75,7 +66,7 @@ void CanCallMethodWithArg()
 {
 	Test test {};
 	assert( test.value == 0.0f );
-	getModule().Invoke( "call_method_with_arg", { Wrapper<Test>{ test } } );
+	getModule().Invoke( "call_method_with_arg", { Wrapper<Test>{ &test } } );
 	assert( test.value == 1.0f );
 }
 
@@ -84,7 +75,7 @@ void CanGetMethodReturnValue()
 {
 	Test test {};
 	assert( test.person.name == "Trillian" );
-	getModule().Invoke( "get_method_return_value", { Wrapper<Test>{ test } } );
+	getModule().Invoke( "get_method_return_value", { Wrapper<Test>{ &test } } );
 	assert( test.person.name == "FordArthur" );
 }
 
@@ -110,14 +101,15 @@ void CanInvokeCMethod()
 void CanCompareEnums()
 {
 	input::Input inp { input::Key::UP, input::Action::PRESS };
-	getModule().Invoke( "compare_enums", { Wrapper<input::Input>{ inp } } );
+	getModule().Invoke( "compare_enums", { Wrapper<input::Input>{ &inp } } );
 
-	assert( inp.key == input::Key::RIGHT );
-	assert( inp.action == input::Action::RELEASE );
+	assert( inp.key == input::Key::RIGHT && "Cannot modify enum" );
+	assert( inp.action == input::Action::RELEASE && "Cannot modify enum" );
 }
 
 
-}
+} // namespace test
+
 
 int main()
 {

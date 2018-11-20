@@ -8,7 +8,8 @@ Please visit the [wiki](https://github.com/Fahien/pyspot/wiki) for more informat
 
 In order to build PySpoT, you will need the following dependencies:
 - [CMake](https://cmake.org), Cross-Platform Make;
-- [Python 3.6.+](https://www.python.org/downloads/), header files and a static library.
+- [Python 3.6.+](https://www.python.org/downloads/), header files and a static library;
+- [Pywrap](), tool you can find as a release artifact.
 
 ## Build
 
@@ -30,4 +31,4 @@ ctest -C Release -T test
 
 ## License
 
-Apache License © 2017 [Antonio Caggiano](http://www.fahien.me)
+The MIT License © 2017 [Antonio Caggiano](http://www.fahien.me)

@@ -9,7 +9,7 @@ project(${PST_TITLE} C CXX)
 
 # Version number
 set(PST_VERSION_MAJOR 0)
-set(PST_VERSION_MINOR 4)
+set(PST_VERSION_MINOR 5)
 
 # Directories
 set(PST_SCRIPT_DIR      ${CMAKE_CURRENT_SOURCE_DIR}/script)
@@ -64,22 +64,38 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Android")
 endif()
 
 
-# Generate the PytestExtension
-include(ExtensionGenerator)
-generate_extension(${CMAKE_CURRENT_SOURCE_DIR}/test/extension Pywrap)
-
 # Wrapper Test Sources
 set(TEST_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/test/src)
-set(WTEST_SOURCES
-	${EXTENSION_SOURCES}
-	${TEST_SOURCE_DIR}/wrapper-test.cpp)
+set(WTEST_HEADERS ${TEST_SOURCE_DIR}/wrapper-test.h)
+set(WTEST_SOURCES ${TEST_SOURCE_DIR}/wrapper-test.cpp)
 
 # Wrapper Test Executable
-add_executable(wrapper-test ${WTEST_SOURCES})
-target_include_directories(wrapper-test PRIVATE
+set(WINCLUDE_DIRS
 	${CMAKE_CURRENT_SOURCE_DIR}/test/include
 	${CMAKE_CURRENT_BINARY_DIR}/include
-	${PST_INCLUDE_DIRS})
+	${PST_INCLUDE_DIRS}
+)
+
+# Pyspot extension files
+set(WGEN_SOURCES
+	${CMAKE_CURRENT_BINARY_DIR}/src/pyspot/Bindings.cpp
+	${CMAKE_CURRENT_BINARY_DIR}/src/pyspot/Extension.cpp
+)
+
+# Generation command
+list(JOIN WINCLUDE_DIRS "\" -I\"" IWINCLUDE_DIRS)
+set(IWINCLUDE_DIRS "\"${IWINCLUDE_DIRS}\"")
+message(STATUS ${IWINCLUDE_DIRS})
+add_custom_command(OUTPUT ${WGEN_SOURCES}
+	COMMAND ${PYWRAP_EXE}
+	ARGS ${WTEST_HEADERS} -- -I${IWINCLUDE_DIRS} -xc++ -std=c++14 -DPYTHON_VERSION=${PYTHON_VERSION}
+	WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+	COMMENT "Generating Bindings and Extension"
+)
+
+# Test target
+add_executable(wrapper-test ${WTEST_SOURCES} ${WGEN_SOURCES})
+target_include_directories(wrapper-test PRIVATE ${WINCLUDE_DIRS})
 target_link_libraries(wrapper-test ${PYSPOT_LIBRARIES})
 
 # Test

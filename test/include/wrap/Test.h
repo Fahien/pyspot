@@ -8,7 +8,7 @@
 namespace wrap
 {
 
-class Test
+class [[pyspot::export]] Test
 {
   public:
 	inline Test( const int   i        = 0,
@@ -37,6 +37,6 @@ Test::Test( const int i, const float v, const char* c, const std::string& n, con
 {}
 
 
-}
+} // namespace wrap
 
 #endif // WRAP_TEST_H_

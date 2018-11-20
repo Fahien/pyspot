@@ -9,7 +9,7 @@ namespace input
 {
 
 
-enum class Key
+enum class [[pyspot::export]] Key
 {
 	UP    = 0,
 	LEFT  = 1,
@@ -18,14 +18,14 @@ enum class Key
 };
 
 
-enum class Action
+enum class [[pyspot::export]] Action
 {
 	RELEASE = 0,
 	PRESS   = 1,
 };
 
 
-class Input
+class [[pyspot::export]] Input
 {
   public:
 	inline Input( Key k = Key::UP, Action a = Action::RELEASE );
@@ -41,9 +41,9 @@ Input::Input( Key k, Action a )
 {}
 
 
-}
+} // namespace input
 
-}
+} // namespace wrap
 
 
 #endif // WRAP_INPUT_H_

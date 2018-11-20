@@ -11,72 +11,64 @@
 struct _PyspotWrapper
 {
 	PyObject_HEAD
-	void* data;
-	bool ownData;
+	void* pData;
+	bool bOwnData;
 };
 
 
 
 /// Constructor
-static PyObject* PyspotWrapper_New(PyTypeObject* type, PyObject* args, PyObject* kwds)
+static PyObject* PyspotWrapper_New( PyTypeObject* type, PyObject* args, PyObject* kwds )
 {
-	auto self = reinterpret_cast<_PyspotWrapper*>(type->tp_alloc(type, 0));
+	auto pSelf = reinterpret_cast<_PyspotWrapper*>( type->tp_alloc( type, 0 ) );
 
-	if (self != nullptr)
+	if ( pSelf != nullptr )
 	{
-		self->data = nullptr;
-		self->ownData = false;
+		pSelf->pData = nullptr;
+		pSelf->bOwnData = false;
 	}
 
-	return reinterpret_cast<PyObject*>(self);
+	return reinterpret_cast<PyObject*>( pSelf );
 }
 
 
 /// Destructor
-static void PyspotWrapper_Dealloc(_PyspotWrapper* self)
+static void PyspotWrapper_Dealloc( _PyspotWrapper* pSelf )
 {
-	// If it owns the data, it needs a specific destructor
-	assert(!self->ownData);
-	Py_TYPE(self)->tp_free(reinterpret_cast<PyObject*>(self));
+	// If it owns the pData, it needs a specific destructor
+	assert( !pSelf->bOwnData );
+	Py_TYPE( pSelf )->tp_free( reinterpret_cast<PyObject*>( pSelf ) );
 }
 
 
 /// Init
-static int PyspotWrapper_Init(_PyspotWrapper* self, PyObject* args, PyObject* kwds)
+static int PyspotWrapper_Init( _PyspotWrapper*, PyObject*, PyObject* )
 {
-	static char* kwlist[]{ nullptr };
-	static const char* fmt{ "|" };
-
-	if (!PyArg_ParseTupleAndKeywords(args, kwds, fmt, kwlist))
-	{
-		return -1;
-	}
-
 	return 0;
 }
 
 
 /// Members
-static PyMemberDef PyspotWrapper_members[]
+static PyMemberDef g_PyspotWrapper_members[]
 {
 	{ nullptr } // Sentinel
 };
 
 
 /// PyTypeObject
-static PyTypeObject PyspotWrapperTypeObject = {
-	PyVarObject_HEAD_INIT(NULL, 0)
+static PyTypeObject g_PyspotWrapperTypeObject {
+	PyVarObject_HEAD_INIT( nullptr, 0 )
 
-	"pyspot.Wrapper",       // name
-	sizeof(_PyspotWrapper), // basicsize
-	0,                      // itemsize
+	"pyspot.Wrapper",         // name
+	sizeof( _PyspotWrapper ), // basicsize
+	0,                        // itemsize
 
-	reinterpret_cast<destructor>(PyspotWrapper_Dealloc), // destructor
-	0, 	                                                 // print
-	0, 	                                                 // getattr
-	0, 	                                                 // setattr
-	0, 	                                                 // compare
-	0, 	                                                 // repr
+	reinterpret_cast<destructor>( PyspotWrapper_Dealloc ), // destructor
+	0,                                                     // print
+	0,                                                     // getattr
+	0,                                                     // setattr
+	0,                                                     // compare
+	0,                                                     // repr
 
 	0, // as_number
 	0, // as_sequence
@@ -106,7 +98,7 @@ static PyTypeObject PyspotWrapperTypeObject = {
 	0, // iternext
 
 	0,                                              // methods
-	PyspotWrapper_members,                          // members
+	g_PyspotWrapper_members,                        // members
 	0,                                              // getset
 	0,                                              // base
 	0,                                              // dict
@@ -121,30 +113,31 @@ static PyTypeObject PyspotWrapperTypeObject = {
 
 namespace pyspot
 {
+	
 
 template<typename T>
 class Wrapper : public Object
 {
   public:
-	Wrapper(const Object& object)
+	Wrapper( const Object& object )
 	:	Object { object }
-	,	payload{ reinterpret_cast<T*>(reinterpret_cast<_PyspotWrapper*>(mObject)->data) }
+	,	pPayload{ reinterpret_cast<T*>( reinterpret_cast<_PyspotWrapper*>( mObject )->pData ) }
 	{}
 
-	Wrapper(T&);
-	Wrapper(T*);
-	Wrapper(T&&);
+	Wrapper( T& );
+	Wrapper( T* );
+	Wrapper( T&& );
 
-	T& GetPayload() const { return *payload; }
-	T& operator*()  const { return *payload; }
-	T* operator->() const { return  payload; }
+	T& GetPayload() const { return *pPayload; }
+	T& operator*()  const { return *pPayload; }
+	T* operator->() const { return  pPayload; }
 
   private:
-	T* payload;
+	T* pPayload;
 };
 
 
-}
+} // namespace pyspot
 
 
 #endif // PST_WRAPPER_H_
