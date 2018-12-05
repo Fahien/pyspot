@@ -1,9 +1,8 @@
-#ifndef PST_TUPLE_H_
-#define PST_TUPLE_H_
-
-#include "pyspot/Object.h"
+#pragma once
 
 #include <initializer_list>
+
+#include "pyspot/Object.h"
 
 
 namespace pyspot
@@ -12,24 +11,22 @@ namespace pyspot
 
 class Tuple : public Object
 {
-public:
-	Tuple(size_t size);
-	Tuple(std::initializer_list<Object> list);
+  public:
+	Tuple( PyObject* pObject );
+	Tuple( const size_t size );
+	Tuple( std::initializer_list<Object> list );
 
-	inline size_t GetSize() const { return mSize; }
+	inline size_t GetSize() const { return m_Size; }
 
-	void SetItem(const size_t i, int item);
-	void SetItem(const size_t i, unsigned item);
-	void SetItem(const size_t i, float item);
-	void SetItem(const size_t i, const Object& item);
-	void SetItem(const size_t i, PyObject* item);
+	void SetItem( const size_t i, int item );
+	void SetItem( const size_t i, unsigned item );
+	void SetItem( const size_t i, float item );
+	void SetItem( const size_t i, const Object& item );
+	void SetItem( const size_t i, PyObject* pItem );
 
-private:
-	size_t mSize;
+  private:
+	size_t m_Size;
 };
 
 
 }
-
-
-#endif // PST_TUPLE_H_
