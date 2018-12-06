@@ -5,7 +5,7 @@ using namespace pyspot;
 
 Tuple::Tuple( PyObject* pObject )
 :	Object{ pObject }
-,	m_Size { PyTuple_Size( pObject ) }
+,	m_Size { static_cast<size_t>( PyTuple_Size( pObject ) ) }
 {
 	assert( PyTuple_Check( pObject ) && "Object must be a tuple");
 }

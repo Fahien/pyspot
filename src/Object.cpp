@@ -8,7 +8,7 @@ Object::Object()
 {}
 
 
-Object::Object(PyObject* object)
+Object::Object( PyObject* object )
 :	mObject{ object }
 {}
 

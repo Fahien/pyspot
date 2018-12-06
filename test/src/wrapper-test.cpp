@@ -91,13 +91,6 @@ void CanGetCreatedObject()
 }
 
 
-void CanInvokeCMethod()
-{
-	String ret { getModule().Invoke( "invoke_c_method" ) };
-	assert( ret == "PyWrap" );
-}
-
-
 void CanCompareEnums()
 {
 	input::Input inp { input::Key::UP, input::Action::PRESS };
@@ -125,7 +118,6 @@ int main()
 		test::CanCallMethodWithArg();
 		test::CanGetMethodReturnValue();
 		test::CanGetCreatedObject();
-		test::CanInvokeCMethod();
 		test::CanCompareEnums();
 	}
 	catch (const Exception& ex)

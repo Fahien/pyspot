@@ -8,6 +8,13 @@ Dictionary::Dictionary()
 {}
 
 
+Dictionary::Dictionary(PyObject* pObject)
+:	Object{ pObject }
+{
+	assert( PyDict_Check(pObject) && "Object must be a dictionary");
+}
+
+
 Dictionary::Dictionary(const Object& other)
 :	Object{ (PyDict_Check(other.GetObject()), other.GetIncref()) }
 {}
