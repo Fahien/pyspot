@@ -27,11 +27,10 @@ set(PYTHON_VERSION "3" CACHE STRING "Python libraries version to use")
 message(STATUS "Python Libraries Version: ${PYTHON_VERSION}")
 add_definitions(-DPYTHON_VERSION=${PYTHON_VERSION})
 find_package(PythonLibraries EXACT ${PYTHON_VERSION})
-
 set(PST_INCLUDE_DIRS
 	${PST_INCLUDE_DIR}
 	${PST_GEN_INCLUDE_DIR}
-	${PYTHON_INCLUDE_DIR})
+	${PYTHON_INCLUDE_DIRS})
 
 # Sources
 set(SOURCES
@@ -53,17 +52,6 @@ target_link_libraries(${PST_NAME} PUBLIC ${PYTHON_LIBRARIES})
 set(PYSPOT_LIBRARIES ${PST_NAME})
 target_include_directories(${PST_NAME} PUBLIC ${PST_INCLUDE_DIRS})
 
-if(${CMAKE_SYSTEM_NAME} MATCHES "Android")
-	add_custom_command(
-		TARGET PRE_BUILD
-			${PYSPOT_LIBRARIES}
-		COMMAND
-			${CMAKE_COMMAND} -E copy
-			${CMAKE_CURRENT_SOURCE_DIR}/lib/${CMAKE_ANDROID_ARCH_ABI}/libpython2.7.so
-			${CMAKE_BINARY_DIR}/libpython2.7.so)
-endif()
-
-
 # Wrapper Test Sources
 set(TEST_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/test/src)
 set(WTEST_HEADERS ${TEST_SOURCE_DIR}/wrapper-test.h)
@@ -82,8 +70,15 @@ set(WGEN_SOURCES
 	${CMAKE_CURRENT_BINARY_DIR}/src/pyspot/Extension.cpp
 )
 
+# Join function
+function(join VALUES GLUE OUTPUT)
+	string(REGEX REPLACE "([^\\]|^);" "\\1${GLUE}" _TMP_STR "${VALUES}")
+	string(REGEX REPLACE "[\\](.)" "\\1" _TMP_STR "${_TMP_STR}") #fixes escaping
+	set(${OUTPUT} "${_TMP_STR}" PARENT_SCOPE)
+endfunction()
+
 # Generation command
-list(JOIN WINCLUDE_DIRS "\" -I\"" IWINCLUDE_DIRS)
+join("${WINCLUDE_DIRS}" "\" -I\"" IWINCLUDE_DIRS)
 set(IWINCLUDE_DIRS "\"${IWINCLUDE_DIRS}\"")
 message(STATUS ${IWINCLUDE_DIRS})
 add_custom_command(OUTPUT ${WGEN_SOURCES} always
