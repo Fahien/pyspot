@@ -4,7 +4,7 @@
 #include <string>
 #include <Python.h>
 
-#include "pyspot/common.h"
+#include "pyspot/Common.h"
 
 
 namespace pyspot

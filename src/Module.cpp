@@ -1,11 +1,14 @@
 #include "pyspot/Module.h"
+
 #include "pyspot/Method.h"
 #include "pyspot/String.h"
 #include "pyspot/Tuple.h"
 #include "pyspot/Exception.h"
 #include "pyspot/Error.h"
 
-using namespace pyspot;
+
+namespace pyspot
+{
 
 
 Module::Module(const char* name)
@@ -61,3 +64,6 @@ Object Module::Invoke(const std::string& name, const Tuple& args)
 #endif
 	return ret;
 }
+
+
+} // namespace pyspot

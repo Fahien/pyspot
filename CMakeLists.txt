@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.6)
 
 set(CMAKE_C_STANDARD   11)
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 
 set(PST_TITLE PySpot)
 set(PST_NAME  pyspot)
@@ -9,7 +9,7 @@ project(${PST_TITLE} C CXX)
 
 # Version number
 set(PST_VERSION_MAJOR 0)
-set(PST_VERSION_MINOR 5)
+set(PST_VERSION_MINOR 6)
 
 # Directories
 set(PST_SCRIPT_DIR      ${CMAKE_CURRENT_SOURCE_DIR}/script)
@@ -24,7 +24,6 @@ configure_file(${PST_SOURCE_DIR}/Config.h.in ${PST_GEN_INCLUDE_DIR}/Config.h)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 find_package(PythonInterp 3)
 set(PYTHON_VERSION "3" CACHE STRING "Python libraries version to use")
-message(STATUS "Python Libraries Version: ${PYTHON_VERSION}")
 add_definitions(-DPYTHON_VERSION=${PYTHON_VERSION})
 find_package(PythonLibraries EXACT ${PYTHON_VERSION})
 set(PST_INCLUDE_DIRS
@@ -42,8 +41,7 @@ set(SOURCES
 	${PST_SOURCE_DIR}/Method.cpp
 	${PST_SOURCE_DIR}/Module.cpp
 	${PST_SOURCE_DIR}/Tuple.cpp
-	${PST_SOURCE_DIR}/Dictionary.cpp
-)
+	${PST_SOURCE_DIR}/Dictionary.cpp)
 source_group(src FILES ${SOURCES})
 
 # Library
@@ -61,8 +59,7 @@ set(WTEST_SOURCES ${TEST_SOURCE_DIR}/wrapper-test.cpp)
 set(WINCLUDE_DIRS
 	${CMAKE_CURRENT_SOURCE_DIR}/test/include
 	${CMAKE_CURRENT_BINARY_DIR}/include
-	${PST_INCLUDE_DIRS}
-)
+	${PST_INCLUDE_DIRS})
 
 # Pyspot extension files
 set(WGEN_SOURCES

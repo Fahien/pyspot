@@ -1,6 +1,7 @@
 #include "pyspot/Dictionary.h"
 
-using namespace pyspot;
+namespace pyspot
+{
 
 
 Dictionary::Dictionary()
@@ -42,3 +43,6 @@ void Dictionary::SetItem(const Object& key, Object& val)
 {
 	PyDict_SetItem(mObject, key.GetObject(), val.GetObject());
 }
+
+
+} // namespace pyspot

@@ -1,12 +1,15 @@
 #include "pyspot/Method.h"
-#include "pyspot/Exception.h"
-#include "pyspot/Module.h"
-#include "pyspot/Tuple.h"
 
 #include <cstdio>
 #include <string>
 
-using namespace pyspot;
+#include "pyspot/Exception.h"
+#include "pyspot/Module.h"
+#include "pyspot/Tuple.h"
+
+
+namespace pyspot
+{
 
 
 Method::Method(const Module& module, const std::string& name)
@@ -46,3 +49,6 @@ Object Method::Invoke(const Tuple& args) const
 {
 	return PyObject_CallObject(mObject, args.GetObject());
 }
+
+
+} // namespace pyspot

@@ -1,4 +1,5 @@
 #include "pyspot/Interpreter.h"
+
 #include "pyspot/Module.h"
 #include "pyspot/String.h"
 #include "pyspot/Exception.h"
@@ -9,7 +10,9 @@
 # define PATH_SEP _T(":")
 #endif
 
-using namespace pyspot;
+
+namespace pyspot
+{
 
 
 Interpreter::Interpreter(const tstring& dir)
@@ -48,3 +51,6 @@ void Interpreter::addToPath(const tstring& folder)
 	path += folder;
 	PySys_SetPath(&path[0]);
 }
+
+
+} // namespace pyspot
