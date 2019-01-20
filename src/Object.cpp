@@ -1,6 +1,8 @@
 #include "pyspot/Object.h"
 
-using namespace pyspot;
+
+namespace pyspot
+{
 
 
 Object::Object()
@@ -77,3 +79,6 @@ tstring Object::ToTString() const
 	return ToString();
 	#endif
 }
+
+
+} // namespace pyspot

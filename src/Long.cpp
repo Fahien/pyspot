@@ -2,7 +2,9 @@
 
 #include "pyspot/Long.h"
 
-using namespace pyspot;
+
+namespace pyspot
+{
 
 
 Long::Long(PyObject* object)
@@ -17,3 +19,6 @@ Long::Long(const long l)
 
 Long::~Long()
 {}
+
+
+} // namespace pyspot

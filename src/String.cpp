@@ -2,7 +2,9 @@
 
 #include <Python.h>
 
-using namespace pyspot;
+
+namespace pyspot
+{
 
 
 String::String(PyObject* object)
@@ -28,3 +30,6 @@ String::String(const std::string& str)
 
 String::~String()
 {}
+
+
+} // namespace pyspot

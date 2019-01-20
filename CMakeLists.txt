@@ -8,7 +8,7 @@ project(${PST_TITLE} C CXX)
 
 # Version number
 set(PST_VERSION_MAJOR 0)
-set(PST_VERSION_MINOR 5)
+set(PST_VERSION_MINOR 6)
 
 # Directories
 set(PST_SCRIPT_DIR      ${CMAKE_CURRENT_SOURCE_DIR}/script)
@@ -39,8 +39,7 @@ set(SOURCES
 	${PST_SOURCE_DIR}/Method.cpp
 	${PST_SOURCE_DIR}/Module.cpp
 	${PST_SOURCE_DIR}/Tuple.cpp
-	${PST_SOURCE_DIR}/Dictionary.cpp
-)
+	${PST_SOURCE_DIR}/Dictionary.cpp)
 source_group(src FILES ${SOURCES})
 
 # Library
@@ -49,17 +48,6 @@ target_compile_features(${PST_NAME} PRIVATE cxx_std_11)
 target_link_libraries(${PST_NAME} PUBLIC ${PYTHON_LIBRARIES})
 set(PYSPOT_LIBRARIES ${PST_NAME})
 target_include_directories(${PST_NAME} PUBLIC ${PST_INCLUDE_DIRS})
-
-if(${CMAKE_SYSTEM_NAME} MATCHES "Android")
-	add_custom_command(
-		TARGET PRE_BUILD
-			${PYSPOT_LIBRARIES}
-		COMMAND
-			${CMAKE_COMMAND} -E copy
-			${CMAKE_CURRENT_SOURCE_DIR}/lib/${CMAKE_ANDROID_ARCH_ABI}/libpython2.7.so
-			${CMAKE_BINARY_DIR}/libpython2.7.so)
-endif()
-
 
 # Wrapper Test Sources
 set(TEST_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/test/src)
@@ -70,8 +58,7 @@ set(WTEST_SOURCES ${TEST_SOURCE_DIR}/wrapper-test.cpp)
 set(WINCLUDE_DIRS
 	${CMAKE_CURRENT_SOURCE_DIR}/test/include
 	${CMAKE_CURRENT_BINARY_DIR}/include
-	${PST_INCLUDE_DIRS}
-)
+	${PST_INCLUDE_DIRS})
 
 # Pyspot extension files
 set(WGEN_SOURCES
@@ -88,8 +75,15 @@ else()
 	message(FATAL "PythonLibs v${PYTHONLIBS_VERSION_STriNG} unsupported")
 endif()
 
+# Join function
+function(join VALUES GLUE OUTPUT)
+	string(REGEX REPLACE "([^\\]|^);" "\\1${GLUE}" _TMP_STR "${VALUES}")
+	string(REGEX REPLACE "[\\](.)" "\\1" _TMP_STR "${_TMP_STR}") #fixes escaping
+	set(${OUTPUT} "${_TMP_STR}" PARENT_SCOPE)
+endfunction()
+
 # Generation command
-list(JOIN WINCLUDE_DIRS "\" -I\"" IWINCLUDE_DIRS)
+join("${WINCLUDE_DIRS}" "\" -I\"" IWINCLUDE_DIRS)
 set(IWINCLUDE_DIRS "\"${IWINCLUDE_DIRS}\"")
 message(STATUS ${IWINCLUDE_DIRS})
 add_custom_command(OUTPUT ${WGEN_SOURCES} always

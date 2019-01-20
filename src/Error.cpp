@@ -1,14 +1,16 @@
-#include <Python.h>
+#include "pyspot/Error.h"
+
 #include <string>
+#include <Python.h>
 
 #include "pyspot/String.h"
 #include "pyspot/Module.h"
 #include "pyspot/Exception.h"
-#include "pyspot/Error.h"
 #include "pyspot/Tuple.h"
 
 
-using namespace pyspot;
+namespace pyspot
+{
 
 
 void Error::Check()
@@ -34,3 +36,6 @@ tstring Error::Get()
 
 	return ret;
 }
+
+
+} // namespace pyspot

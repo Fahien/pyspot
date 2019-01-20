@@ -1,6 +1,8 @@
 #include "pyspot/Tuple.h"
 
-using namespace pyspot;
+
+namespace pyspot
+{
 
 
 Tuple::Tuple( PyObject* pObject )
@@ -63,3 +65,6 @@ void Tuple::SetItem( const size_t i, PyObject* item )
 	// Consume the item reference
 	PyTuple_SetItem( mObject, i, item );
 }
+
+
+} // namespace pyspot

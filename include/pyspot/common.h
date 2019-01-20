@@ -20,7 +20,23 @@ using cstring = const char*;
 using tstring  = std::string;
 #endif
 
+
+#if PYTHON_VERSION >= 3
+inline tstring to_tstring(const std::string& s)
+{
+	std::wstring ret;
+	ret.assign(std::begin(s), std::end(s));
+	return ret;
 }
+#else
+inline tstring& to_tstring(std::string& s)
+{
+	return s;
+}
+#endif
+
+
+} // namespace pyspot
 
 
 #endif // PST_COMMON_H_
