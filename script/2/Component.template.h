@@ -178,23 +178,32 @@ static PyTypeObject {{ extension ~ Component }} = {
 	0,
 	0,
 	0,
+
+	0,
+	0,
+	0,
+
 	0,
 	0,
 	0,
 	0,
 	0,
+
 	0,
-	0,
-	0,
-	0,
+
 	Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,
 	"{{ Extension ~ Component }} object",
 	0,
+
+	0,
+
+	0,
+
+	0,
+
 	0,
 	0,
-	0,
-	0,
-	0,
+	
 	0,
 	{{ Extension ~ Component }}_members,
 	{{ Extension ~ Component }}_accessors,

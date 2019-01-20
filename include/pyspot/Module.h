@@ -19,19 +19,20 @@ class Tuple;
 class Module : public Object
 {
 public:
-	Module(const char* name);
-	Module(const tstring& name);
-	Module(const String& name);
+	Module( PyObject* module, const char* name );
+	Module( const char* name );
+	Module( const tstring& name );
+	Module( const String& name );
 	~Module();
 
-	const std::string& GetName() const { return mName; }
+	const std::string& GetName() const { return name; }
 
-	Object Invoke(const std::string& name);
-	Object Invoke(const std::string& name, const Tuple& args);
+	Object Invoke( const std::string& name );
+	Object Invoke( const std::string& name, const Tuple& args );
 
 private:
-	const std::string mName;
-	std::map<const std::string, Method> mMethods;
+	const std::string name;
+	std::map<const std::string, Method> methods;
 };
 
 

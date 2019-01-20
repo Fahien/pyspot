@@ -3,6 +3,7 @@
 
 #include "pyspot/Object.h"
 #include "pyspot/String.h"
+#include "pyspot/Tuple.h"
 
 namespace pyspot
 {

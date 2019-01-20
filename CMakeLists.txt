@@ -35,6 +35,7 @@ set(SOURCES
 	${PST_SOURCE_DIR}/Interpreter.cpp
 	${PST_SOURCE_DIR}/Object.cpp
 	${PST_SOURCE_DIR}/Long.cpp
+	${PST_SOURCE_DIR}/Bool.cpp
 	${PST_SOURCE_DIR}/String.cpp
 	${PST_SOURCE_DIR}/Method.cpp
 	${PST_SOURCE_DIR}/Module.cpp
@@ -72,7 +73,7 @@ if(${PYTHONLIBS_VERSION_STRING} MATCHES "3")
 elseif(${PYTHONLIBS_VERSION_STRING} MATCHES "2")
 	set(PY_MAJOR_VERSION 2)
 else()
-	message(FATAL "PythonLibs v${PYTHONLIBS_VERSION_STriNG} unsupported")
+	message(FATAL "PythonLibs v${PYTHONLIBS_VERSION_STRING} unsupported")
 endif()
 
 # Join function

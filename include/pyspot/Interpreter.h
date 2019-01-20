@@ -17,6 +17,7 @@ public:
 	Interpreter(const char* import, init_f function, const tstring& dir = _T("script"));
 	~Interpreter();
 
+	bool IsInitialized() const { return Py_IsInitialized(); }
 private:
 	void addToPath (const tstring& dir);
 

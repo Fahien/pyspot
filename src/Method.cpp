@@ -5,7 +5,6 @@
 
 #include "pyspot/Exception.h"
 #include "pyspot/Module.h"
-#include "pyspot/Tuple.h"
 
 
 namespace pyspot

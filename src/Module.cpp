@@ -11,22 +11,28 @@ namespace pyspot
 {
 
 
-Module::Module(const char* name)
-:	Object{ PyImport_ImportModule(name) }
-,	mName{ name }
+Module::Module( PyObject* module, const char* n )
+:	Object{ module }
+,	name { n }
+{}
+
+
+Module::Module( const char* n )
+:	Object{ PyImport_ImportModule( n ) }
+,	name{ n }
 {
 	Error::Check();
 }
 
 
-Module::Module(const tstring& name)
-:	Module{ String{ name } }
+Module::Module( const tstring& n )
+:	Module{ String{ n } }
 {}
 
 
-Module::Module(const String& name)
-:	Object{ PyImport_Import(name.GetObject()) }
-,	mName{ name.ToString() }
+Module::Module( const String& n )
+:	Object{ PyImport_Import( n.GetObject() ) }
+,	name{ n.ToString() }
 {
 	Error::Check();
 }
@@ -36,29 +42,29 @@ Module::~Module()
 {}
 
 
-Object Module::Invoke(const std::string& name)
+Object Module::Invoke( const std::string& name )
 {
-	auto pair = mMethods.find(name);
-	if (pair == mMethods.end())
+	auto pair = methods.find( name );
+	if ( pair == methods.end() )
 	{
-		mMethods.emplace(name, Method{ *this, name });
-		pair = mMethods.find(name);
+		methods.emplace( name, Method{ *this, name } );
+		pair = methods.find( name );
 	}
 
 	return pair->second.Invoke();
 }
 
 
-Object Module::Invoke(const std::string& name, const Tuple& args)
+Object Module::Invoke( const std::string& name, const Tuple& args )
 {
-	auto pair = mMethods.find(name);
-	if (pair == mMethods.end())
+	auto pair = methods.find( name );
+	if ( pair == methods.end() )
 	{
-		mMethods.emplace(name, Method{ *this, name });
-		pair = mMethods.find(name);
+		methods.emplace( name, Method{ *this, name } );
+		pair = methods.find( name );
 	}
 
-	auto ret = pair->second.Invoke(args);
+	auto ret = pair->second.Invoke( args );
 #ifndef NDEBUG
 	Error::Check();
 #endif
