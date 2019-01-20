@@ -8,7 +8,7 @@
 namespace pyspot
 {
 
-#if PYTHON_VERSION >= 3
+#if PY_MAJOR_VERSION >= 3
 #define _T(x) L ##x
 using init_f = PyObject* (*)(void);
 using cstring = const wchar_t*;

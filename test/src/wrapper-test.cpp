@@ -7,7 +7,7 @@ using namespace pyspot;
 using namespace wrap;
 using namespace std;
 
-#if PYTHON_VERSION >= 3
+#if PY_MAJOR_VERSION >= 3
 # define TEST_DIR _T( "test/script/3" )
 #else
 # define TEST_DIR _T( "test/script/2" )

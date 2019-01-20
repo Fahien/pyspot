@@ -26,7 +26,7 @@ public:
 	PyObject* GetObject() const { return mObject; }
 	PyObject* GetIncref() const { Py_INCREF(mObject); return mObject; }
 
-	#if PYTHON_VERSION >= 3
+	#if PY_MAJOR_VERSION >= 3
 	const char*    ToCString()  const { return PyUnicode_AsUTF8(mObject); }
 	const wchar_t* ToWCString() const { return PyUnicode_AsUnicode(mObject); }
 	#else
