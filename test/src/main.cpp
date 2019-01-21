@@ -1,33 +1,13 @@
-#include "tests.h"
+#include "test/Test.h"
 
 #include <cstdlib>
 #include <stdexcept>
 #include <iostream>
 
-using namespace std;
+#include <gtest/gtest.h>
 
-
-int main(void)
+int main( int argc, char** argv )
 {
-	bool success = false;
-	try
-	{
-		success =
-			testHello()  &&
-			testSingle() &&
-			testTest()   &&
-			testString() &&
-			testTransform() &&
-			testInput() &&
-			testMap() &&
-			testDictionary() &&
-			testBuildCustomPythonObject()
-		;
-	}
-	catch (exception& e)
-	{
-		cerr << e.what() << endl;
-	}
-
-	return success ? EXIT_SUCCESS : EXIT_FAILURE;
+	testing::InitGoogleTest(&argc, argv);
+	return RUN_ALL_TESTS();
 }

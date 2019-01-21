@@ -1,6 +1,6 @@
-cmake_minimum_required(VERSION 3.6)
+cmake_minimum_required( VERSION 3.6 )
 
-set(CMAKE_C_STANDARD   11)
+set(CMAKE_C_STANDARD 11)
 
 set(PST_TITLE PySpot)
 set(PST_NAME  pyspot)
@@ -8,7 +8,7 @@ project(${PST_TITLE} C CXX)
 
 # Version number
 set(PST_VERSION_MAJOR 0)
-set(PST_VERSION_MINOR 6)
+set(PST_VERSION_MINOR 7)
 
 # Directories
 set(PST_SCRIPT_DIR      ${CMAKE_CURRENT_SOURCE_DIR}/script)
@@ -22,7 +22,28 @@ configure_file(${PST_SOURCE_DIR}/Config.h.in ${PST_GEN_INCLUDE_DIR}/Config.h)
 # CMake modules
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 find_package(PythonInterp 3)
-find_package(PythonLibs EXACT ${PY_VERSION})
+if ( CMAKE_CXX_COMPILER_ID MATCHES "Clang" )
+	set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-register" )
+endif()
+
+# Python
+if( ${PY_VERSION} MATCHES "2" )
+	set( PYTHONLIBS_VERSION_STRING ${PY_VERSION} )
+	add_definitions( -DPY_MAJOR_VERSION=2 )
+	if(NOT TARGET python )
+		add_library( python STATIC IMPORTED )
+		set( PYTHON_LIBRARY "$ENV{PYTHON27_PATH}/libs/python27.lib" )
+		set( PYTHON_LIBRARY_DEBUG "$ENV{PYTHON27_PATH}/libs/python27_d.lib" )
+		set_target_properties( python PROPERTIES
+			IMPORTED_LOCATION ${PYTHON_LIBRARY}
+			IMPORTED_LOCATION_DEBUG ${PYTHON_LIBRARY_DEBUG})
+		message(STATUS "Found PythonLibs: $ENV{PYTHON27_PATH}")
+	endif()
+	set(PYTHON_INCLUDE_DIRS "$ENV{PYTHON27_PATH}/include")
+	set(PYTHON_LIBRARIES python)
+else()
+	find_package(PythonLibs EXACT ${PY_VERSION})
+endif()
 
 set(PST_INCLUDE_DIRS
 	${PST_INCLUDE_DIR}
@@ -45,61 +66,8 @@ source_group(src FILES ${SOURCES})
 
 # Library
 add_library(${PST_NAME} ${SOURCES})
-target_compile_features(${PST_NAME} PRIVATE cxx_std_11)
 target_link_libraries(${PST_NAME} PUBLIC ${PYTHON_LIBRARIES})
 set(PYSPOT_LIBRARIES ${PST_NAME})
 target_include_directories(${PST_NAME} PUBLIC ${PST_INCLUDE_DIRS})
 
-# Wrapper Test Sources
-set(TEST_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/test/src)
-set(WTEST_HEADERS ${TEST_SOURCE_DIR}/wrapper-test.h)
-set(WTEST_SOURCES ${TEST_SOURCE_DIR}/wrapper-test.cpp)
-
-# Wrapper Test Executable
-set(WINCLUDE_DIRS
-	${CMAKE_CURRENT_SOURCE_DIR}/test/include
-	${CMAKE_CURRENT_BINARY_DIR}/include
-	${PST_INCLUDE_DIRS})
-
-# Pyspot extension files
-set(WGEN_SOURCES
-	${CMAKE_CURRENT_BINARY_DIR}/src/pyspot/Bindings.cpp
-	${CMAKE_CURRENT_BINARY_DIR}/src/pyspot/Extension.cpp
-)
-
-# Set PY_MAJOR_VERSION
-if(${PYTHONLIBS_VERSION_STRING} MATCHES "3")
-	set(PY_MAJOR_VERSION 3)
-elseif(${PYTHONLIBS_VERSION_STRING} MATCHES "2")
-	set(PY_MAJOR_VERSION 2)
-else()
-	message(FATAL "PythonLibs v${PYTHONLIBS_VERSION_STRING} unsupported")
-endif()
-
-# Join function
-function(join VALUES GLUE OUTPUT)
-	string(REGEX REPLACE "([^\\]|^);" "\\1${GLUE}" _TMP_STR "${VALUES}")
-	string(REGEX REPLACE "[\\](.)" "\\1" _TMP_STR "${_TMP_STR}") #fixes escaping
-	set(${OUTPUT} "${_TMP_STR}" PARENT_SCOPE)
-endfunction()
-
-# Generation command
-join("${WINCLUDE_DIRS}" "\" -I\"" IWINCLUDE_DIRS)
-set(IWINCLUDE_DIRS "\"${IWINCLUDE_DIRS}\"")
-message(STATUS ${IWINCLUDE_DIRS})
-add_custom_command(OUTPUT ${WGEN_SOURCES} always
-	COMMAND ${PYWRAP_EXE}
-	ARGS ${WTEST_HEADERS} -- -I${IWINCLUDE_DIRS} -xc++ -std=c++11 -DPY_MAJOR_VERSION=${PY_MAJOR_VERSION}
-	WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-	COMMENT "Generating Bindings and Extension"
-)
-
-# Test target
-add_executable(wrapper-test ${WTEST_SOURCES} ${WGEN_SOURCES})
-target_include_directories(wrapper-test PRIVATE ${WINCLUDE_DIRS})
-target_link_libraries(wrapper-test ${PYSPOT_LIBRARIES})
-
-# Test
-add_test(wrapper-test ${EXECUTABLE_OUTPUT_PATH}/wrapper-test)
-
-include(CTest)
+add_subdirectory( test )

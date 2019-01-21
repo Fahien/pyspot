@@ -9,15 +9,16 @@
 namespace pyspot
 {
 
-class Exception : public std::exception
+class Exception : public std::runtime_error
 {
   public:
 	Exception(cstring msg)
-	:	mMsg{ msg }
+	:	std::runtime_error{ msg }
+	,	mMsg{ msg }
 	{}
 
 	Exception(const tstring& msg)
-	:	mMsg{ std::move(msg) }
+	: Exception{ msg.c_str() }
 	{}
 
 	const tstring& What() const { return mMsg; }

@@ -18,7 +18,6 @@ class Method : public Object
 public:
 	Method(const Module& module, const std::string& name);
 	Method(const Module& module, const String& name);
-	~Method();
 
 	const std::string& GetName() const { return mName; }
 
