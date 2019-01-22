@@ -10,13 +10,17 @@ add_subdirectory( ${CMAKE_CURRENT_SOURCE_DIR}/module/gtest )
 
 # Headers
 set( TEST_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include )
-set( TEST_HEADER ${TEST_INCLUDE_DIR}/test/Test.h )
+set( EXPORT_HEADER ${TEST_INCLUDE_DIR}/test/Export.h )
 
 # Pyspot extension files
 set( GEN_SOURCES
+	${CMAKE_CURRENT_BINARY_DIR}/include/pyspot/Bindings.h
+	${CMAKE_CURRENT_BINARY_DIR}/include/pyspot/Extension.h
 	${CMAKE_CURRENT_BINARY_DIR}/src/pyspot/Bindings.cpp
 	${CMAKE_CURRENT_BINARY_DIR}/src/pyspot/Extension.cpp
 )
+set_source_files_properties( ${GEN_SOURCES} PROPERTIES GENERATED TRUE )
+source_group( gen FILES ${GEN_SOURCES} )
 
 # Set PY_MAJOR_VERSION
 if( ${PYTHONLIBS_VERSION_STRING} MATCHES "3" )
@@ -44,7 +48,7 @@ join( "${GEN_INCLUDE_DIRS}" "\" -I\"" I_GEN_INCLUDE_DIRS )
 set( I_GEN_INCLUDE_DIRS "\"${I_GEN_INCLUDE_DIRS}\"" )
 add_custom_command( OUTPUT ${GEN_SOURCES} always
 	COMMAND pywrap
-	ARGS ${TEST_HEADER} -o pyspot -- -I${I_GEN_INCLUDE_DIRS} -xc++ -std=c++11 -DPY_MAJOR_VERSION=${PY_MAJOR_VERSION}
+	ARGS ${EXPORT_HEADER} -o pyspot -- -I${I_GEN_INCLUDE_DIRS} -xc++ -std=c++14 -DPY_MAJOR_VERSION=${PY_MAJOR_VERSION}
 	WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 	COMMENT "Generating Bindings and Extension"
 )
@@ -52,14 +56,18 @@ add_custom_command( OUTPUT ${GEN_SOURCES} always
 # Sources
 set( TEST_SOURCE_DIR  ${CMAKE_CURRENT_SOURCE_DIR}/src )
 set( TEST_SOURCES
-	${GEN_SOURCES}
+	${TEST_INCLUDE_DIR}/test/Test.h
+	${TEST_INCLUDE_DIR}/test/Export.h
+	${TEST_INCLUDE_DIR}/test/Product.h
+	${TEST_INCLUDE_DIR}/test/Color.h
 	${TEST_SOURCE_DIR}/Main.cpp
 	${TEST_SOURCE_DIR}/Interpreter.cpp
 	${TEST_SOURCE_DIR}/Enum.cpp
+	${TEST_SOURCE_DIR}/Product.cpp
 )
-
 source_group( src FILES ${TEST_SOURCES} )
-add_executable( pyspot-test ${TEST_SOURCES} )
+
+add_executable( pyspot-test ${TEST_SOURCES} ${GEN_SOURCES} )
 target_compile_features( pyspot-test PRIVATE cxx_std_11 )
 target_include_directories( pyspot-test PRIVATE ${GEN_INCLUDE_DIRS} )
 target_link_libraries( pyspot-test pyspot gtest )

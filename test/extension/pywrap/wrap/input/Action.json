@@ -1,9 +1,0 @@
-{
-	"namespace": "wrap::input",
-	"name": "Action",
-	"header": "wrap/input/Input.h",
-	"values": {
-		"RELEASE" : 0,
-		"PRESS"   : 1
-	}
-}

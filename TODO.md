@@ -3,6 +3,6 @@
 - Improve test cases
 - Support more complex components
 
-## Wrapper
+## Pywrap
 
-- Improve Pywrap
+- Correcly handle strings in Python 2.7

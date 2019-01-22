@@ -7,7 +7,12 @@ namespace pyspot
 namespace test
 {
 
-
+	
+class [[pyspot::export]] Coin
+{
+  public:
+	int value;
+};
 enum class [[pyspot::export]] Color
 {
 	RED, GREEN, BLUE

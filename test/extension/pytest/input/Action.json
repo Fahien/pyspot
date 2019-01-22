@@ -1,8 +1,0 @@
-{
-	"namespace": "input",
-	"name": "Action",
-	"values": {
-		"RELEASE" : 0,
-		"PRESS"   : 1
-	}
-}
