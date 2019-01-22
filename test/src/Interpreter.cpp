@@ -9,14 +9,12 @@ namespace pyspot
 {
 namespace test
 {
-
-
 TEST( Interpreter, Instantiate )
 {
-	Interpreter interpreter {};
+	Interpreter interpreter{};
 	ASSERT_TRUE( interpreter.IsInitialized() );
 }
 
 
-} // namespace test
-} // namespace pyspot
+}  // namespace test
+}  // namespace pyspot

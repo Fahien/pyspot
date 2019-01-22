@@ -2,6 +2,10 @@ cmake_minimum_required( VERSION 3.6 )
 
 project( PySpotTest LANGUAGES C CXX )
 
+# Google test
+if(MSVC)
+	set( gtest_force_shared_crt ON )
+endif()
 add_subdirectory( ${CMAKE_CURRENT_SOURCE_DIR}/module/gtest )
 
 # Headers
@@ -57,11 +61,10 @@ set( TEST_SOURCES
 source_group( src FILES ${TEST_SOURCES} )
 add_executable( pyspot-test ${TEST_SOURCES} )
 target_compile_features( pyspot-test PRIVATE cxx_std_11 )
-target_include_directories( pyspot-test PRIVATE ${GEN_INCLUDE_DIRS})
+target_include_directories( pyspot-test PRIVATE ${GEN_INCLUDE_DIRS} )
 target_link_libraries( pyspot-test pyspot gtest )
 
-include(CTest)
-add_test(NAME pyspot-test
+add_test( NAME pyspot-test
 	COMMAND $<TARGET_FILE:pyspot-test>
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )

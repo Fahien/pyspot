@@ -2,18 +2,18 @@
 
 #include "gtest/gtest.h"
 
-#include "test/Color.h"
 #include "pyspot/Bindings.h"
 #include "pyspot/Extension.h"
 #include "pyspot/Interpreter.h"
 #include "pyspot/Module.h"
 #include "pyspot/Tuple.h"
+#include "test/Color.h"
 
 
 #if PY_MAJOR_VERSION >= 3
-# define TEST_DIR _T("script/3")
+#define TEST_DIR _T("script/3")
 #else
-# define TEST_DIR _T("script/2")
+#define TEST_DIR _T("script/2")
 #endif
 
 namespace pyspot
@@ -32,7 +32,8 @@ class Python : public testing::Test
 };
 
 Python::Python()
-    : interpreter{ new pyspot::Interpreter{ "pyspot", PyInit_pyspot, TEST_DIR } }
+    : interpreter{ new pyspot::Interpreter{ "pyspot", PyInit_pyspot,
+	                                        TEST_DIR } }
 {
 }
 
@@ -82,12 +83,13 @@ TEST_F( Python, CompareEnum )
 
 TEST_F( Python, ReassignEnum )
 {
-	pyspot::Module enumTest{ "enum-test" };
+	pyspot::Module         enumTest{ "enum-test" };
 	pyspot::Wrapper<Color> color{ Color::BLUE };
-	pyspot::Wrapper<Color> result = enumTest.Invoke( "change_color", { color } );
+	pyspot::Wrapper<Color> result =
+	    enumTest.Invoke( "change_color", { color } );
 	ASSERT_EQ( result.GetPayload(), Color::RED );
 	ASSERT_NE( result.GetPayload(), color.GetPayload() );
 }
 
 }  // namespace test
-}  // namespace pywrap
+}  // namespace pyspot

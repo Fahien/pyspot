@@ -1,18 +1,18 @@
 #include "tests.h"
+#include "pyspot/Dictionary.h"
+#include "pyspot/Exception.h"
 #include "pyspot/Interpreter.h"
 #include "pyspot/Module.h"
-#include "pyspot/Exception.h"
-#include "pyspot/Tuple.h"
 #include "pyspot/String.h"
-#include "pyspot/Dictionary.h"
-#include "pytest/extension/Pytest.h"
+#include "pyspot/Tuple.h"
 #include "pytest/component/Single.h"
 #include "pytest/component/String.h"
 #include "pytest/component/Test.h"
 #include "pytest/component/Transform.h"
+#include "pytest/extension/Pytest.h"
+#include "pytest/input/Action.h"
 #include "pytest/input/Input.h"
 #include "pytest/input/Key.h"
-#include "pytest/input/Action.h"
 
 #include <iostream>
 
@@ -21,24 +21,23 @@ using namespace pyspot;
 using namespace pytest;
 
 #if PY_MAJOR_VERSION >= 3
-# define TEST_DIR _T("test/script/3")
+#define TEST_DIR _T("test/script/3")
 #else
-# define TEST_DIR _T("test/script/2")
+#define TEST_DIR _T("test/script/2")
 #endif
 
 
 bool testHello()
 {
 	Interpreter interpreter{ "pytest", PyInit_Pytest, TEST_DIR };
-	Module pymodule{ "hello" };
+	Module      pymodule{ "hello" };
 	try
 	{
-		Object result{ pymodule.Invoke("hello") };
-		printf("Test Hello result = %ls\n", result.ToTString().c_str());
-	}
-	catch (const Exception& ex)
+		Object result{ pymodule.Invoke( "hello" ) };
+		printf( "Test Hello result = %ls\n", result.ToTString().c_str() );
+	} catch ( const Exception& ex )
 	{
-		printf("Error: %s\n", ex.What().c_str());
+		printf( "Error: %s\n", ex.What().c_str() );
 	}
 	return true;
 }
@@ -47,20 +46,19 @@ bool testHello()
 bool testArgs()
 {
 	Interpreter interpreter{ "pytest", PyInit_Pytest };
-	Module pymodule{ "hello" };
+	Module      pymodule{ "hello" };
 
 	String name{ "TestArg" };
-	Tuple arguments{ name };
+	Tuple  arguments{ name };
 
 	try
 	{
-		Object result{ pymodule.Invoke("readargs", arguments) };
-		printf("Test Arg result = %ls\n", result.ToTString().c_str());
-		printf("Test Arg name = %ls\n", name.ToTString().c_str());
-	}
-	catch (const Exception & ex)
+		Object result{ pymodule.Invoke( "readargs", arguments ) };
+		printf( "Test Arg result = %ls\n", result.ToTString().c_str() );
+		printf( "Test Arg name = %ls\n", name.ToTString().c_str() );
+	} catch ( const Exception& ex )
 	{
-		printf("Error correctly captured: %s\n", ex.What().c_str());
+		printf( "Error correctly captured: %s\n", ex.What().c_str() );
 	}
 	return true;
 }
@@ -69,15 +67,15 @@ bool testArgs()
 bool testSingle()
 {
 	Interpreter interpreter{ "pytest", PyInit_Pytest, TEST_DIR };
-	Module pymodule{ "script" };
+	Module      pymodule{ "script" };
 
 	component::Single single{ 4.0f };
-	Tuple args{ single };
-	pymodule.Invoke("test_single", args);
-	printf("Result: %f\n", single.GetPrice());
+	Tuple             args{ single };
+	pymodule.Invoke( "test_single", args );
+	printf( "Result: %f\n", single.GetPrice() );
 
-	single.SetPrice(0.0f);
-	assert(single.GetPrice() == 0.0f);
+	single.SetPrice( 0.0f );
+	assert( single.GetPrice() == 0.0f );
 
 	return true;
 }
@@ -90,26 +88,24 @@ bool testString()
 	{
 		Module pymodule{ "script" };
 
-		String name{ "TestName" };
+		String            name{ "TestName" };
 		component::String container{ name };
 
-		printf("Name: %s\n", name.ToCString());
+		printf( "Name: %s\n", name.ToCString() );
 
-		printf("Test3: test_string\n");
+		printf( "Test3: test_string\n" );
 		Tuple args{ container };
 		try
 		{
-			pymodule.Invoke("test_string", args);
-			printf("Result: %s\n", container.GetName().ToCString());
-		}
-		catch (const Exception & ex)
+			pymodule.Invoke( "test_string", args );
+			printf( "Result: %s\n", container.GetName().ToCString() );
+		} catch ( const Exception& ex )
 		{
-			printf("Error correctly captured: %s\n", ex.What().c_str());
+			printf( "Error correctly captured: %s\n", ex.What().c_str() );
 		}
-	}
-	catch(Exception& e)
+	} catch ( Exception& e )
 	{
-		printf("%s\n", e.What().c_str());
+		printf( "%s\n", e.What().c_str() );
 	}
 
 	return true;
@@ -119,12 +115,12 @@ bool testString()
 bool testTest()
 {
 	Interpreter interpreter{ "pytest", PyInit_Pytest, TEST_DIR };
-	Module pymodule{ "script" };
+	Module      pymodule{ "script" };
 
 	component::Test test{ 2, 4.0f };
-	Tuple args{ test };
-	pymodule.Invoke("test_component", args);
-	printf("Result: %d\n", test.GetValue());
+	Tuple           args{ test };
+	pymodule.Invoke( "test_component", args );
+	printf( "Result: %d\n", test.GetValue() );
 	return true;
 }
 
@@ -132,27 +128,18 @@ bool testTest()
 bool testTransform()
 {
 	Interpreter interpreter{ "pytest", PyInit_Pytest, TEST_DIR };
-	Module pymodule{ "script" };
+	Module      pymodule{ "script" };
 
 	component::Transform transform{};
-	Tuple args{ transform };
-	pymodule.Invoke("test_transform", args);
+	Tuple                args{ transform };
+	pymodule.Invoke( "test_transform", args );
 
-	printf("Position: [%f, %f, %f]\n",
-	       transform.GetPosition().GetX(),
-	       transform.GetPosition().GetY(),
-	       transform.GetPosition().GetZ()
-	);
-	printf("Scale: [%f, %f, %f]\n",
-	       transform.GetScale().GetX(),
-	       transform.GetScale().GetY(),
-	       transform.GetScale().GetZ()
-	);
-	printf("Rotation: [%f, %f, %f]\n",
-	       transform.GetRotation().GetX(),
-	       transform.GetRotation().GetY(),
-	       transform.GetRotation().GetZ()
-	);
+	printf( "Position: [%f, %f, %f]\n", transform.GetPosition().GetX(),
+	        transform.GetPosition().GetY(), transform.GetPosition().GetZ() );
+	printf( "Scale: [%f, %f, %f]\n", transform.GetScale().GetX(),
+	        transform.GetScale().GetY(), transform.GetScale().GetZ() );
+	printf( "Rotation: [%f, %f, %f]\n", transform.GetRotation().GetX(),
+	        transform.GetRotation().GetY(), transform.GetRotation().GetZ() );
 
 	return true;
 }
@@ -161,13 +148,13 @@ bool testTransform()
 bool testInput()
 {
 	Interpreter interpreter{ "pytest", PyInit_Pytest, TEST_DIR };
-	Module pymodule{ "script" };
+	Module      pymodule{ "script" };
 
-	input::Key k{ input::Key::LEFT };
+	input::Key    k{ input::Key::LEFT };
 	input::Action a{ input::Action::RELEASE };
-	input::Input i{ k, a };
-	Tuple args{ i };
-	pymodule.Invoke("test_input", args);
+	input::Input  i{ k, a };
+	Tuple         args{ i };
+	pymodule.Invoke( "test_input", args );
 	return true;
 }
 
@@ -175,24 +162,18 @@ bool testInput()
 bool testMap()
 {
 	Interpreter interpreter{ "pytest", PyInit_Pytest, TEST_DIR };
-	Module module{ "map" };
-	
+	Module      module{ "map" };
+
 	component::Transform transform{};
-	Tuple args{ transform };
+	Tuple                args{ transform };
 
-	module.Invoke("init_map", args);
-	printf("Position: [%f, %f, %f]\n",
-	       transform.GetPosition().GetX(),
-	       transform.GetPosition().GetY(),
-	       transform.GetPosition().GetZ()
-	);
+	module.Invoke( "init_map", args );
+	printf( "Position: [%f, %f, %f]\n", transform.GetPosition().GetX(),
+	        transform.GetPosition().GetY(), transform.GetPosition().GetZ() );
 
-	module.Invoke("test_map");
-	printf("Position: [%f, %f, %f]\n",
-	       transform.GetPosition().GetX(),
-	       transform.GetPosition().GetY(),
-	       transform.GetPosition().GetZ()
-	);
+	module.Invoke( "test_map" );
+	printf( "Position: [%f, %f, %f]\n", transform.GetPosition().GetX(),
+	        transform.GetPosition().GetY(), transform.GetPosition().GetZ() );
 
 	return true;
 }
@@ -201,26 +182,20 @@ bool testMap()
 bool testDictionary()
 {
 	Interpreter interpreter{ "pytest", PyInit_Pytest, TEST_DIR };
-	Module module{ "map" };
+	Module      module{ "map" };
 
 	component::Transform transform{};
-	Dictionary dict{};
-	dict.SetItem("transform", transform);
+	Dictionary           dict{};
+	dict.SetItem( "transform", transform );
 
 	Tuple args{ dict };
-	module.Invoke("init_dict", args);
-	printf("Position: [%f, %f, %f]\n",
-	       transform.GetPosition().GetX(),
-	       transform.GetPosition().GetY(),
-	       transform.GetPosition().GetZ()
-	);
+	module.Invoke( "init_dict", args );
+	printf( "Position: [%f, %f, %f]\n", transform.GetPosition().GetX(),
+	        transform.GetPosition().GetY(), transform.GetPosition().GetZ() );
 
-	module.Invoke("test_dict");
-	printf("Position: [%f, %f, %f]\n",
-	       transform.GetPosition().GetX(),
-	       transform.GetPosition().GetY(),
-	       transform.GetPosition().GetZ()
-	);
+	module.Invoke( "test_dict" );
+	printf( "Position: [%f, %f, %f]\n", transform.GetPosition().GetX(),
+	        transform.GetPosition().GetY(), transform.GetPosition().GetZ() );
 
 	return true;
 }
@@ -231,20 +206,20 @@ bool testBuildCustomPythonObject()
 	Interpreter interpreter{ "pytest", PyInit_Pytest, TEST_DIR };
 
 	// Create a utils.Map
-	Module utils{ "utils" };
-	Dictionary map{ utils.Invoke("Map") };
-	assert(map.GetObject() != nullptr);
+	Module     utils{ "utils" };
+	Dictionary map{ utils.Invoke( "Map" ) };
+	assert( map.GetObject() != nullptr );
 
 	// Add a transform
 	component::Transform transform;
-	map.SetItem("transform", transform);
+	map.SetItem( "transform", transform );
 
 	// Modify within script
 	Module module{ "map" };
-	module.Invoke("test_parameter", Tuple{ map });
+	module.Invoke( "test_parameter", Tuple{ map } );
 
 	cout << transform.GetPosition().GetX() << endl;
-	assert(transform.GetPosition().GetX() == 1.0f);
+	assert( transform.GetPosition().GetX() == 1.0f );
 
 	return true;
 }
