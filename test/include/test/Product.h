@@ -7,17 +7,14 @@ namespace pyspot
 {
 namespace test
 {
-
 class [[pyspot::export]] Product
 {
   public:
-	// Product( const std::string& name = "Default", const float price = 1.0f )
-	//    : name{ name }, price{ price }
-	//{
-	//}
+	Product( const std::string& name = "Default", const float price = 1.0f ) : name{ name }, price{ price } {}
 
 	std::string name;
 	float       price;
+	bool        discounted = false;
 };
 }  // namespace test
 
