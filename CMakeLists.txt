@@ -1,6 +1,8 @@
 cmake_minimum_required( VERSION 3.6 )
 
+set( CMAKE_EXPORT_COMPILE_COMMANDS ON )
 set( CMAKE_C_STANDARD 11 )
+set( CMAKE_CXX_STANDARD 14 )
 
 set( PST_TITLE PySpot )
 set( PST_NAME  pyspot )
@@ -36,20 +38,8 @@ if( ${PY_VERSION} MATCHES "2" )
 	endif()
 	set( PYTHONLIBS_VERSION_STRING ${PY_VERSION} )
 	add_definitions( -DPY_MAJOR_VERSION=2 )
-	if( NOT TARGET python )
-		add_library( python STATIC IMPORTED )
-		set( PYTHON_LIBRARY "$ENV{PYTHON27_PATH}/libs/python27.lib" )
-		set( PYTHON_LIBRARY_DEBUG "$ENV{PYTHON27_PATH}/libs/python27_d.lib" )
-		set_target_properties( python PROPERTIES
-			IMPORTED_LOCATION ${PYTHON_LIBRARY}
-			IMPORTED_LOCATION_DEBUG ${PYTHON_LIBRARY_DEBUG} )
-		message( STATUS "Found PythonLibs: ${PYTHON_LIBRARY}" )
-	endif()
-	set( PYTHON_INCLUDE_DIRS "$ENV{PYTHON27_PATH}/include" )
-	set( PYTHON_LIBRARIES python )
-else()
-	find_package( PythonLibs EXACT ${PY_VERSION} )
 endif()
+find_package( PythonLibs EXACT ${PY_VERSION} )
 
 set( PST_INCLUDE_DIRS
 	${PST_INCLUDE_DIR}

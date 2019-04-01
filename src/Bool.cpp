@@ -7,11 +7,11 @@ namespace pyspot
 {
 
 
-Bool::Bool( Object&& object )
-:	Object{ std::move( object ) }
-,	value{ PyLong_AsLong( mObject ) == 1L }
+Bool::Bool( Object&& o )
+:	Object{ std::move( o ) }
+,	value{ PyLong_AsLong( object ) == 1L }
 {
-	assert( PyBool_Check( mObject ) && "Object is not a Bool" );
+	assert( PyBool_Check( object ) && "Object is not a Bool" );
 }
 
 

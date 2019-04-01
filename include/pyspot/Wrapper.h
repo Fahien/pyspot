@@ -11,33 +11,33 @@
 struct _PyspotWrapper
 {
 	PyObject_HEAD
-	void* pData;
-	bool bOwnData;
+	void* data;
+	bool own_data;
 };
 
 
 
 /// Constructor
-static PyObject* PyspotWrapper_New( PyTypeObject* type, PyObject* args, PyObject* kwds )
+static PyObject* PyspotWrapper_new( PyTypeObject* type, PyObject* args, PyObject* kwds )
 {
-	auto pSelf = reinterpret_cast<_PyspotWrapper*>( type->tp_alloc( type, 0 ) );
+	auto self = reinterpret_cast<_PyspotWrapper*>( type->tp_alloc( type, 0 ) );
 
-	if ( pSelf != nullptr )
+	if ( self != nullptr )
 	{
-		pSelf->pData = nullptr;
-		pSelf->bOwnData = false;
+		self->data = nullptr;
+		self->own_data = false;
 	}
 
-	return reinterpret_cast<PyObject*>( pSelf );
+	return reinterpret_cast<PyObject*>( self );
 }
 
 
 /// Destructor
-static void PyspotWrapper_Dealloc( _PyspotWrapper* pSelf )
+static void PyspotWrapper_Dealloc( _PyspotWrapper* self )
 {
-	// If it owns the pData, it needs a specific destructor
-	assert( !pSelf->bOwnData );
-	Py_TYPE( pSelf )->tp_free( reinterpret_cast<PyObject*>( pSelf ) );
+	// If it owns the data, it needs a specific destructor
+	assert( !self->own_data );
+	Py_TYPE( self )->tp_free( reinterpret_cast<PyObject*>( self ) );
 }
 
 
@@ -107,7 +107,7 @@ static PyTypeObject g_PyspotWrapperTypeObject {
 	0,                                              // dictoffset
 	reinterpret_cast<initproc>(PyspotWrapper_Init), // init
 	0,                                              // alloc
-	PyspotWrapper_New,                              // new
+	PyspotWrapper_new,                              // new
 };
 
 
@@ -119,21 +119,21 @@ template<typename T>
 class Wrapper : public Object
 {
   public:
-	Wrapper( const Object& object )
-	:	Object { object }
-	,	pPayload{ reinterpret_cast<T*>( reinterpret_cast<_PyspotWrapper*>( mObject )->pData ) }
+	Wrapper( const Object& o )
+	:	Object { o }
+	,	payload{ reinterpret_cast<T*>( reinterpret_cast<_PyspotWrapper*>( object )->data ) }
 	{}
 
-	Wrapper( T& );
+	Wrapper( const T& );
 	Wrapper( T* );
 	Wrapper( T&& );
 
-	T& GetPayload() const { return *pPayload; }
-	T& operator*()  const { return *pPayload; }
-	T* operator->() const { return  pPayload; }
+	T& GetPayload() const { return *payload; }
+	T& operator*()  const { return *payload; }
+	T* operator->() const { return  payload; }
 
   private:
-	T* pPayload;
+	T* payload;
 };
 
 

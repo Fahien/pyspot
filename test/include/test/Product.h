@@ -7,7 +7,7 @@ namespace pyspot
 {
 namespace test
 {
-class [[pyspot::export]] Product
+class __attribute__( ( annotate( "pyspot" ) ) ) Product
 {
   public:
 	Product( const std::string& name = "Default", const float price = 1.0f ) : name{ name }, price{ price } {}

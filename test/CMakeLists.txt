@@ -39,18 +39,26 @@ function( join VALUES GLUE OUTPUT )
 endfunction()
 
 # Generation command
-set( GEN_INCLUDE_DIRS
-	${TEST_INCLUDE_DIR}
-	${CMAKE_CURRENT_BINARY_DIR}/include
-	${PST_INCLUDE_DIRS}
+set( COMMAND_ARGS
+	${EXPORT_HEADER} -o pyspot
+	-- -xc++ -std=c++14 -DPY_MAJOR_VERSION=${PY_MAJOR_VERSION}
+	-I${TEST_INCLUDE_DIR}
+	-I${CMAKE_CURRENT_BINARY_DIR}/include
+	-I${PST_INCLUDE_DIRS}
 )
-join( "${GEN_INCLUDE_DIRS}" "\" -I\"" I_GEN_INCLUDE_DIRS )
-set( I_GEN_INCLUDE_DIRS "\"${I_GEN_INCLUDE_DIRS}\"" )
-add_custom_command( OUTPUT ${GEN_SOURCES} always
+
+foreach( INCLUDE_DIR ${CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES} )
+	list( APPEND COMMAND_ARGS -I${INCLUDE_DIR} )
+endforeach()
+
+set( CMAKE_VERBOSE_MAKEFILE on )
+add_custom_command( OUTPUT ${GEN_SOURCES}
 	COMMAND pywrap
-	ARGS ${EXPORT_HEADER} -o pyspot -- -I${I_GEN_INCLUDE_DIRS} -xc++ -std=c++14 -DPY_MAJOR_VERSION=${PY_MAJOR_VERSION}
+	ARGS ${COMMAND_ARGS}
 	WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 	COMMENT "Generating Bindings and Extension"
+	COMMAND_EXPAND_LISTS
+	VERBATIM
 )
 
 # Sources
@@ -62,14 +70,20 @@ set( TEST_SOURCES
 	${TEST_INCLUDE_DIR}/test/Color.h
 	${TEST_SOURCE_DIR}/Main.cpp
 	${TEST_SOURCE_DIR}/Interpreter.cpp
+	${TEST_SOURCE_DIR}/Function.cpp
 	${TEST_SOURCE_DIR}/Enum.cpp
-	${TEST_SOURCE_DIR}/Product.cpp
+	#${TEST_SOURCE_DIR}/Product.cpp
 )
 source_group( src FILES ${TEST_SOURCES} )
 
 add_executable( pyspot-test ${TEST_SOURCES} ${GEN_SOURCES} )
 target_compile_features( pyspot-test PRIVATE cxx_std_11 )
-target_include_directories( pyspot-test PRIVATE ${GEN_INCLUDE_DIRS} )
+target_include_directories( pyspot-test
+	PRIVATE
+	${TEST_INCLUDE_DIR}
+	${CMAKE_CURRENT_BINARY_DIR}/include
+	${PST_INCLUDE_DIRS}
+)
 target_link_libraries( pyspot-test pyspot gtest )
 
 add_test( NAME pyspot-test

@@ -5,11 +5,11 @@ namespace pyspot
 {
 
 
-Tuple::Tuple( PyObject* pObject )
-:	Object{ pObject }
-,	m_Size { static_cast<size_t>( PyTuple_Size( pObject ) ) }
+Tuple::Tuple( PyObject* o )
+:	Object{ o }
+,	m_Size { static_cast<size_t>( PyTuple_Size( object ) ) }
 {
-	assert( PyTuple_Check( pObject ) && "Object must be a tuple");
+	assert( PyTuple_Check( object ) && "Object must be a tuple");
 }
 
 
@@ -35,7 +35,7 @@ void Tuple::SetItem( const size_t i, const Object& item )
 	assert( i < m_Size && "Index must be less than tuple size" );
 
 	// Consume the item reference
-	PyTuple_SetItem( mObject, i, item.GetIncref() );
+	PyTuple_SetItem( object, i, item.GetIncref() );
 }
 
 
@@ -63,7 +63,7 @@ void Tuple::SetItem( const size_t i, PyObject* item )
 
 	Py_INCREF( item );
 	// Consume the item reference
-	PyTuple_SetItem( mObject, i, item );
+	PyTuple_SetItem( object, i, item );
 }
 
 

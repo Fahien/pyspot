@@ -14,23 +14,23 @@ class Object
 {
 public:
 	Object();
-	Object(PyObject* object);
+	Object( PyObject* object );
 	virtual ~Object();
 
-	Object(const Object& other);
-	Object(Object&& other);
+	Object( const Object& other );
+	Object( Object&& other );
 
-	Object& operator=(const Object& other);
-	Object& operator=(Object&& other);
+	Object& operator=( const Object& other );
+	Object& operator=( Object&& other );
 
-	PyObject* GetObject() const { return mObject; }
-	PyObject* GetIncref() const { Py_INCREF(mObject); return mObject; }
+	PyObject* GetObject() const { return object; }
+	PyObject* GetIncref() const { Py_INCREF( object ); return object; }
 
 	#if PY_MAJOR_VERSION >= 3
-	const char*    ToCString()  const { return PyUnicode_AsUTF8(mObject); }
-	const wchar_t* ToWCString() const { return PyUnicode_AsUnicode(mObject); }
+	const char*    ToCString()  const { return PyUnicode_AsUTF8( object ); }
+	const wchar_t* ToWCString() const { return PyUnicode_AsUnicode( object ); }
 	#else
-	const char*    ToCString()  const { return PyString_AsString(mObject); }
+	const char*    ToCString()  const { return PyString_AsString( object ); }
 	const wchar_t* ToWCString() const { return L""; }
 	#endif
 	std::string    ToString()   const { return ToCString(); }
@@ -38,7 +38,7 @@ public:
 	tstring ToTString() const;
 
 protected:
-	PyObject* mObject;
+	PyObject* object;
 };
 
 }

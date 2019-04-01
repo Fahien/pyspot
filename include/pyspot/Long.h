@@ -10,8 +10,13 @@ class Long : public Object
 {
   public:
 	Long(PyObject* object);
+	Long(const Object& object);
 	Long(const long l);
 	~Long();
+
+	long get_value() const;
+
+	bool operator==(int i) const { return get_value() == i; }
 };
 
 }

@@ -6,65 +6,65 @@ namespace pyspot
 
 
 Object::Object()
-:	mObject{ nullptr }
+:	object { nullptr }
 {}
 
 
 Object::Object( PyObject* object )
-:	mObject{ object }
+:	object { object }
 {}
 
 
 Object::~Object()
 {
-	Py_XDECREF(mObject);
+	Py_XDECREF( object );
 }
 
 
 Object::Object(const Object& other)
-:	mObject{ other.mObject }
+:	object{ other.object }
 {
-	Py_XINCREF(mObject);
+	Py_XINCREF( object );
 }
 
 
 Object::Object(Object&& other)
-:	mObject{ other.mObject }
+:	object{ other.object }
 {
-	other.mObject = nullptr;
+	other.object = nullptr;
 }
 
 
 Object& Object::operator=(const Object& other)
 {
-	if (this != &other)
+	if ( this != &other )
 	{
-		if (mObject != other.mObject)
+		if ( object != other.object )
 		{
-			Py_XDECREF(mObject);
+			Py_XDECREF( object );
 
-			mObject = other.mObject;
+			object = other.object;
 		}
 
-		Py_XINCREF(mObject);
+		Py_XINCREF( object );
 	}
 
 	return *this;
 }
 
 
-Object& Object::operator=(Object&& other)
+Object& Object::operator=( Object&& other )
 {
-	if (this != &other)
+	if ( this != &other )
 	{
-		if (mObject != other.mObject)
+		if ( object != other.object )
 		{
-			Py_XDECREF(mObject);
+			Py_XDECREF( object );
 
-			mObject = other.mObject;
+			object = other.object;
 		}
 
-		other.mObject = nullptr;
+		other.object = nullptr;
 	}
 
 	return *this;

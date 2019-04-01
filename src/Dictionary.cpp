@@ -9,39 +9,39 @@ Dictionary::Dictionary()
 {}
 
 
-Dictionary::Dictionary(PyObject* pObject)
-:	Object{ pObject }
+Dictionary::Dictionary( PyObject* o )
+:	Object{ o }
 {
-	assert( PyDict_Check(pObject) && "Object must be a dictionary");
+	assert( PyDict_Check( object ) && "Object must be a dictionary");
 }
 
 
-Dictionary::Dictionary(const Object& other)
-:	Object{ (PyDict_Check(other.GetObject()), other.GetIncref()) }
+Dictionary::Dictionary( const Object& other )
+:	Object{ ( PyDict_Check( other.GetObject() ), other.GetIncref() ) }
 {}
 
 
 Dictionary::~Dictionary()
 {
-	PyDict_Clear(mObject);
+	PyDict_Clear( object );
 }
 
 
-void Dictionary::SetItem(const char* key, Object& val)
+void Dictionary::SetItem( const char* key, Object& val )
 {
-	PyDict_SetItemString(mObject, key, val.GetObject());
+	PyDict_SetItemString( object, key, val.GetObject() );
 }
 
 
-void Dictionary::SetItem(const std::string& key, Object& val)
+void Dictionary::SetItem( const std::string& key, Object& val )
 {
-	SetItem(key.c_str(), val);
+	SetItem( key.c_str(), val );
 }
 
 
-void Dictionary::SetItem(const Object& key, Object& val)
+void Dictionary::SetItem( const Object& key, Object& val )
 {
-	PyDict_SetItem(mObject, key.GetObject(), val.GetObject());
+	PyDict_SetItem( object, key.GetObject(), val.GetObject() );
 }
 
 

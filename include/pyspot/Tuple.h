@@ -1,4 +1,5 @@
-#pragma once
+#ifndef PYSPOT_TUPLE_H_
+#define PYSPOT_TUPLE_H_
 
 #include <initializer_list>
 
@@ -7,8 +8,6 @@
 
 namespace pyspot
 {
-
-
 class Tuple : public Object
 {
   public:
@@ -29,4 +28,6 @@ class Tuple : public Object
 };
 
 
-}
+}  // namespace pyspot
+
+#endif  // PYSPOT_TUPLE_H_

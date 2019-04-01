@@ -12,9 +12,10 @@ Method::Method( const Module& module, const std::string& name )
     : Object{ PyObject_GetAttrString( module.GetObject(), name.c_str() ) },
       mName{ name }
 {
-	if ( !mObject || !PyCallable_Check( mObject ) )
+	if ( !object || !PyCallable_Check( object ) )
 	{
-		throw Exception{ _T("Not a method") };
+		tstring msg = _T("Not a method: ") + name;
+		throw Exception{ msg };
 	}
 }
 
@@ -23,7 +24,7 @@ Method::Method( const Module& module, const String& name )
     : Object{ PyObject_GetAttr( module.GetObject(), name.GetObject() ) },
       mName{ name.ToString() }
 {
-	if ( !mObject || !PyCallable_Check( mObject ) )
+	if ( !object || !PyCallable_Check( object ) )
 	{
 		throw Exception{ _T("Not a method") };
 	}
@@ -32,13 +33,13 @@ Method::Method( const Module& module, const String& name )
 
 Object Method::Invoke() const
 {
-	return PyObject_CallObject( mObject, nullptr );
+	return PyObject_CallObject( object, nullptr );
 }
 
 
 Object Method::Invoke( const Tuple& args ) const
 {
-	return PyObject_CallObject( mObject, args.GetObject() );
+	return PyObject_CallObject( object, args.GetObject() );
 }
 
 

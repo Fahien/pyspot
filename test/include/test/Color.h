@@ -1,26 +1,28 @@
 #ifndef PYSPOT_TEST_COLOR_H_
 #define PYSPOT_TEST_COLOR_H_
 
+#include "test/Common.h"
 
 namespace pyspot
 {
 namespace test
 {
-
-	
-class [[pyspot::export]] Coin
+class PYSPOT_EXPORT Coin
 {
   public:
 	int value;
 };
-enum class [[pyspot::export]] Color
+
+enum class PYSPOT_EXPORT Color
 {
-	RED, GREEN, BLUE
+	RED,
+	GREEN,
+	BLUE
 };
 
 
-} // namespace test
-} // namespace pyspot
+}  // namespace test
+}  // namespace pyspot
 
 
-#endif // PYSPOT_TEST_COLOR_H_
+#endif  // PYSPOT_TEST_COLOR_H_
