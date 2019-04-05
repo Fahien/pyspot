@@ -6,13 +6,12 @@ namespace pyspot
 {
 namespace test
 {
-TEST_F( Python, InitializeInterpreter ) { ASSERT_TRUE( Py_IsInitialized() ); }
-
 TEST_F( Python, ImportModule )
 {
 	Module pyspot{ "pyspot" };
 	ASSERT_NE( pyspot.GetObject(), nullptr );
 }
+
 
 TEST_F( Python, CallMethod )
 {
@@ -20,11 +19,13 @@ TEST_F( Python, CallMethod )
 	baseTest.Invoke( "hello" );
 }
 
+
 TEST_F( Python, InstantiateEnum )
 {
 	Module enumTest{ "enum-test" };
 	enumTest.Invoke( "create_color" );
 }
+
 
 TEST_F( Python, ReturnEnum )
 {
@@ -33,12 +34,14 @@ TEST_F( Python, ReturnEnum )
 	ASSERT_EQ( red.GetPayload(), Color::RED );
 }
 
+
 TEST_F( Python, PassEnum )
 {
 	Module         enumTest{ "enum-test" };
 	Wrapper<Color> blue{ enumTest.Invoke( "send_color", { Wrapper<Color>{ Color::BLUE } } ) };
 	ASSERT_EQ( blue.GetPayload(), Color::BLUE );
 }
+
 
 TEST_F( Python, CompareEnum )
 {
@@ -48,6 +51,7 @@ TEST_F( Python, CompareEnum )
 	ASSERT_EQ( PyLong_AsLong( result.GetObject() ), 1 );
 }
 
+
 TEST_F( Python, ReassignEnum )
 {
 	Module         enumTest{ "enum-test" };
@@ -56,6 +60,7 @@ TEST_F( Python, ReassignEnum )
 	ASSERT_EQ( result.GetPayload(), Color::RED );
 	ASSERT_NE( result.GetPayload(), color.GetPayload() );
 }
+
 
 }  // namespace test
 }  // namespace pyspot

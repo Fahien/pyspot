@@ -72,6 +72,7 @@ set( TEST_SOURCES
 	${TEST_SOURCE_DIR}/Interpreter.cpp
 	${TEST_SOURCE_DIR}/Function.cpp
 	${TEST_SOURCE_DIR}/Enum.cpp
+	${TEST_SOURCE_DIR}/Struct.cpp
 	#${TEST_SOURCE_DIR}/Product.cpp
 )
 source_group( src FILES ${TEST_SOURCES} )

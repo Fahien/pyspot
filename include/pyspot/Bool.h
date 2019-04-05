@@ -7,22 +7,19 @@
 
 namespace pyspot
 {
-
-
-class Bool : Object
+class Bool : public Object
 {
   public:
 	Bool( Object&& object );
 	Bool( const bool b = false );
 
-	operator bool() { return value; }
+	operator bool() const { return value; }
 
   private:
 	bool value;
 };
 
 
-} // namespace pyspot
+}  // namespace pyspot
 
-
-#endif // PYSPOT_BOOL_H_
+#endif  // PYSPOT_BOOL_H_

@@ -7,9 +7,8 @@ namespace pyspot
 {
 namespace test
 {
-class PYSPOT_EXPORT Coin
+struct PYSPOT_EXPORT Coin
 {
-  public:
 	int value;
 };
 
