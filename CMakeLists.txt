@@ -64,6 +64,7 @@ source_group( src FILES ${SOURCES} )
 
 # Library
 add_library( ${PST_NAME} ${SOURCES} )
+target_compile_features( ${PST_NAME} PRIVATE cxx_std_14 )
 target_link_libraries( ${PST_NAME} PUBLIC ${PYTHON_LIBRARIES} )
 set( PYSPOT_LIBRARIES ${PST_NAME} )
 target_include_directories( ${PST_NAME} PUBLIC ${PST_INCLUDE_DIRS} )
