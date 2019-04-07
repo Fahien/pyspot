@@ -9,20 +9,19 @@
 namespace pyspot
 {
 Method::Method( const Module& module, const std::string& name )
-    : Object{ PyObject_GetAttrString( module.GetObject(), name.c_str() ) },
-      mName{ name }
+    : Object{ PyObject_GetAttrString( module.GetObject(), name.c_str() ) }, mName{ name }
 {
 	if ( !object || !PyCallable_Check( object ) )
 	{
-		tstring msg = _T("Not a method: ") + name;
+		auto nam = std::wstring{ std::begin( name ), std::end( name ) };
+		auto msg = L"Not a method: " + nam;
 		throw Exception{ msg };
 	}
 }
 
 
 Method::Method( const Module& module, const String& name )
-    : Object{ PyObject_GetAttr( module.GetObject(), name.GetObject() ) },
-      mName{ name.ToString() }
+    : Object{ PyObject_GetAttr( module.GetObject(), name.GetObject() ) }, mName{ name.ToString() }
 {
 	if ( !object || !PyCallable_Check( object ) )
 	{
@@ -31,16 +30,10 @@ Method::Method( const Module& module, const String& name )
 }
 
 
-Object Method::Invoke() const
-{
-	return PyObject_CallObject( object, nullptr );
-}
+Object Method::Invoke() const { return PyObject_CallObject( object, nullptr ); }
 
 
-Object Method::Invoke( const Tuple& args ) const
-{
-	return PyObject_CallObject( object, args.GetObject() );
-}
+Object Method::Invoke( const Tuple& args ) const { return PyObject_CallObject( object, args.GetObject() ); }
 
 
 }  // namespace pyspot

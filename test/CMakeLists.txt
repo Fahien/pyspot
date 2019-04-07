@@ -3,7 +3,7 @@ cmake_minimum_required( VERSION 3.6 )
 project( PySpotTest LANGUAGES C CXX )
 
 # Google test
-if(MSVC)
+if( MSVC )
 	set( gtest_force_shared_crt ON )
 endif()
 add_subdirectory( ${CMAKE_CURRENT_SOURCE_DIR}/module/gtest )
@@ -25,10 +25,8 @@ source_group( gen FILES ${GEN_SOURCES} )
 # Set PY_MAJOR_VERSION
 if( ${PYTHONLIBS_VERSION_STRING} MATCHES "3" )
 	set( PY_MAJOR_VERSION 3 )
-elseif( ${PYTHONLIBS_VERSION_STRING} MATCHES "2" )
-	set( PY_MAJOR_VERSION 2 )
 else()
-	message( FATAL "PythonLibs v${PYTHONLIBS_VERSION_STRING} unsupported" )
+	message( FATAL_ERROR "PythonLibs v${PYTHONLIBS_VERSION_STRING} unsupported" )
 endif()
 
 # Join function

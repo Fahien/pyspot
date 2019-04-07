@@ -8,25 +8,19 @@
 
 namespace pyspot
 {
-
-class Exception : public std::runtime_error
+class Exception : public std::exception
 {
   public:
-	Exception(cstring msg)
-	:	std::runtime_error{ msg }
-	,	mMsg{ msg }
-	{}
+	Exception( cstring msg ) : message{ msg } {}
 
-	Exception(const tstring& msg)
-	: Exception{ msg.c_str() }
-	{}
+	Exception( const tstring& msg ) : message{ msg } {}
 
-	const tstring& What() const { return mMsg; }
+	const tstring& get_message() const { return message; }
 
   private:
-	const tstring mMsg;
+	const tstring message;
 };
 
-}
+}  // namespace pyspot
 
-#endif // PST_EXCEPTION_H_
+#endif  // PST_EXCEPTION_H_
