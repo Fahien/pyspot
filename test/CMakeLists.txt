@@ -29,25 +29,14 @@ else()
 	message( FATAL_ERROR "PythonLibs v${PYTHONLIBS_VERSION_STRING} unsupported" )
 endif()
 
-# Join function
-function( join VALUES GLUE OUTPUT )
-	string( REGEX REPLACE "([^\\]|^);" "\\1${GLUE}" _TMP_STR "${VALUES}" )
-	string( REGEX REPLACE "[\\](.)" "\\1" _TMP_STR "${_TMP_STR}" ) # fixes escaping
-	set( ${OUTPUT} "${_TMP_STR}" PARENT_SCOPE )
-endfunction()
-
 # Generation command
 set( COMMAND_ARGS
 	${EXPORT_HEADER} -o pyspot
-	-- -xc++ -std=c++14 -DPY_MAJOR_VERSION=${PY_MAJOR_VERSION}
+	-- -xc++ -std=c++17 -DPY_MAJOR_VERSION=${PY_MAJOR_VERSION}
 	-I${TEST_INCLUDE_DIR}
 	-I${CMAKE_CURRENT_BINARY_DIR}/include
 	-I${PST_INCLUDE_DIRS}
 )
-
-foreach( INCLUDE_DIR ${CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES} )
-	list( APPEND COMMAND_ARGS -I${INCLUDE_DIR} )
-endforeach()
 
 set( CMAKE_VERBOSE_MAKEFILE on )
 add_custom_command( OUTPUT ${GEN_SOURCES}
