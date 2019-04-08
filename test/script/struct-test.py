@@ -11,9 +11,9 @@ def send_details( details ):
 
 
 def compare_details( details ):
-	return color == pyspot.Details(3)
+	return details == pyspot.Details(3)
 
 
 def change_details( details ):
 	details = pyspot.Details(6)
-	return color
+	return details

@@ -18,7 +18,7 @@ class Exception : public std::exception
 		std::wcstombs( str_message.data(), message.c_str(), message.length() );
 	}
 
-	Exception( const tstring& msg ) : message{ msg } {}
+	Exception( const tstring& msg ) : Exception{ msg.c_str() } {}
 
 	const tstring& get_message() const { return message; }
 

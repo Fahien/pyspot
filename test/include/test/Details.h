@@ -13,10 +13,11 @@ namespace test
 
 struct PYSPOT_EXPORT Details
 {
-	Details( const uint32_t c ) : count{ c } {}
+	Details( const uint32_t c ) : count{ c } {};
 	uint32_t count = 0;
-};
 
+	bool operator==( const Details& other ) const { return count == other.count; };
+};
 
 }  // namespace test
 }  // namespace pyspot

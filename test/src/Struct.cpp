@@ -8,6 +8,8 @@ namespace pyspot
 {
 namespace test
 {
+
+
 TEST_F( Python, instantiate_struct )
 {
 	Module struct_test{ "struct-test" };

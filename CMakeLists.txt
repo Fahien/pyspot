@@ -22,8 +22,7 @@ configure_file( ${PST_SOURCE_DIR}/Config.h.in ${PST_GEN_INCLUDE_DIR}/Config.h )
 
 # CMake modules
 list( APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake )
-find_package( PythonInterp 3 )
-find_package( PythonLibs   3 )
+find_package( PythonLibs 3 REQUIRED )
 
 set( PST_INCLUDE_DIRS
 	${PST_INCLUDE_DIR}
