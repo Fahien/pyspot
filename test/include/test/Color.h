@@ -3,14 +3,15 @@
 
 #include "test/Common.h"
 
-namespace pyspot
+namespace pyspot::test
 {
-namespace test
-{
+
+
 struct PYSPOT_EXPORT Coin
 {
 	int value;
 };
+
 
 enum class PYSPOT_EXPORT Color
 {
@@ -20,8 +21,6 @@ enum class PYSPOT_EXPORT Color
 };
 
 
-}  // namespace test
-}  // namespace pyspot
-
+}  // namespace pyspot::test
 
 #endif  // PYSPOT_TEST_COLOR_H_

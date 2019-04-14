@@ -2,7 +2,7 @@ import pyspot
 
 
 def create_details():
-	details = pyspot.Details(1)
+	details = pyspot.test.Details(1)
 	return details
 
 
@@ -11,9 +11,9 @@ def send_details( details ):
 
 
 def compare_details( details ):
-	return details == pyspot.Details(3)
+	return details == pyspot.test.Details(3)
 
 
 def change_details( details ):
-	details = pyspot.Details(6)
+	details = pyspot.test.Details(6)
 	return details

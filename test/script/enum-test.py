@@ -2,7 +2,9 @@ import pyspot
 
 
 def create_color():
-	color = pyspot.Color.RED
+	print(dir(pyspot))
+	print(dir(pyspot.test))
+	color = pyspot.test.Color.RED
 	return color
 
 
@@ -11,9 +13,9 @@ def send_color( color ):
 
 
 def compare_color( color ):
-	return color == pyspot.Color.GREEN
+	return color == pyspot.test.Color.GREEN
 
 
 def change_color( color ):
-	color = pyspot.Color.RED
+	color = pyspot.test.Color.RED
 	return color

@@ -5,9 +5,7 @@
 
 #include "test/Common.h"
 
-namespace pyspot
-{
-namespace test
+namespace pyspot::test
 {
 
 
@@ -19,7 +17,7 @@ struct PYSPOT_EXPORT Details
 	bool operator==( const Details& other ) const { return count == other.count; };
 };
 
-}  // namespace test
-}  // namespace pyspot
+
+}  // namespace pyspot::test
 
 #endif  // PYSPOT_TEST_DETAILS_H_

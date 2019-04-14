@@ -65,7 +65,7 @@ set( TEST_SOURCES
 source_group( src FILES ${TEST_SOURCES} )
 
 add_executable( pyspot-test ${TEST_SOURCES} ${GEN_SOURCES} )
-target_compile_features( pyspot-test PRIVATE cxx_std_11 )
+target_compile_features( pyspot-test PRIVATE cxx_std_17 )
 target_include_directories( pyspot-test
 	PRIVATE
 	${TEST_INCLUDE_DIR}
