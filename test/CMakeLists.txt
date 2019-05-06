@@ -10,7 +10,7 @@ add_subdirectory( ${CMAKE_CURRENT_SOURCE_DIR}/module/gtest )
 
 # Headers
 set( TEST_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include )
-set( EXPORT_HEADER ${TEST_INCLUDE_DIR}/test/Export.h )
+set( EXPORT_HEADER ${TEST_INCLUDE_DIR}/test/Export.hpp )
 
 # Pyspot extension files
 set( GEN_SOURCES
@@ -52,7 +52,7 @@ add_custom_command( OUTPUT ${GEN_SOURCES}
 set( TEST_SOURCE_DIR  ${CMAKE_CURRENT_SOURCE_DIR}/src )
 set( TEST_SOURCES
 	${TEST_INCLUDE_DIR}/test/Test.h
-	${TEST_INCLUDE_DIR}/test/Export.h
+	${TEST_INCLUDE_DIR}/test/Export.hpp
 	${TEST_INCLUDE_DIR}/test/Product.h
 	${TEST_INCLUDE_DIR}/test/Color.h
 	${TEST_SOURCE_DIR}/Main.cpp
@@ -60,6 +60,7 @@ set( TEST_SOURCES
 	${TEST_SOURCE_DIR}/Function.cpp
 	${TEST_SOURCE_DIR}/Enum.cpp
 	${TEST_SOURCE_DIR}/Struct.cpp
+	${TEST_SOURCE_DIR}/Vec2.cpp
 	#${TEST_SOURCE_DIR}/Product.cpp
 )
 source_group( src FILES ${TEST_SOURCES} )

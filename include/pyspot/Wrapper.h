@@ -16,7 +16,6 @@ struct _PyspotWrapper
 };
 
 
-
 /// Constructor
 static PyObject* PyspotWrapper_new( PyTypeObject* type, PyObject* args, PyObject* kwds )
 {
@@ -113,7 +112,7 @@ static PyTypeObject g_PyspotWrapperTypeObject {
 
 namespace pyspot
 {
-	
+
 
 template<typename T>
 class Wrapper : public Object
