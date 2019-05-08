@@ -2,23 +2,22 @@
 #define PYSPOT_TEST_PRODUCT_H_
 
 #include <string>
+#include "test/Common.h"
 
-namespace pyspot
+namespace pyspot::test
 {
-namespace test
-{
-class __attribute__( ( annotate( "pyspot" ) ) ) Product
+
+class PYSPOT_EXPORT Product
 {
   public:
-	Product( const std::string& name = "Default", const float price = 1.0f ) : name{ name }, price{ price } {}
+	Product( const std::string& name, const float price ) : name{ name }, price{ price } {}
 
 	std::string name;
 	float       price;
 	bool        discounted = false;
 };
-}  // namespace test
 
-}  // namespace pyspot
+}  // namespace pyspot::test
 
 
 #endif  // PYSPOT_TEST_PRODUCT_H_
