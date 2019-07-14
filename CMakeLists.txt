@@ -1,4 +1,4 @@
-cmake_minimum_required( VERSION 3.6 )
+cmake_minimum_required( VERSION 3.12 )
 
 set( CMAKE_EXPORT_COMPILE_COMMANDS ON )
 set( CMAKE_C_STANDARD 11 )
@@ -22,12 +22,12 @@ configure_file( ${PST_SOURCE_DIR}/Config.h.in ${PST_GEN_INCLUDE_DIR}/Config.h )
 
 # CMake modules
 list( APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake )
-find_package( PythonLibs 3 REQUIRED )
+find_package( Python3 COMPONENTS Development )
 
 set( PST_INCLUDE_DIRS
 	${PST_INCLUDE_DIR}
 	${PST_GEN_INCLUDE_DIR}
-	${PYTHON_INCLUDE_DIRS}
+	${Python3_INCLUDE_DIRS}
 )
 
 # Sources
@@ -48,7 +48,7 @@ source_group( src FILES ${SOURCES} )
 # Library
 add_library( ${PST_NAME} ${SOURCES} )
 target_compile_features( ${PST_NAME} PRIVATE cxx_std_17 )
-target_link_libraries( ${PST_NAME} PUBLIC ${PYTHON_LIBRARIES} )
+target_link_libraries( ${PST_NAME} PUBLIC ${Python3_LIBRARIES} )
 set( PYSPOT_LIBRARIES ${PST_NAME} )
 target_include_directories( ${PST_NAME} PUBLIC ${PST_INCLUDE_DIRS} )
 

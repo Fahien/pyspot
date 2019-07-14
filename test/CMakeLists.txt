@@ -1,4 +1,4 @@
-cmake_minimum_required( VERSION 3.6 )
+cmake_minimum_required( VERSION 3.12 )
 
 project( PySpotTest LANGUAGES C CXX )
 
@@ -23,10 +23,10 @@ set_source_files_properties( ${GEN_SOURCES} PROPERTIES GENERATED TRUE )
 source_group( gen FILES ${GEN_SOURCES} )
 
 # Set PY_MAJOR_VERSION
-if( ${PYTHONLIBS_VERSION_STRING} MATCHES "3" )
+if( ${Python3_VERSION_MAJOR} EQUAL 3 )
 	set( PY_MAJOR_VERSION 3 )
 else()
-	message( FATAL_ERROR "PythonLibs v${PYTHONLIBS_VERSION_STRING} unsupported" )
+	message( FATAL_ERROR "Python v${Python3_VERSION} not supported" )
 endif()
 
 # Generation command
