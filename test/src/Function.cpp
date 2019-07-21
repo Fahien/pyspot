@@ -10,7 +10,7 @@ namespace test
 TEST_F( Python, CallFunctionFromPython )
 {
 	Module function_test{ "function-test" };
-	Long   five{ function_test.Invoke( "call_function" ) };
+	Long   five{ function_test.call( "call_function" ) };
 	ASSERT_EQ( five.get_value(), 5 );
 }
 }  // namespace test

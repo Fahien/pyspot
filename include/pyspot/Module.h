@@ -4,39 +4,40 @@
 #include <map>
 #include <string>
 
-#include "pyspot/Object.h"
 #include "pyspot/Method.h"
+#include "pyspot/Object.h"
 #include "pyspot/String.h"
 
 
 namespace pyspot
 {
-
 class String;
 class Tuple;
 
 
 class Module : public Object
 {
-public:
+  public:
 	Module( PyObject* module, const char* name );
 	Module( const char* name );
 	Module( const tstring& name );
 	Module( const String& name );
-	~Module();
+	~Module() = default;
 
-	const std::string& GetName() const { return name; }
+	const std::string& get_name() const { return name; }
 
-	Object Invoke( const std::string& name );
-	Object Invoke( const std::string& name, const Tuple& args );
+	Method* get_method( const std::string& name );
 
-private:
-	const std::string name;
+	Object call( const std::string& name );
+	Object call( const std::string& name, const Tuple& args );
+
+  private:
+	const std::string                   name;
 	std::map<const std::string, Method> methods;
 };
 
 
-}
+}  // namespace pyspot
 
 
-#endif // PST_MODULE_H_
+#endif  // PST_MODULE_H_

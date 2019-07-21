@@ -7,29 +7,27 @@
 
 namespace pyspot
 {
-
-
 class Module;
 class Tuple;
 
 
 class Method : public Object
 {
-public:
-	Method(const Module& module, const std::string& name);
-	Method(const Module& module, const String& name);
+  public:
+	Method( const Module& module, const std::string& name );
+	Method( const Module& module, const String& name );
 
-	const std::string& GetName() const { return mName; }
+	const std::string& get_name() const { return name; }
 
-	Object Invoke() const;
-	Object Invoke(const Tuple& args) const;
+	Object call() const;
+	Object call( const Tuple& args ) const;
 
-private:
-	const std::string mName;
+  private:
+	const std::string name;
 };
 
 
-}
+}  // namespace pyspot
 
 
-#endif // PST_METHOD_H_
+#endif  // PST_METHOD_H_
