@@ -12,7 +12,11 @@ namespace pyspot
 {
 namespace test
 {
-
+static pyspot::Interpreter& get_interpreter()
+{
+	static pyspot::Interpreter interpreter{ "pyspot", PyInit_pyspot, L"script" };
+	return interpreter;
+}
 
 class Python : public testing::Test
 {
@@ -22,10 +26,10 @@ class Python : public testing::Test
 	void TearDown() override{};
 
   private:
-	std::unique_ptr<pyspot::Interpreter> interpreter;
+	pyspot::Interpreter& interpreter;
 };
 
-Python::Python() : interpreter{ new pyspot::Interpreter{ "pyspot", PyInit_pyspot, L"script" } } {}
+Python::Python() : interpreter{ get_interpreter() } {}
 
 
 }  // namespace test

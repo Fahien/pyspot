@@ -1,6 +1,6 @@
 cmake_minimum_required( VERSION 3.12 )
 
-project( PySpotTest LANGUAGES C CXX )
+project( PyspotTest LANGUAGES C CXX )
 
 # Google test
 if( MSVC )
@@ -31,7 +31,7 @@ endif()
 
 # Generation command
 set( COMMAND_ARGS
-	${EXPORT_HEADER} -o pyspot
+	${EXPORT_HEADER}
 	-- -xc++ -std=c++17 -DPY_MAJOR_VERSION=${PY_MAJOR_VERSION}
 	-I${TEST_INCLUDE_DIR}
 	-I${CMAKE_CURRENT_BINARY_DIR}/include
