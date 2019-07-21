@@ -31,7 +31,7 @@ endif()
 
 # Generation command
 set( COMMAND_ARGS
-	${EXPORT_HEADER} -o pyspot
+	${EXPORT_HEADER}
 	-- -xc++ -std=c++17 -DPY_MAJOR_VERSION=${PY_MAJOR_VERSION}
 	-I${TEST_INCLUDE_DIR}
 	-I${CMAKE_CURRENT_BINARY_DIR}/include

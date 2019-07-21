@@ -3,6 +3,7 @@
 
 #include <string>
 #include "test/Common.h"
+#include "test/Details.h"
 
 namespace pyspot::test
 {
@@ -15,6 +16,8 @@ class PYSPOT_EXPORT Product
 	std::string name;
 	float       price;
 	bool        discounted = false;
+
+	Details details = {1};
 };
 
 }  // namespace pyspot::test
