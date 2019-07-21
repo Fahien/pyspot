@@ -1,6 +1,6 @@
 cmake_minimum_required( VERSION 3.12 )
 
-project( PySpotTest LANGUAGES C CXX )
+project( PyspotTest LANGUAGES C CXX )
 
 # Google test
 if( MSVC )
