@@ -1,10 +1,11 @@
-#ifndef PYSPOT_TEST_VEC2_H_
-#define PYSPOT_TEST_VEC2_H_
+#pragma once
 
-#include "test/Common.h"
+#include "test/Common.hpp"
 
 namespace pyspot::test
 {
+
+
 template <typename T>
 struct PYSPOT_EXPORT Vec2
 {
@@ -23,5 +24,3 @@ using Vec2f = Vec2<float>;
 
 
 }  // namespace pyspot::test
-
-#endif  // PYSPOT_TEST_VEC2_H_

@@ -1,17 +1,19 @@
-#include "test/Function.h"
-#include "test/Test.h"
+#include "test/Function.hpp"
+#include "test/Test.hpp"
 
 #include "pyspot/Long.h"
 
-namespace pyspot
+namespace pyspot::test
 {
-namespace test
+
+
+TEST_CASE( "function" )
 {
-TEST_F( Python, CallFunctionFromPython )
-{
+	get_interpreter();
 	Module function_test{ "function-test" };
 	Long   five{ function_test.call( "call_function" ) };
-	ASSERT_EQ( five.get_value(), 5 );
+	REQUIRE( five.get_value() == 5 );
 }
-}  // namespace test
-}  // namespace pyspot
+
+
+}  // namespace pyspot::test

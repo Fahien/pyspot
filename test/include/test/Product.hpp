@@ -1,9 +1,8 @@
-#ifndef PYSPOT_TEST_PRODUCT_H_
-#define PYSPOT_TEST_PRODUCT_H_
+#pragma once
 
 #include <string>
-#include "test/Common.h"
-#include "test/Details.h"
+#include "test/Common.hpp"
+#include "test/Details.hpp"
 
 namespace pyspot::test
 {
@@ -21,6 +20,3 @@ class PYSPOT_EXPORT Product
 };
 
 }  // namespace pyspot::test
-
-
-#endif  // PYSPOT_TEST_PRODUCT_H_

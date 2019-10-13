@@ -1,56 +1,52 @@
 #include <pyspot/Bool.h>
 
-#include "test/Details.h"
-#include "test/Test.h"
+#include "test/Details.hpp"
+#include "test/Test.hpp"
 
 
-namespace pyspot
-{
-namespace test
+namespace pyspot::test
 {
 
-
-TEST_F( Python, instantiate_struct )
+TEST_CASE( "struct" )
 {
-	Module struct_test{ "struct-test" };
-	struct_test.call( "create_details" );
+	get_interpreter();
+
+	SECTION( "instantiate" )
+	{
+		Module struct_test{ "struct-test" };
+		struct_test.call( "create_details" );
+	}
+
+	SECTION( "return" )
+	{
+		Module           struct_test{ "struct-test" };
+		Wrapper<Details> one = struct_test.call( "create_details" );
+		REQUIRE( one->count == 1 );
+	}
+
+	SECTION( "pass" )
+	{
+		Module           struct_test{ "struct-test" };
+		Wrapper<Details> two = struct_test.call( "send_details", { Wrapper<Details>{ Details{ 2 } } } );
+		REQUIRE( two->count == 2 );
+	}
+
+	SECTION( "compare" )
+	{
+		Module struct_test{ "struct-test" };
+		Bool   result = struct_test.call( "compare_details", { Wrapper<Details>{ Details{ 3 } } } );
+		REQUIRE( result );
+		REQUIRE( PyLong_AsLong( result.GetObject() ) == 1 );
+	}
+
+	SECTION( "reassign" )
+	{
+		Module           struct_test{ "struct-test" };
+		Wrapper<Details> details{ Details{ 5 } };
+		Wrapper<Details> result = struct_test.call( "change_details", { details } );
+		REQUIRE( result->count == 6 );
+		REQUIRE( result->count != details->count );
+	}
 }
 
-
-TEST_F( Python, return_struct )
-{
-	Module           struct_test{ "struct-test" };
-	Wrapper<Details> one = struct_test.call( "create_details" );
-	ASSERT_EQ( one->count, 1 );
-}
-
-
-TEST_F( Python, pass_struct )
-{
-	Module           struct_test{ "struct-test" };
-	Wrapper<Details> two = struct_test.call( "send_details", { Wrapper<Details>{ Details{ 2 } } } );
-	ASSERT_EQ( two->count, 2 );
-}
-
-
-TEST_F( Python, compare_struct )
-{
-	Module struct_test{ "struct-test" };
-	Bool   result = struct_test.call( "compare_details", { Wrapper<Details>{ Details{ 3 } } } );
-	ASSERT_TRUE( result );
-	ASSERT_EQ( PyLong_AsLong( result.GetObject() ), 1 );
-}
-
-
-TEST_F( Python, reassign_struct )
-{
-	Module           struct_test{ "struct-test" };
-	Wrapper<Details> details{ Details{ 5 } };
-	Wrapper<Details> result = struct_test.call( "change_details", { details } );
-	ASSERT_EQ( result->count, 6 );
-	ASSERT_NE( result->count, details->count );
-}
-
-
-}  // namespace test
-}  // namespace pyspot
+}  // namespace pyspot::test

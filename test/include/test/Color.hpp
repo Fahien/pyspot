@@ -1,7 +1,6 @@
-#ifndef PYSPOT_TEST_COLOR_H_
-#define PYSPOT_TEST_COLOR_H_
+#pragma once
 
-#include "test/Common.h"
+#include "test/Common.hpp"
 
 namespace pyspot::test
 {
@@ -23,4 +22,3 @@ enum class PYSPOT_EXPORT Color
 
 }  // namespace pyspot::test
 
-#endif  // PYSPOT_TEST_COLOR_H_

@@ -1,15 +1,14 @@
-#ifndef PYSPOT_TEST_DETAILS_H_
-#define PYSPOT_TEST_DETAILS_H_
+#pragma once
 
 #include <cstdint>
 
-#include "test/Common.h"
+#include "test/Common.hpp"
 
 namespace pyspot::test
 {
 
 
-struct PYSPOT_EXPORT Details
+struct Details
 {
 	Details( const uint32_t c ) : count{ c } {};
 	uint32_t count = 0;
@@ -20,4 +19,3 @@ struct PYSPOT_EXPORT Details
 
 }  // namespace pyspot::test
 
-#endif  // PYSPOT_TEST_DETAILS_H_

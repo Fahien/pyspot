@@ -1,12 +1,9 @@
 cmake_minimum_required( VERSION 3.12 )
 
-project( PyspotTest LANGUAGES C CXX )
+project( pyspot-test LANGUAGES C CXX )
 
-# Google test
-if( MSVC )
-	set( gtest_force_shared_crt ON )
-endif()
-add_subdirectory( ${CMAKE_CURRENT_SOURCE_DIR}/module/gtest )
+# Catch2
+find_package( Catch2 REQUIRED )
 
 # Headers
 set( TEST_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include )
@@ -38,9 +35,8 @@ set( COMMAND_ARGS
 	-I${PST_INCLUDE_DIRS}
 )
 
-set( CMAKE_VERBOSE_MAKEFILE on )
-add_custom_command( OUTPUT ${GEN_SOURCES}
-	COMMAND pywrap
+add_custom_command( OUTPUT ${GEN_SOURCES} always
+	COMMAND $ENV{PYWRAP}
 	ARGS ${COMMAND_ARGS}
 	WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 	COMMENT "Generating Bindings and Extension"
@@ -49,7 +45,7 @@ add_custom_command( OUTPUT ${GEN_SOURCES}
 )
 
 # Sources
-set( TEST_SOURCE_DIR  ${CMAKE_CURRENT_SOURCE_DIR}/src )
+set( TEST_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src )
 set( TEST_SOURCES
 	${TEST_INCLUDE_DIR}/test/Test.h
 	${TEST_INCLUDE_DIR}/test/Export.hpp
@@ -65,17 +61,18 @@ set( TEST_SOURCES
 )
 source_group( src FILES ${TEST_SOURCES} )
 
-add_executable( pyspot-test ${TEST_SOURCES} ${GEN_SOURCES} )
-target_compile_features( pyspot-test PRIVATE cxx_std_17 )
-target_include_directories( pyspot-test
+add_executable( ${PROJECT_NAME} ${TEST_SOURCES} ${GEN_SOURCES} )
+target_compile_features( ${PROJECT_NAME} PRIVATE cxx_std_17 )
+target_include_directories( ${PROJECT_NAME}
 	PRIVATE
-	${TEST_INCLUDE_DIR}
-	${CMAKE_CURRENT_BINARY_DIR}/include
-	${PST_INCLUDE_DIRS}
+		${TEST_INCLUDE_DIR}
+		${CMAKE_CURRENT_BINARY_DIR}/include
+		${PST_INCLUDE_DIRS}
 )
-target_link_libraries( pyspot-test pyspot gtest )
+target_link_libraries( ${PROJECT_NAME} pyspot Catch2::Catch2 )
 
-add_test( NAME pyspot-test
-	COMMAND $<TARGET_FILE:pyspot-test>
+enable_testing()
+add_test( NAME ${PROJECT_NAME}
+	COMMAND $<TARGET_FILE:${PROJECT_NAME}>
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )

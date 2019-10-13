@@ -3,13 +3,10 @@ cmake_minimum_required( VERSION 3.12 )
 set( CMAKE_EXPORT_COMPILE_COMMANDS ON )
 set( CMAKE_C_STANDARD 11 )
 
-set( PST_TITLE Pyspot )
-set( PST_NAME  pyspot )
-project( ${PST_TITLE} C CXX )
-
-# Version number
-set( PST_VERSION_MAJOR 0 )
-set( PST_VERSION_MINOR 8 )
+project( pyspot
+	VERSION 0.9
+	LANGUAGES C CXX
+)
 
 # Directories
 set( PST_SCRIPT_DIR      ${CMAKE_CURRENT_SOURCE_DIR}/script )
@@ -46,11 +43,10 @@ set( SOURCES
 source_group( src FILES ${SOURCES} )
 
 # Library
-add_library( ${PST_NAME} ${SOURCES} )
-target_compile_features( ${PST_NAME} PRIVATE cxx_std_17 )
-target_link_libraries( ${PST_NAME} PUBLIC ${Python3_LIBRARIES} )
-set( PYSPOT_LIBRARIES ${PST_NAME} )
-target_include_directories( ${PST_NAME} PUBLIC ${PST_INCLUDE_DIRS} )
+add_library( ${PROJECT_NAME} ${SOURCES} )
+target_compile_features( ${PROJECT_NAME} PRIVATE cxx_std_17 )
+target_link_libraries( ${PROJECT_NAME} PUBLIC ${Python3_LIBRARIES} )
+set( PYSPOT_LIBRARIES ${PROJECT_NAME} )
+target_include_directories( ${PROJECT_NAME} PUBLIC ${PST_INCLUDE_DIRS} )
 
-enable_testing()
 add_subdirectory( test )

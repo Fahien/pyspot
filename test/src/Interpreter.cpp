@@ -1,20 +1,14 @@
-#include "test/Test.h"
+#include "test/Test.hpp"
 
-#include <gtest/gtest.h>
-
-#include "pyspot/Interpreter.h"
-
-
-namespace pyspot
+namespace pyspot::test
 {
-namespace test
+
+
+TEST_CASE( "interpreter" )
 {
-TEST( Interpreter, Instantiate )
-{
-	Interpreter interpreter{};
-	ASSERT_TRUE( interpreter.IsInitialized() );
+	auto& interpreter = get_interpreter();
+	REQUIRE( interpreter.IsInitialized() );
 }
 
 
-}  // namespace test
-}  // namespace pyspot
+}  // namespace pyspot::test

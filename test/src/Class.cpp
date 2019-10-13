@@ -1,34 +1,39 @@
-#include "test/Product.h"
-#include "test/Test.h"
+#include "test/Product.hpp"
+#include "test/Test.hpp"
 
-namespace pyspot
-{
-namespace test
+namespace pyspot::test
 {
 
-TEST_F( Python, instantiate_class )
+
+TEST_CASE( "class" )
 {
-	Module module{ "class-test" };
+	get_interpreter();
 
-	Wrapper<Product> orange = module.call( "create_orange" );
+	SECTION( "instantiate_class" )
+	{
+		Module module{ "class-test" };
 
-	ASSERT_EQ( orange->name, "Orange" );
-	ASSERT_EQ( orange->price, 1.0f );
+		Wrapper<Product> orange = module.call( "create_orange" );
+
+		REQUIRE( orange->name == "Orange" );
+		REQUIRE( orange->price == 1.0f );
+	}
+
+	SECTION( "discount_apple" )
+	{
+		Module module{ "class-test" };
+
+		Product          apple{ "Apple", 4.0f };
+		Wrapper<Product> py_apple{ &apple };
+
+		module.call( "discount_apple", { py_apple } );
+		REQUIRE( apple.price == 3.0f );
+		REQUIRE( apple.discounted );
+
+		module.call( "discount_apple", { py_apple } );
+		REQUIRE( apple.price == 3.0f );
+	}
+
 }
 
-TEST_F( Python, discount_apple )
-{
-	Module module{ "class-test" };
-
-	Product          apple{ "Apple", 4.0f };
-	Wrapper<Product> py_apple{ &apple };
-
-	module.call( "discount_apple", { py_apple } );
-	ASSERT_EQ( apple.price, 3.0f );
-	ASSERT_TRUE( apple.discounted );
-
-	module.call( "discount_apple", { py_apple } );
-	ASSERT_EQ( apple.price, 3.0f );
-}
-}  // namespace test
-}  // namespace pyspot
+}  // namespace pyspot::test
