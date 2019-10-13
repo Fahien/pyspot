@@ -3,6 +3,7 @@ import pyspot
 
 def create_details():
 	details = pyspot.test.Details(1)
+	details.thing.value = 1
 	return details
 
 

@@ -22,6 +22,7 @@ TEST_CASE( "struct" )
 		Module           struct_test{ "struct-test" };
 		Wrapper<Details> one = struct_test.call( "create_details" );
 		REQUIRE( one->count == 1 );
+		REQUIRE( one->thing.value == 1 );
 	}
 
 	SECTION( "pass" )

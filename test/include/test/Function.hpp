@@ -1,6 +1,5 @@
 #pragma once
 
-#include <string>
 #include "test/Common.hpp"
 
 namespace pyspot

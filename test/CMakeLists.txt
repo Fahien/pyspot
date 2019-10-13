@@ -5,9 +5,10 @@ project( pyspot-test LANGUAGES C CXX )
 # Catch2
 find_package( Catch2 REQUIRED )
 
-# Headers
 set( TEST_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include )
-set( EXPORT_HEADER ${TEST_INCLUDE_DIR}/test/Export.hpp )
+set( TEST_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src )
+
+set( EXPORT_FILE ${TEST_SOURCE_DIR}/Export.cpp )
 
 # Pyspot extension files
 set( GEN_SOURCES
@@ -28,31 +29,26 @@ endif()
 
 # Generation command
 set( COMMAND_ARGS
-	${EXPORT_HEADER}
+	${EXPORT_FILE}
 	-- -xc++ -std=c++17 -DPY_MAJOR_VERSION=${PY_MAJOR_VERSION}
 	-I${TEST_INCLUDE_DIR}
 	-I${CMAKE_CURRENT_BINARY_DIR}/include
 	-I${PST_INCLUDE_DIRS}
 )
 
-add_custom_command( OUTPUT ${GEN_SOURCES} always
-	COMMAND $ENV{PYWRAP}
-	ARGS ${COMMAND_ARGS}
+add_custom_target( ${PROJECT_NAME}-bindings
+	COMMAND ${CMAKE_COMMAND} -E env CPLUS_INCLUDE_PATH=/usr/local/opt/llvm/include/c++/v1 $ENV{PYWRAP} ${COMMAND_ARGS}
 	WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 	COMMENT "Generating Bindings and Extension"
-	COMMAND_EXPAND_LISTS
 	VERBATIM
+	COMMAND_EXPAND_LISTS
 )
 
 # Sources
-set( TEST_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src )
 set( TEST_SOURCES
-	${TEST_INCLUDE_DIR}/test/Test.h
-	${TEST_INCLUDE_DIR}/test/Export.hpp
-	${TEST_INCLUDE_DIR}/test/Product.h
-	${TEST_INCLUDE_DIR}/test/Color.h
 	${TEST_SOURCE_DIR}/Main.cpp
 	${TEST_SOURCE_DIR}/Interpreter.cpp
+	${TEST_SOURCE_DIR}/Array.cpp
 	${TEST_SOURCE_DIR}/Function.cpp
 	${TEST_SOURCE_DIR}/Enum.cpp
 	${TEST_SOURCE_DIR}/Struct.cpp
@@ -62,6 +58,7 @@ set( TEST_SOURCES
 source_group( src FILES ${TEST_SOURCES} )
 
 add_executable( ${PROJECT_NAME} ${TEST_SOURCES} ${GEN_SOURCES} )
+add_dependencies( ${PROJECT_NAME} ${PROJECT_NAME}-bindings )
 target_compile_features( ${PROJECT_NAME} PRIVATE cxx_std_17 )
 target_include_directories( ${PROJECT_NAME}
 	PRIVATE
