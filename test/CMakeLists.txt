@@ -54,6 +54,7 @@ set( TEST_SOURCES
 	${TEST_SOURCE_DIR}/Struct.cpp
 	${TEST_SOURCE_DIR}/Vec2.cpp
 	${TEST_SOURCE_DIR}/Class.cpp
+	${TEST_SOURCE_DIR}/Map.cpp
 )
 source_group( src FILES ${TEST_SOURCES} )
 
