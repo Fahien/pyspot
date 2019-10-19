@@ -30,18 +30,19 @@ endif()
 # Generation command
 set( COMMAND_ARGS
 	${EXPORT_FILE}
-	-- -xc++ -std=c++17 -DPY_MAJOR_VERSION=${PY_MAJOR_VERSION}
+	-- -std=c++17
 	-I${TEST_INCLUDE_DIR}
 	-I${CMAKE_CURRENT_BINARY_DIR}/include
 	-I${PST_INCLUDE_DIRS}
 )
 
-add_custom_target( ${PROJECT_NAME}-bindings
-	COMMAND ${CMAKE_COMMAND} -E env CPLUS_INCLUDE_PATH=/usr/local/opt/llvm/include/c++/v1 $ENV{PYWRAP} ${COMMAND_ARGS}
+add_custom_command( OUTPUT ${GEN_SOURCES}
+	COMMAND $ENV{PYWRAP}
+	ARGS ${COMMAND_ARGS}
 	WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 	COMMENT "Generating Bindings and Extension"
-	VERBATIM
 	COMMAND_EXPAND_LISTS
+	VERBATIM
 )
 
 # Sources
@@ -59,7 +60,6 @@ set( TEST_SOURCES
 source_group( src FILES ${TEST_SOURCES} )
 
 add_executable( ${PROJECT_NAME} ${TEST_SOURCES} ${GEN_SOURCES} )
-add_dependencies( ${PROJECT_NAME} ${PROJECT_NAME}-bindings )
 target_compile_features( ${PROJECT_NAME} PRIVATE cxx_std_17 )
 target_include_directories( ${PROJECT_NAME}
 	PRIVATE
